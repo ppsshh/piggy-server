@@ -1,9 +1,7 @@
 ---
 secret: 1234567890abcdef
+base_currency: rub
 currencies:
-  rub:
-    - usd
-    - eur
-  usd:
-    - jpy
-
+  - rub
+  - eur
+  - jpy

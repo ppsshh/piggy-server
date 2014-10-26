@@ -7,6 +7,8 @@ require 'slim'
 require 'rack-flash'
 require 'yaml'
 
+require_relative './models/currency.rb'
+
 paths index: '/'
 
 configure do

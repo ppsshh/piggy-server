@@ -12,14 +12,14 @@ paths index: '/'
 configure do
   puts '---> init <---'
 
-#  $config = YAML.load(File.open('config/application.yml'))
+  $config = YAML.load(File.open('config/app.yml'))
 
-  use Rack::Session::Cookie #,
-#        key: 'fcs.app',
+  use Rack::Session::Cookie,
+        key: 'piggy.fc',
 #        domain: '172.16.0.11',
 #        path: '/',
-#        expire_after: 2592000,
-#        secret: 'xxx'
+        expire_after: 2592000,
+        secret: $config['secret']
   use Rack::Flash
 end
 

@@ -1,0 +1,9 @@
+---
+secret: 1234567890abcdef
+currencies:
+  rub:
+    - usd
+    - eur
+  usd:
+    - jpy
+

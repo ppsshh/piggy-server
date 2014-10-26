@@ -1,0 +1,6 @@
+Gemfile.lock
+*.swp
+
+*.yml
+*.sqlite3
+*.sqlite3-journal

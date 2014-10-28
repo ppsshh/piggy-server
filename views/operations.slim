@@ -19,7 +19,7 @@ table border="1"
       | notes
   - @operations.each do |o|
     - total[o.bought_cur.downcase] += o.bought_amount
-    - total[o.sold_cur.downcase] -= o.sold_amount
+    /- total[o.sold_cur.downcase] += o.sold_amount
     tr
       td
         = o.date
@@ -38,13 +38,25 @@ table border="1"
         = o.notes
 
 ruby:
-  usdrub = Currency.closest("rub", Date.today).rate
-  rval = 0
-  total.each do |k,v|
-    if k != 'usd' && k != 'rub'
-      rval += v * Currency.closest(k, Date.today).rate / usdrub
-    elsif k == "usd"
-      rval += v / usdrub
+  cl = ['usd', $config['currencies']].flatten
+
+  puts "=== rates: #{@rates.inspect}"
+
+  current = {}
+  cl.each do |c|
+    current[c] ||= 0
+
+    total.each do |k,v|
+      puts "==== c: #{c}; k: #{k}; rates[k]: #{@rates[k]}; rates[c]: #{@rates[c]}"
+      if c == k
+        current[c] += v
+      elsif k == 'usd'
+        current[c] += v / @rates[c]
+      elsif c == 'usd'
+        current[c] += v * @rates[k]
+      else
+        current[c] += v * @rates[k] / @rates[c]
+      end
     end
   end
 
@@ -53,8 +65,12 @@ ul
   - total.each do |k,v|
     li
       = "#{k}: #{v}"
-  li
-    = "CURRENT RUB: #{rval.round(2)} (diff = #{(total['rub'] + rval).round(2)})"
+
+h3 Current:
+ul
+  - current.each do |k,v|
+    li
+      = "#{k}: #{v.round(2)}"
 
 h3 New operation:
 == slim :operation_form, locals: {operation: Operation.new, action_path: path_to(:operations)}

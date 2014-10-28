@@ -36,6 +36,12 @@ end
 
 get :operations do
   @operations = Operation.all
+
+  @rates = {}
+  $config["currencies"].each do |c|
+    @rates[c] ||= Currency.closest(c, Date.today).rate
+  end
+
   slim :operations
 end
 

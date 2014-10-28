@@ -37,11 +37,24 @@ table border="1"
       td
         = o.notes
 
+ruby:
+  usdrub = Currency.closest("rub", Date.today).rate
+  rval = 0
+  total.each do |k,v|
+    if k != 'usd' && k != 'rub'
+      rval += v * Currency.closest(k, Date.today).rate / usdrub
+    elsif k == "usd"
+      rval += v / usdrub
+    end
+  end
+
 h3 Total:
 ul
   - total.each do |k,v|
     li
       = "#{k}: #{v}"
+  li
+    = "CURRENT RUB: #{rval.round(2)} (diff = #{(total['rub'] + rval).round(2)})"
 
 h3 New operation:
 == slim :operation_form, locals: {operation: Operation.new, action_path: path_to(:operations)}

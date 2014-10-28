@@ -1,0 +1,41 @@
+ruby:
+  total = {}
+  total["usd"] = 0
+  $config["currencies"].each { |c| total[c.downcase] = 0 }
+
+table border="1"
+  tr
+    th
+      | date
+    th
+      | bought
+    th
+      | sold
+    th
+      | effective rate
+    th
+      | notes
+  - @operations.each do |o|
+    - total[o.bought_cur.downcase] += o.bought_amount
+    - total[o.sold_cur.downcase] -= o.sold_amount
+    tr
+      td
+        = o.date
+      td
+        = "#{o.bought_amount} #{o.bought_cur.upcase}"
+      td
+        = "#{o.sold_amount} #{o.sold_cur.upcase}"
+      td
+        /= o.sold_amount > o.bought_amount ? o.sold_amount / o.bought_amount : o.bought_amount / o.sold_amount
+        = (o.sold_amount / o.bought_amount).round(4)
+      td
+        = o.notes
+
+h3 Total:
+ul
+  - total.each do |k,v|
+    li
+      = "#{k}: #{v}"
+
+h3 New operation:
+== slim :operation_form, locals: {operation: Operation.new, action_path: path_to(:operations)}

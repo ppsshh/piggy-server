@@ -1,0 +1,16 @@
+form method="POST" action=action_path
+  ' Date:
+  input type="text" autocomplete="off" name="date" value=(operation.date || Date.today)
+  br
+  ' Bought:
+  input type="text" autocomplete="off" name="bought_amount" value=operation.bought_amount
+  input type="text" autocomplete="off" name="bought_cur" value=(operation.bought_cur || "USD")
+  br
+  ' Sold:
+  input type="text" autocomplete="off" name="sold_amount" value=operation.sold_amount
+  input type="text" autocomplete="off" name="sold_cur" value=(operation.sold_cur || "RUB")
+  br
+  ' Notes:
+  input type="text" autcomplete="off" name="notes" value=operation.notes
+  br
+  input type="submit" value="Save"

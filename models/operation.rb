@@ -1,3 +1,3 @@
-class Currency < ActiveRecord::Base
+class Operation < ActiveRecord::Base
 
 end

@@ -24,9 +24,9 @@ table border="1"
       td
         = o.date
       td
-        = "#{o.bought_amount} #{o.bought_cur.upcase}"
+        = money_format(o.bought_amount, o.bought_cur)
       td
-        = "#{o.sold_amount} #{o.sold_cur.upcase}"
+        = money_format(o.sold_amount, o.sold_cur)
       td
         /= o.sold_amount > o.bought_amount ? o.sold_amount / o.bought_amount : o.bought_amount / o.sold_amount
         = (o.sold_amount / o.bought_amount).round(4)
@@ -64,13 +64,13 @@ h3 Total:
 ul
   - total.each do |k,v|
     li
-      = "#{k}: #{v}"
+      = money_format(v, k)
 
 h3 Current:
 ul
   - current.each do |k,v|
     li
-      = "#{k}: #{v.round(2)}"
+      = money_format(v, k)
 
 h3 New operation:
 == slim :operation_form, locals: {operation: Operation.new, action_path: path_to(:operations)}

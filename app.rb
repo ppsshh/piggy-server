@@ -30,6 +30,22 @@ configure do
   use Rack::Flash
 end
 
+helpers do
+  def money_format(amount, currency)
+    currency_symbols = {
+      'usd' => '$',
+      'eur' => '€',
+      'jpy' => '¥',
+      'rub' => '₽'
+    }
+    parts = amount.round(2).to_s.split('.')
+    parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1 ")
+    parts.delete_at(1) if parts[1] == "0"
+
+    return "#{parts.join('.')} #{currency_symbols[currency.downcase]}"
+  end
+end
+
 get :index do
   slim :index
 end

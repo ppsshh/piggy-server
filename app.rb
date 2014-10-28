@@ -13,8 +13,8 @@ require_relative './models/operation.rb'
 
 paths index: '/',
     operations: '/operations',
-    operations_new: '/operations/new',
-    operation_edit: '/operation/:id'
+    operation: '/operation/:id',
+    operation_edit: '/operation/:id/edit'
 
 configure do
   puts '---> init <---'
@@ -39,25 +39,41 @@ get :operations do
   slim :operations
 end
 
+def operation_attrs(p)
+  return {
+    date: Date.parse(p[:date]),
+    bought_cur: p[:bought_cur].downcase,
+    bought_amount: p[:bought_amount].to_f,
+    sold_cur: p[:sold_cur].downcase,
+    sold_amount: p[:sold_amount].to_f,
+    notes: p[:notes]
+  }
+end
+
 post :operations do
   o = Operation.new
-puts params.inspect
-  o.date = Date.parse(params[:date])
-
-  o.bought_cur = params[:bought_cur].downcase
-  o.bought_amount = params[:bought_amount].to_i
-
-  o.sold_cur = params[:sold_cur].downcase
-  o.sold_amount = params[:sold_amount].to_i
-
-  o.notes = params[:notes]
+  o.attributes = operation_attrs(params)
   o.save
 
   redirect path_to(:operations)
 end
 
-get :operations_new do
+get :operation do
+  o = Operation.find(params[:id])
+  slim :operation, locals: {operation: o}
+end
 
+post :operation do
+  o = Operation.find(params[:id])
+  o.attributes = operation_attrs(params)
+  o.save
+
+  redirect path_to(:operations)
+end
+
+delete :operation do
+  Operation.delete(params[:id])
+  redirect path_to(:operations)
 end
 
 get :operation_edit do

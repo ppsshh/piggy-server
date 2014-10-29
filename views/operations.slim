@@ -1,6 +1,7 @@
 ruby:
   total = {}
   total["usd"] = 0
+  sold = 0
   $config["currencies"].each { |c| total[c.downcase] = 0 }
 
 table border="1"
@@ -19,7 +20,7 @@ table border="1"
       | notes
   - @operations.each do |o|
     - total[o.bought_cur.downcase] += o.bought_amount
-    /- total[o.sold_cur.downcase] += o.sold_amount
+    - sold -= o.sold_amount
     tr
       td
         = o.date
@@ -62,17 +63,21 @@ ruby:
     end
   end
 
-h3 Total:
-ul
-  - total.each do |k,v|
-    li
-      = money_format(v, k)
-
-h3 Current:
-ul
-  - current.each do |k,v|
-    li
-      = money_format(v, k)
+table
+  tr
+    td
+      h3 Total:
+    td
+      h3 Current:
+  tr
+    td style="padding-right: 28px"
+      - total.each do |k,v|
+        = money_format( (k == 'rub' ? sold : v), k)
+        br
+    td
+      - current.each do |k,v|
+        = money_format(v, k)
+        br
 
 h3 New operation:
 == slim :operation_form, locals: {operation: Operation.new, action_path: path_to(:operations)}

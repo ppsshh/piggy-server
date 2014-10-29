@@ -46,11 +46,7 @@ helpers do
   end
 end
 
-get :index do
-  slim :index
-end
-
-get :operations do
+def operations_index
   @operations = Operation.all
 
   @rates = {}
@@ -59,6 +55,14 @@ get :operations do
   end
 
   slim :operations
+end
+
+get :index do
+  operations_index
+end
+
+get :operations do
+  operations_index
 end
 
 def operation_attrs(p)

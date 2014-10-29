@@ -35,7 +35,9 @@ table border="1"
         '
         a data-confirm="Are you sure?" data-method="delete" href=path_to(:operation).with(o.id) delete
       td
-        = o.notes
+        - o.notes.split("\n").each do |n|
+          = n
+          br
 
 ruby:
   cl = ['usd', $config['currencies']].flatten

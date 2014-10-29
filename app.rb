@@ -47,7 +47,7 @@ helpers do
 end
 
 def operations_index
-  @operations = Operation.all
+  @operations = Operation.all.order(date: :asc)
 
   @rates = {}
   $config["currencies"].each do |c|

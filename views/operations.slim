@@ -1,7 +1,6 @@
 ruby:
   total = {}
   total["usd"] = 0
-  sold = 0
   $config["currencies"].each { |c| total[c.downcase] = 0 }
 
 table border="1"
@@ -20,7 +19,7 @@ table border="1"
       | notes
   - @operations.each do |o|
     - total[o.bought_cur.downcase] += o.bought_amount
-    - sold -= o.sold_amount
+    - total[o.sold_cur.downcase] -= o.sold_amount
     tr
       td
         = o.date
@@ -51,7 +50,9 @@ ruby:
 
     total.each do |k,v|
       puts "==== c: #{c}; k: #{k}; rates[k]: #{@rates[k]}; rates[c]: #{@rates[c]}"
-      if c == k
+      if k == 'rub'
+        # do nothing
+      elsif c == k
         current[c] += v
       elsif k == 'usd'
         current[c] += v / @rates[c]
@@ -72,11 +73,12 @@ table
   tr
     td style="padding-right: 28px"
       - total.each do |k,v|
-        = money_format( (k == 'rub' ? sold : v), k)
+        = money_format(v, k)
         br
     td
       - current.each do |k,v|
         = money_format(v, k)
+        = " (#{(v + total['rub']).round})" if k == "rub"
         br
 
 h3 New operation:

@@ -45,6 +45,8 @@ ruby:
   puts "=== rates: #{@rates.inspect}"
 
   current = {}
+  saved = {}
+
   cl.each do |c|
     current[c] ||= 0
 
@@ -64,21 +66,36 @@ ruby:
     end
   end
 
+  total.each do |k,v|
+    if k == 'rub'
+      saved[k] = current[k] + total[k]
+    elsif k == 'usd'
+      saved[k] = current[k] + (total['rub'] * @rates['rub'])
+    else
+      saved[k] = current[k] + (total['rub'] * @rates['rub'] / @rates[k])
+    end
+  end
+
 table
   tr
     td
       h3 Total:
     td
-      h3 Current:
+      h3 Full value:
+    td
+      h3 Saved:
   tr
     td style="padding-right: 28px"
       - total.each do |k,v|
         = money_format(v, k)
         br
-    td
+    td style="padding-right: 28px"
       - current.each do |k,v|
         = money_format(v, k)
-        = " (#{(v + total['rub']).round})" if k == "rub"
+        br
+    td
+      - saved.each do |k,v|
+        = money_format(v, k)
         br
 
 h3 New operation:

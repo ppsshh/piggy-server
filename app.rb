@@ -42,7 +42,7 @@ helpers do
     parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1 ")
     parts.delete_at(1) if parts[1] == "0"
 
-    return "#{parts.join('.')} #{currency_symbols[currency.downcase]}"
+    return "#{parts.join('.')} #{currency_symbols[currency.downcase] || currency.upcase}"
   end
 end
 

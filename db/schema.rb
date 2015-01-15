@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150115103005) do
+ActiveRecord::Schema.define(version: 20150115114613) do
+
+  create_table "account_charges", force: :cascade do |t|
+    t.date     "date"
+    t.text     "target_cur"
+    t.text     "charge_cur"
+    t.float    "charge_amount"
+    t.text     "notes"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
 
   create_table "currencies", force: :cascade do |t|
     t.date     "date"
@@ -31,6 +41,24 @@ ActiveRecord::Schema.define(version: 20150115103005) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_income",     default: true
+  end
+
+  create_table "expenses", force: :cascade do |t|
+    t.date     "date"
+    t.text     "cur"
+    t.float    "amount"
+    t.text     "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "profits", force: :cascade do |t|
+    t.date     "date"
+    t.text     "cur"
+    t.float    "amount"
+    t.text     "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

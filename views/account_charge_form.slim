@@ -1,0 +1,27 @@
+/ locals: acch (account_charge), action_path
+
+form method="POST" action=action_path
+  ' Date:
+  input type="text" autocomplete="off" name="date" value=(acch.date || Date.today)
+  br
+
+  ' Charged:
+  input type="text" autocomplete="off" name="charge_amount" value=acch.charge_amount
+  select name="charge_cur"
+    - ["usd", $config["currencies"]].flatten.each do |c|
+      - acch.charge_cur = 'usd' unless acch.charge_cur
+      option selected=(acch.charge_cur == c)
+        = c.upcase
+  ' in favor of:
+  select name="target_cur"
+    - ["usd", $config["currencies"]].flatten.each do |c|
+      - acch.target_cur = 'usd' unless acch.target_cur
+      option selected=(acch.target_cur == c)
+        = c.upcase
+  br
+
+  ' Notes:
+  textarea name="notes"
+    = acch.notes
+  br
+  input type="submit" value="Save"

@@ -1,0 +1,21 @@
+/ locals: profit, action_path
+
+form method="POST" action=action_path
+  ' Date:
+  input type="text" autocomplete="off" name="date" value=(profit.date || Date.today)
+  br
+
+  ' Profit:
+  input type="text" autocomplete="off" name="amount" value=profit.amount
+  select name="cur"
+    - ["usd", $config["currencies"]].flatten.each do |c|
+      - profit.cur = 'usd' unless profit.cur
+      option selected=(profit.cur == c)
+        = c.upcase
+  br
+
+  ' Notes:
+  textarea name="notes"
+    = profit.notes
+  br
+  input type="submit" value="Save"

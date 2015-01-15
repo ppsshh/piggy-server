@@ -59,6 +59,15 @@ class Vpc
     @e[cur1][cur2]['amount'] ||= 0
   end
 
+  def clean_hash
+    @e.keys.each do |k1|
+      @e[k1].keys.each do |k2|
+        @e[k1].delete(k2) if @e[k1][k2]['vol'] == 0 && @e[k1][k2]['amount'] == 0
+      end
+      @e.delete(k1) if @e[k1].empty?
+    end
+  end
+
   def add_income(income_cur, income_amount, target_cur, target_amount)
     income_cur = income_cur.downcase
     target_cur = target_cur.downcase
@@ -112,8 +121,8 @@ class Vpc
     end
   end
 
-  def to_s
-    return @e.inspect
+  def get_hash
+    return @e
   end
 end
 
@@ -184,15 +193,13 @@ def get_overall()
       vpc.add_profit(cur, -1 * o.amount)
     end
   end
+  vpc.clean_hash
 
-puts ">>>>>> income: #{income}"
-puts ">>>>>> total: #{total}"
-puts ">>>>>> vpc: #{vpc}"
-    @result = {income: income, total: total, vpc: vpc}
+  @result = {income: income, total: total, vpc: vpc.get_hash}
 end
 
 def index_page
-get_overall()
+  get_overall()
 
   @rates = {}
   $config["currencies"].each do |c|

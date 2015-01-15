@@ -11,9 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141027045649) do
+ActiveRecord::Schema.define(version: 20150115103005) do
 
-  create_table "currencies", force: true do |t|
+  create_table "currencies", force: :cascade do |t|
     t.date     "date"
     t.text     "currency"
     t.float    "rate"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20141027045649) do
     t.datetime "updated_at"
   end
 
-  create_table "operations", force: true do |t|
+  create_table "exchanges", force: :cascade do |t|
     t.date     "date"
     t.text     "sold_cur"
     t.float    "sold_amount"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20141027045649) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_income",     default: true
   end
 
 end

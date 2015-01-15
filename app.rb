@@ -9,12 +9,11 @@ require 'yaml'
 require 'date'
 
 require_relative './models/currency.rb'
-require_relative './models/operation.rb'
+require_relative './models/exchange.rb'
 
 paths index: '/',
-    operations: '/operations',
-    operation: '/operation/:id',
-    operation_edit: '/operation/:id/edit'
+    exchanges: '/exchanges', # post (new)
+    exchange: '/exchange/:id' # edit page, modify, delete
 
 configure do
   puts '---> init <---'
@@ -46,28 +45,25 @@ helpers do
   end
 end
 
-def operations_index
-  @operations = Operation.all.order(date: :asc)
+def index_page
+  @exchanges = Exchange.all.order(date: :asc)
 
   @rates = {}
   $config["currencies"].each do |c|
     @rates[c] ||= Currency.closest(c, Date.today).rate
   end
 
-  slim :operations
+  slim :index
 end
 
 get :index do
-  operations_index
+  index_page
 end
 
-get :operations do
-  operations_index
-end
-
-def operation_attrs(p)
+def exchange_attrs(p)
   return {
     date: Date.parse(p[:date]),
+    is_income: p.has_key?("is_income"),
     bought_cur: p[:bought_cur].downcase,
     bought_amount: p[:bought_amount].to_f,
     sold_cur: p[:sold_cur].downcase,
@@ -76,32 +72,28 @@ def operation_attrs(p)
   }
 end
 
-post :operations do
-  o = Operation.new
-  o.attributes = operation_attrs(params)
+post :exchanges do
+  o = Exchange.new
+  o.attributes = exchange_attrs(params)
   o.save
 
-  redirect path_to(:operations)
+  redirect path_to(:index)
 end
 
-get :operation do
-  o = Operation.find(params[:id])
-  slim :operation, locals: {operation: o}
+get :exchange do
+  o = Exchange.find(params[:id])
+  slim :exchange, locals: {exchange: o}
 end
 
-post :operation do
-  o = Operation.find(params[:id])
-  o.attributes = operation_attrs(params)
+post :exchange do
+  o = Exchange.find(params[:id])
+  o.attributes = exchange_attrs(params)
   o.save
 
-  redirect path_to(:operations)
+  redirect path_to(:index)
 end
 
-delete :operation do
+delete :exchange do
   Operation.delete(params[:id])
-  redirect path_to(:operations)
-end
-
-get :operation_edit do
-
+  redirect path_to(:index)
 end

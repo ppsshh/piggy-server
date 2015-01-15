@@ -17,7 +17,7 @@ table border="1"
       | action
     th
       | notes
-  - @operations.each do |o|
+  - @exchanges.each do |o|
     - total[o.bought_cur.downcase] += o.bought_amount
     - total[o.sold_cur.downcase] -= o.sold_amount
     tr
@@ -31,9 +31,9 @@ table border="1"
         /= o.sold_amount > o.bought_amount ? o.sold_amount / o.bought_amount : o.bought_amount / o.sold_amount
         = (o.sold_amount / o.bought_amount).round(4)
       td
-        a href=path_to(:operation).with(o.id) edit
+        a href=path_to(:exchange).with(o.id) edit
         '
-        a data-confirm="Are you sure?" data-method="delete" href=path_to(:operation).with(o.id) delete
+        a data-confirm="Are you sure?" data-method="delete" href=path_to(:exchange).with(o.id) delete
       td
         - o.notes.split("\n").each do |n|
           = n
@@ -98,5 +98,5 @@ table
         = money_format(v, k)
         br
 
-h3 New operation:
-== slim :operation_form, locals: {operation: Operation.new, action_path: path_to(:operations)}
+h3 Add exchange:
+== slim :exchange_form, locals: {exchange: Exchange.new, action_path: path_to(:exchanges)}

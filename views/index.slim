@@ -1,102 +1,20 @@
-ruby:
-  total = {}
-  total["usd"] = 0
-  $config["currencies"].each { |c| total[c.downcase] = 0 }
-
-table border="1"
-  tr
-    th
-      | date
-    th
-      | bought
-    th
-      | sold
-    th
-      | effective rate
-    th
-      | action
-    th
-      | notes
-  - @exchanges.each do |o|
-    - total[o.bought_cur.downcase] += o.bought_amount
-    - total[o.sold_cur.downcase] -= o.sold_amount
-    tr
-      td
-        = o.date
-      td
-        = money_format(o.bought_amount, o.bought_cur)
-      td
-        = money_format(o.sold_amount, o.sold_cur)
-      td
-        /= o.sold_amount > o.bought_amount ? o.sold_amount / o.bought_amount : o.bought_amount / o.sold_amount
-        = (o.sold_amount / o.bought_amount).round(4)
-      td
-        a href=path_to(:exchange).with(o.id) edit
-        '
-        a data-confirm="Are you sure?" data-method="delete" href=path_to(:exchange).with(o.id) delete
-      td
-        - o.notes.split("\n").each do |n|
-          = n
-          br
-
-ruby:
-  cl = ['usd', $config['currencies']].flatten
-
-  puts "=== rates: #{@rates.inspect}"
-
-  current = {}
-  saved = {}
-
-  cl.each do |c|
-    current[c] ||= 0
-
-    total.each do |k,v|
-      puts "==== c: #{c}; k: #{k}; rates[k]: #{@rates[k]}; rates[c]: #{@rates[c]}"
-      if k == 'rub'
-        # do nothing
-      elsif c == k
-        current[c] += v
-      elsif k == 'usd'
-        current[c] += v / @rates[c]
-      elsif c == 'usd'
-        current[c] += v * @rates[k]
-      else
-        current[c] += v * @rates[k] / @rates[c]
-      end
-    end
-  end
-
-  total.each do |k,v|
-    if k == 'rub'
-      saved[k] = current[k] + total[k]
-    elsif k == 'usd'
-      saved[k] = current[k] + (total['rub'] * @rates['rub'])
-    else
-      saved[k] = current[k] + (total['rub'] * @rates['rub'] / @rates[k])
-    end
-  end
-
-table
-  tr
-    td
-      h3 Total:
-    td
-      h3 Full value:
-    td
-      h3 Saved:
-  tr
-    td style="padding-right: 28px"
-      - total.each do |k,v|
-        = money_format(v, k)
-        br
-    td style="padding-right: 28px"
-      - current.each do |k,v|
-        = money_format(v, k)
-        br
-    td
-      - saved.each do |k,v|
-        = money_format(v, k)
-        br
+= @result.inspect
+br
+br
+- @operations.sort.each do |op|
+  - if op.kind_of?(Exchange)
+    a> href=path_to(:exchange).with(op.id) Edit
+    = "#{op.date} exchange: #{op.sold_amount} #{op.sold_cur} -> #{op.bought_amount} #{op.bought_cur} - #{op.notes}"
+  - elsif op.kind_of?(Profit)
+    a> href=path_to(:profit).with(op.id) Edit
+    = "#{op.date} profit: #{op.amount} #{op.cur} - #{op.notes}"
+  - elsif op.kind_of?(AccountCharge)
+    a> href=path_to(:account_charge).with(op.id) Edit
+    = "#{op.date} account charge: #{op.charge_amount} #{op.charge_cur} for #{op.target_cur} - #{op.notes}"
+  - elsif op.kind_of?(Expense)
+    a> href=path_to(:expense).with(op.id) Edit
+    = "#{op.date} expense: #{op.amount} #{op.cur} - #{op.notes}"
+  br
 
 h3 Add exchange:
 == slim :exchange_form, locals: {exchange: Exchange.new, action_path: path_to(:exchanges)}

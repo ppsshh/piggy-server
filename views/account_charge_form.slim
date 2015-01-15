@@ -7,17 +7,20 @@ form method="POST" action=action_path
 
   ' Charged:
   input type="text" autocomplete="off" name="charge_amount" value=acch.charge_amount
+  - acch.charge_cur = 'usd' unless acch.charge_cur
   select name="charge_cur"
     - ["usd", $config["currencies"]].flatten.each do |c|
-      - acch.charge_cur = 'usd' unless acch.charge_cur
-      option selected=(acch.charge_cur == c)
+      option selected=(acch.charge_cur.downcase == c.downcase)
         = c.upcase
   ' in favor of:
+  - acch.target_cur = 'usd' unless acch.target_cur
   select name="target_cur"
     - ["usd", $config["currencies"]].flatten.each do |c|
-      - acch.target_cur = 'usd' unless acch.target_cur
-      option selected=(acch.target_cur == c)
+      option selected=(acch.target_cur.downcase == c.downcase)
         = c.upcase
+  br
+
+  input type="checkbox" name="is_income" value="is_income" checked=(acch.is_income ? "true" : false) Is income?
   br
 
   ' Notes:

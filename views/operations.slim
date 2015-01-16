@@ -1,5 +1,9 @@
+== slim :all_forms
+br
+br
+
 table border=1
-  - @operations.sort.each do |op|
+  - @operations.sort.reverse.each do |op|
     tr
       td
         = op.date.strftime("%Y.%m.%d %H")
@@ -32,4 +36,3 @@ table border=1
           = n
           br
 
-== slim :all_forms

@@ -1,0 +1,10 @@
+body {
+  font-family: Lucida Grande, Segoe UI;
+  font-size: 12pt;
+}
+
+.operation-form {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 8px;
+}

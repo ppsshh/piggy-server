@@ -1,9 +1,13 @@
-h3 Add exchange:
-== slim :exchange_form, locals: {exchange: Exchange.new, action_path: path_to(:exchanges)}
-h3 Add profit:
-== slim :profit_form, locals: {profit: Profit.new, action_path: path_to(:profits)}
-h3 Add account charge:
-== slim :account_charge_form, locals: {acch: AccountCharge.new, action_path: path_to(:account_charges)}
-h3 Add expense:
-== slim :expense_form, locals: {expense: Expense.new, action_path: path_to(:expenses)}
+div.operation-form
+  h3 Add exchange:
+  == slim :exchange_form, locals: {exchange: Exchange.new, action_path: path_to(:exchanges)}
+div.operation-form
+  h3 Add profit:
+  == slim :profit_form, locals: {profit: Profit.new, action_path: path_to(:profits)}
+div.operation-form
+  h3 Add account charge:
+  == slim :account_charge_form, locals: {acch: AccountCharge.new, action_path: path_to(:account_charges)}
+div.operation-form
+  h3 Add expense:
+  == slim :expense_form, locals: {expense: Expense.new, action_path: path_to(:expenses)}
 

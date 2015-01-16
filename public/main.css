@@ -2,7 +2,10 @@ body {
   font-family: Lucida Grande, Segoe UI;
   font-size: 12pt;
 }
-
+.wide-cell {
+  text-align: right;
+  padding-left: 20px;
+}
 .operation-form {
   display: inline-block;
   vertical-align: top;

@@ -17,18 +17,31 @@ table
   tr
     th Total:
     th Full value:
-    th Saved:
+    th Delta:
   - ['usd', $config['currencies']].flatten.each do |c|
     tr
-      td style="text-align: right; padding-left: 20px;"
+      td.wide-cell
         = money_format(@result[:total][c] || 0, c)
-      td style="text-align: right; padding-left: 20px;"
+      td.wide-cell
         = money_format(full[c] || 0, c)
-      td style="text-align: right; padding-left: 20px;"
+      td.wide-cell
         = money_format(full[c] - convert_currency(@rates, cieq, 'usd', c), c)
 
 br
-= @result.inspect
+table
+  - @result[:vpc].each do |k1,v1|
+    tr
+      td = "#{currency_symbol(k1)} :"
+      - v1.each do |k2,v2|
+        td.wide-cell
+          = money_format(v2['amount'], k2)
+  tr
+    td
+      ' Income:
+    td.wide-cell
+      - @result[:income].each do |k,v|
+        = money_format(v,k)
+
 br
 
 == slim :all_forms

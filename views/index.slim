@@ -7,16 +7,25 @@ ruby:
     end
   end
 
+  cieq = 0 # Curren Income EQuivalent (in USD)
+  @result[:income].each do |k,v|
+    cieq += convert_currency(@rates, v, k, 'usd')
+  end
+    
+
 table
   tr
     th Total:
     th Full value:
+    th Saved:
   - ['usd', $config['currencies']].flatten.each do |c|
     tr
       td style="text-align: right; padding-left: 20px;"
         = money_format(@result[:total][c] || 0, c)
       td style="text-align: right; padding-left: 20px;"
         = money_format(full[c] || 0, c)
+      td style="text-align: right; padding-left: 20px;"
+        = money_format(full[c] - convert_currency(@rates, cieq, 'usd', c), c)
 
 br
 = @result.inspect

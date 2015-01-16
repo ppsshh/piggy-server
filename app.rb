@@ -210,6 +210,21 @@ def get_overall()
   @result = {income: income, total: total, vpc: vpc.get_hash}
 end
 
+def convert_currency(rates, amount, cur1, cur2)
+  cur1 = cur1.downcase
+  cur2 = cur2.downcase
+
+  if cur1 == 'usd'
+    return amount if cur2 == 'usd'
+    return amount / rates[cur2]
+  elsif cur2 == 'usd'
+    return rates[cur1] * amount
+  else
+    return rates[cur1] * amount / rates[cur2]
+  end
+end
+
+
 get :index do
   get_overall()
 

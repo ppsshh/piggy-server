@@ -1,3 +1,24 @@
+ruby:
+  full = {}
+  ['usd', $config['currencies']].flatten.each do |ct|
+    full[ct] ||= 0
+    ['usd', $config['currencies']].flatten.each do |c|
+      full[ct] += convert_currency(@rates, @result[:total][c] || 0, c, ct)
+    end
+  end
+
+table
+  tr
+    th Total:
+    th Full value:
+  - ['usd', $config['currencies']].flatten.each do |c|
+    tr
+      td style="text-align: right; padding-left: 20px;"
+        = money_format(@result[:total][c] || 0, c)
+      td style="text-align: right; padding-left: 20px;"
+        = money_format(full[c] || 0, c)
+
+br
 = @result.inspect
 br
 

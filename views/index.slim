@@ -1,20 +1,5 @@
 = @result.inspect
 br
-br
-- @operations.sort.each do |op|
-  - if op.kind_of?(Exchange)
-    a> href=path_to(:exchange).with(op.id) Edit
-    = "#{op.date} exchange: #{op.sold_amount} #{op.sold_cur} -> #{op.bought_amount} #{op.bought_cur} - #{op.notes}"
-  - elsif op.kind_of?(Profit)
-    a> href=path_to(:profit).with(op.id) Edit
-    = "#{op.date} profit: #{op.amount} #{op.cur} - #{op.notes}"
-  - elsif op.kind_of?(AccountCharge)
-    a> href=path_to(:account_charge).with(op.id) Edit
-    = "#{op.date} account charge: #{op.charge_amount} #{op.charge_cur} for #{op.target_cur} - #{op.notes}"
-  - elsif op.kind_of?(Expense)
-    a> href=path_to(:expense).with(op.id) Edit
-    = "#{op.date} expense: #{op.amount} #{op.cur} - #{op.notes}"
-  br
 
 h3 Add exchange:
 == slim :exchange_form, locals: {exchange: Exchange.new, action_path: path_to(:exchanges)}

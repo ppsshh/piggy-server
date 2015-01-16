@@ -8,6 +8,11 @@ html
     script src="/jquery-rails.js"
     / link rel="stylesheet" type="text/css" href="/main.css"
   body
+    div
+      a href=path_to(:index) Index
+      ' |
+      a href=path_to(:operations) Operations
+    br
     div#container
       == yield
 

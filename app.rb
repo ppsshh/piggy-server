@@ -11,6 +11,7 @@ require 'date'
 require_relative './models/all.rb'
 
 paths index: '/',
+    operations: '/operations/', # list of all operations
     exchanges: '/exchanges', # post (new)
     exchange: '/exchange/:id', # edit page, modify, delete
     profits: '/profits', # post(new)
@@ -126,19 +127,25 @@ class Vpc
   end
 end
 
-def get_overall()
-  @operations = []
-  Exchange.all.each { |i| @operations << i }
-  Profit.all.each   { |i| @operations << i }
-  AccountCharge.all.each { |i| @operations << i }
-  Expense.all.each  { |i| @operations << i }
+def get_operations_sorted()
+  operations = []
 
+  Exchange.all.each { |i| operations << i }
+  Profit.all.each   { |i| operations << i }
+  AccountCharge.all.each { |i| operations << i }
+  Expense.all.each  { |i| operations << i }
+
+  return operations
+end
+
+def get_overall()
+  operations = get_operations_sorted
 
   income = {}
   total = {}
   vpc = Vpc.new # VPC = value per currency
 
-  @operations.sort.each do |o|
+  operations.sort.each do |o|
     if o.kind_of?(Exchange)
       bought_cur = o.bought_cur.downcase
       sold_cur = o.sold_cur.downcase
@@ -198,7 +205,7 @@ def get_overall()
   @result = {income: income, total: total, vpc: vpc.get_hash}
 end
 
-def index_page
+get :index do
   get_overall()
 
   @rates = {}
@@ -206,14 +213,13 @@ def index_page
     @rates[c] ||= Currency.closest(c, Date.today).rate
   end
 
-
-
   slim :index
-# 'ok'
 end
 
-get :index do
-  index_page
+get :operations do
+  @operations = get_operations_sorted
+
+  slim :operations
 end
 
 def exchange_attrs(p)

@@ -11,6 +11,8 @@ table border=1
         td exchange
         td
           = "#{money_format(op.sold_amount, op.sold_cur)} → #{money_format(op.bought_amount, op.bought_cur)}"
+          br
+          = "#{money_format(op.sold_amount / op.bought_amount, op.sold_cur)} per #{currency_symbol(op.bought_cur)}"
         td
           a> href=path_to(:exchange).with(op.id) Edit
       - elsif op.kind_of?(Profit)

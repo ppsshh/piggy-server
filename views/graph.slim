@@ -1,0 +1,29 @@
+ruby:
+  graph_h = 360
+  graph_w = 1200
+  days_count = 360
+
+  start_date = Date.today - days_count
+  rates = Currency.where("date > ? AND currency = ?", start_date, "rub")
+
+  min_rate = rates[0].rate
+  max_rate = rates[0].rate
+
+  rates.each do |r|
+    min_rate = r.rate if min_rate > r.rate
+    max_rate = r.rate if max_rate < r.rate
+  end
+  mm_diff = max_rate - min_rate
+
+  rp = ""
+  rates.each do |r|
+    x = (r.date - start_date) / days_count * graph_w
+    y = (r.rate - min_rate) / mm_diff * graph_h
+    rp += "#{x.to_f},#{y} "
+  end
+
+svg height=graph_h width=graph_w
+  polyline style="fill: none; stroke: black; stroke-width: 2" points=rp
+  - @operations.each do |o|
+    - x = ((o.date.to_date - start_date) / days_count * graph_w).to_i
+    line x1=x y1=0 x2=x y2=graph_h style="stroke: red; stroke-width: 1"

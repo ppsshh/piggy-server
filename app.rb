@@ -12,6 +12,7 @@ require_relative './models/all.rb'
 
 paths index: '/',
     operations: '/operations/', # list of all operations
+    graph: '/graph',
     exchanges: '/exchanges', # post (new)
     exchange: '/exchange/:id', # edit page, modify, delete
     profits: '/profits', # post(new)
@@ -240,6 +241,12 @@ get :operations do
   @operations = get_operations_sorted
 
   slim :operations
+end
+
+get :graph do
+  @operations = Exchange.all
+
+  slim :graph
 end
 
 def exchange_attrs(p)

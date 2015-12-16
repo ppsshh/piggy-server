@@ -1,46 +1,38 @@
 ruby:
   full = {}
   ['usd', $config['currencies']].flatten.each do |ct|
+    ct = ct.to_sym
     full[ct] ||= 0
     ['usd', $config['currencies']].flatten.each do |c|
-      full[ct] += convert_currency(@rates, @result[:total][c] || 0, c, ct)
+      c = c.to_sym
+      amount = @result[c] ? @result[c].total : 0
+      full[ct] += convert_currency(@rates, amount, c, ct)
     end
   end
 
-  cieq = 0 # Curren Income EQuivalent (in USD)
-  @result[:income].each do |k,v|
-    cieq += convert_currency(@rates, v, k, 'usd')
-  end
-    
 br
+= @result.inspect
+br
+= full.inspect
 table
   tr
     th Total:
+    th Spent:
     th Full value:
-    th Delta:
   - ['usd', $config['currencies']].flatten.each do |c|
+    - c = c.to_sym
     tr
       td.wide-cell
-        = money_format(@result[:total][c] || 0, c)
+        = money_format(@result[c] ? @result[c].total : 0, c)
+      td.wide-cell
+        - if @result[c]
+          - @result[c].parts.each do |k,v|
+            = money_format(v[:from], k)
       td.wide-cell
         = money_format(full[c] || 0, c)
-      td.wide-cell
-        = money_format(full[c] - convert_currency(@rates, cieq, 'usd', c), c)
 
 br
 table
-  - @result[:vpc].each do |k1,v1|
-    tr
-      td = "#{currency_symbol(k1)} :"
-      - v1.each do |k2,v2|
-        td.wide-cell
-          = money_format(v2['amount'], k2)
-  tr
-    td
-      ' Income:
-    td.wide-cell
-      - @result[:income].each do |k,v|
-        = money_format(v,k)
 
 br
 

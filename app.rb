@@ -20,7 +20,8 @@ paths index: '/',
     account_charges: '/account_charges', # post(new)
     account_charge: '/account_charge/:id', # edit page, modify
     expenses: '/expenses', # post(new)
-    expense: '/expense/:id' # edit page, modify
+    expense: '/expense/:id', # edit page, modify
+    debug: '/debug'
 
 configure do
   puts '---> init <---'
@@ -39,10 +40,10 @@ end
 helpers do
   def currency_symbol(currency)
     currency_symbols = {
-      'usd' => '$',
-      'eur' => '€',
-      'jpy' => '¥',
-      'rub' => '₽'
+      usd: '$',
+      eur: '€',
+      jpy: '¥',
+      rub: '₽'
     }
 
     return currency_symbols[currency.downcase] || currency.upcase
@@ -57,79 +58,69 @@ helpers do
   end
 end
 
-class Vpc
-  def create_hash(cur1, cur2)
-    @e ||= {}
-    @e[cur1] ||= {}
-    @e[cur1][cur2] ||= {}
-    @e[cur1][cur2]['vol'] ||= 0
-    @e[cur1][cur2]['amount'] ||= 0
+class CurObj # currency object
+  attr_reader :total, :parts
+  def total
+    @total
   end
 
-  def clean_hash
-    @e.keys.each do |k1|
-      @e[k1].keys.each do |k2|
-        @e[k1].delete(k2) if @e[k1][k2]['vol'] == 0 && @e[k1][k2]['amount'] == 0
-      end
-      @e.delete(k1) if @e[k1].empty?
+  def parts
+    clean!
+    @parts
+  end
+
+  def initialize
+    @parts = {}
+    @total = 0
+  end
+
+  def inspect
+    clean!
+    {parts: @parts, total: @total}
+  end
+
+  def exchange(amount, spend_cur, spend_amount)
+    spend_cur = cursym(spend_cur)
+
+    @parts[spend_cur] ||= {to: 0, from: 0}
+    @parts[spend_cur][:to] += amount
+    @parts[spend_cur][:from] += spend_amount
+
+    @total += amount
+  end
+
+  def subtract(amount)
+    @parts.each do |k,v|
+      percent = v[:to] / @total
+      sub = amount * percent
+      part = (v[:to] - sub) / v[:to]
+
+      v[:to] -= sub
+      v[:from] *= part
     end
+    @total -= amount
   end
 
-  def add_income(income_cur, income_amount, target_cur, target_amount)
-    income_cur = income_cur.downcase
-    target_cur = target_cur.downcase
-
-    create_hash(target_cur, income_cur)
-
-    @e[target_cur][income_cur]['vol'] += target_amount
-    @e[target_cur][income_cur]['amount'] += income_amount
-  end
-
-  def add_profit(income_cur, income_amount)
-    income_cur = income_cur.downcase
-
-    raise StandardError.new("There is no #{income_cur} in your savings") unless @e.has_key?(income_cur)
-
-    vol = 0
-    @e[income_cur].each { |k,v| vol += v['vol'] }
-    @e[income_cur].each do |k,v|
-      part = income_amount/vol.to_f
-      v['vol'] += part * v['vol']
+  def append(amount)
+    @parts.each do |k,v|
+      percent = v[:to] / @total
+      v[:to] += amount * percent
     end
+
+    @total += amount
   end
 
-  def charge_from_income(charge_cur, charge_amount, target_cur)
-    charge_cur = charge_cur.downcase
-    target_cur = target_cur.downcase
+  def charge(cur, amount)
+    cur = cursym(cur)
 
-    @e[target_cur][charge_cur]['amount'] += charge_amount
+    @parts[cur] ||= {to: 0, from: 0}
+    @parts[cur][:from] += amount
   end
 
-  def exchange(sold_cur, sold_amount, bought_cur, bought_amount)
-    sold_cur = sold_cur.downcase
-    bought_cur = bought_cur.downcase
-
-    raise StandardError.new("There is no #{sold_cur} in your savings") unless @e.has_key?(sold_cur)
-    create_hash(bought_cur, sold_cur)
-
-    vol = 0
-    @e[sold_cur].each { |k,v| vol += v['vol'] }
-    @e[sold_cur].each do |k,v|
-      part = v['vol']/vol.to_f
-      amount = part * v['amount']
-      v['vol'] -= sold_amount * part
-      v['amount'] -= amount
-
-      @e[bought_cur][k] ||= {}
-      @e[bought_cur][k]['vol'] ||= 0
-      @e[bought_cur][k]['vol'] += bought_amount * part
-      @e[bought_cur][k]['amount'] ||= 0
-      @e[bought_cur][k]['amount'] += amount
+  def clean!
+    @parts.each do |k,v|
+      @parts.delete(k) if v[:to] == 0 && v[:from] == 0
     end
-  end
-
-  def get_hash
-    return @e
   end
 end
 
@@ -144,76 +135,49 @@ def get_operations_sorted()
   return operations
 end
 
-def get_overall()
+def cursym(cur)
+  cur.to_s unless cur.kind_of?(String)
+  return cur.downcase.to_sym
+end
+
+def get_overall(debug = false)
   operations = get_operations_sorted
+  debug_array = []
 
-  income = {}
-  total = {}
-  vpc = Vpc.new # VPC = value per currency
-
+  cur_hash = {}
   operations.sort.each do |o|
+    debug_array << o.inspect if debug
     if o.kind_of?(Exchange)
-      bought_cur = o.bought_cur.downcase
-      sold_cur = o.sold_cur.downcase
+      cur_hash[cursym(o.bought_cur)] ||= CurObj.new
+      cur_hash[cursym(o.bought_cur)].exchange(o.bought_amount, o.sold_cur, o.sold_amount)
 
-      if o.is_income
-        income[sold_cur] ||= 0
-        income[sold_cur] += o.sold_amount
-
-        vpc.add_income(sold_cur, o.sold_amount, bought_cur, o.bought_amount)
-      else
-        total[sold_cur] ||= 0
-        total[sold_cur] -= o.sold_amount
-
-        vpc.exchange(sold_cur, o.sold_amount, bought_cur, o.bought_amount)
-      end
-
-      total[bought_cur] ||= 0
-      total[bought_cur] += o.bought_amount
-
+      if o.is_income == false
+        cur_hash[cursym(o.sold_cur)].subtract(o.sold_amount)
+      end      
     elsif o.kind_of?(Profit)
-      cur = o.cur.downcase
-
-      total[cur] ||= 0
-      total[cur] += o.amount
-
-      vpc.add_profit(cur, o.amount)
-
+      cur_hash[cursym(o.cur)] ||= CurObj.new
+      cur_hash[cursym(o.cur)].append(o.amount)
     elsif o.kind_of?(AccountCharge)
-      target_cur = o.target_cur.downcase
-      charge_cur = o.charge_cur.downcase
-
-      if o.is_income
-        income[charge_cur] ||= 0
-        income[charge_cur] -= o.charge_amount
-
-        vpc.charge_from_income(charge_cur, o.charge_amount, target_cur)
-      elsif target_cur == charge_cur
-        total[charge_cur] ||= 0
-        total[charge_cur] -= o.charge_amount
-
-        vpc.add_profit(charge_cur, -1 * o.charge_amount)
+      cur_hash[cursym(o.target_cur)] ||= CurObj.new
+      if cursym(o.charge_cur) == cursym(o.target_cur)
+        cur_hash[cursym(o.target_cur)].append(o.charge_amount * -1)
       else
-        raise StandardError.new('Not implemented operation')
+        cur_hash[cursym(o.target_cur)].charge(o.charge_cur, o.charge_amount)
       end
-
     elsif o.kind_of?(Expense)
-      cur = o.cur.downcase
-
-      total[cur] ||= 0
-      total[cur] -= o.amount
-
-      vpc.add_profit(cur, -1 * o.amount)
+      cur_hash[cursym(o.cur)] ||= CurObj.new
+      cur_hash[cursym(o.cur)].subtract(o.amount)
     end
+    debug_array << cur_hash.inspect if debug
   end
-  vpc.clean_hash
 
-  @result = {income: income, total: total, vpc: vpc.get_hash}
+  @result = cur_hash
+  return debug_array
 end
 
 def convert_currency(rates, amount, cur1, cur2)
-  cur1 = cur1.downcase
-  cur2 = cur2.downcase
+  cur1 = cur1.to_s.downcase
+  cur2 = cur2.to_s.downcase
 
   if cur1 == 'usd'
     return amount if cur2 == 'usd'
@@ -235,6 +199,12 @@ get :index do
   end
 
   slim :index
+end
+
+get :debug do
+  @debug = get_overall(debug = true)
+
+  slim :debug
 end
 
 get :operations do

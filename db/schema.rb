@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150115172156) do
+ActiveRecord::Schema.define(version: 20151216144856) do
 
   create_table "account_charges", force: :cascade do |t|
     t.datetime "date"
@@ -19,9 +19,8 @@ ActiveRecord::Schema.define(version: 20150115172156) do
     t.text     "charge_cur"
     t.float    "charge_amount"
     t.text     "notes"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-    t.boolean  "is_income",     default: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "currencies", force: :cascade do |t|

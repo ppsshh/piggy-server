@@ -20,9 +20,6 @@ form method="POST" action=action_path
         = c.upcase
   br
 
-  input type="checkbox" name="is_income" value="is_income" checked=(acch.is_income ? "true" : false) Is income?
-  br
-
   ' Notes:
   textarea name="notes"
     = acch.notes

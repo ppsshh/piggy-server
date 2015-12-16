@@ -1,24 +1,9 @@
-ruby:
-  full = {}
-  ['usd', $config['currencies']].flatten.each do |ct|
-    ct = ct.to_sym
-    full[ct] ||= 0
-    ['usd', $config['currencies']].flatten.each do |c|
-      c = c.to_sym
-      amount = @result[c] ? @result[c].total : 0
-      full[ct] += convert_currency(@rates, amount, c, ct)
-    end
-  end
-
 br
 = @result.inspect
-br
-= full.inspect
 table
   tr
-    th Total:
+    th Have:
     th Spent:
-    th Full value:
   - ['usd', $config['currencies']].flatten.each do |c|
     - c = c.to_sym
     tr
@@ -28,8 +13,10 @@ table
         - if @result[c]
           - @result[c].parts.each do |k,v|
             = money_format(v[:from], k)
-      td.wide-cell
-        = money_format(full[c] || 0, c)
+
+br
+b> Current total equivalent:
+= money_format(@total_rub, :rub)
 
 br
 table

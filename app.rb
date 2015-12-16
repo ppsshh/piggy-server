@@ -20,8 +20,7 @@ paths index: '/',
     account_charges: '/account_charges', # post(new)
     account_charge: '/account_charge/:id', # edit page, modify
     expenses: '/expenses', # post(new)
-    expense: '/expense/:id', # edit page, modify
-    debug: '/debug'
+    expense: '/expense/:id' # edit page, modify
 
 configure do
   puts '---> init <---'
@@ -39,6 +38,7 @@ end
 
 helpers do
   def currency_symbol(currency)
+    currency = currency.to_s.downcase.to_sym
     currency_symbols = {
       usd: '$',
       eur: '€',
@@ -140,39 +140,42 @@ def cursym(cur)
   return cur.downcase.to_sym
 end
 
-def get_overall(debug = false)
+def get_overall()
   operations = get_operations_sorted
-  debug_array = []
 
   cur_hash = {}
   operations.sort.each do |o|
-    debug_array << o.inspect if debug
     if o.kind_of?(Exchange)
-      cur_hash[cursym(o.bought_cur)] ||= CurObj.new
-      cur_hash[cursym(o.bought_cur)].exchange(o.bought_amount, o.sold_cur, o.sold_amount)
+      c= cursym(o.bought_cur)
+      cur_hash[c] ||= CurObj.new
+      cur_hash[c].exchange(o.bought_amount, o.sold_cur, o.sold_amount)
 
       if o.is_income == false
         cur_hash[cursym(o.sold_cur)].subtract(o.sold_amount)
-      end      
-    elsif o.kind_of?(Profit)
-      cur_hash[cursym(o.cur)] ||= CurObj.new
-      cur_hash[cursym(o.cur)].append(o.amount)
-    elsif o.kind_of?(AccountCharge)
-      cur_hash[cursym(o.target_cur)] ||= CurObj.new
-      if cursym(o.charge_cur) == cursym(o.target_cur)
-        cur_hash[cursym(o.target_cur)].append(o.charge_amount * -1)
-      else
-        cur_hash[cursym(o.target_cur)].charge(o.charge_cur, o.charge_amount)
       end
+
+    elsif o.kind_of?(Profit)
+      c = cursym(o.cur)
+      cur_hash[c] ||= CurObj.new
+      cur_hash[c].append(o.amount)
+
+    elsif o.kind_of?(AccountCharge)
+      c = cursym(o.target_cur)
+      cur_hash[c] ||= CurObj.new
+      if c == cursym(o.charge_cur)
+        cur_hash[c].append(o.charge_amount * -1)
+      else
+        cur_hash[c].charge(o.charge_cur, o.charge_amount)
+      end
+
     elsif o.kind_of?(Expense)
-      cur_hash[cursym(o.cur)] ||= CurObj.new
-      cur_hash[cursym(o.cur)].subtract(o.amount)
+      c = cursym(o.cur)
+      cur_hash[c] ||= CurObj.new
+      cur_hash[c].subtract(o.amount)
     end
-    debug_array << cur_hash.inspect if debug
   end
 
   @result = cur_hash
-  return debug_array
 end
 
 def convert_currency(rates, amount, cur1, cur2)
@@ -198,13 +201,14 @@ get :index do
     @rates[c] ||= Currency.closest(c, Date.today).rate
   end
 
+  @total_rub = 0
+  ['usd', $config['currencies']].flatten.each do |c|
+    c = c.to_sym
+    amount = @result[c] ? @result[c].total : 0
+    @total_rub += convert_currency(@rates, amount, c, 'rub')
+  end
+
   slim :index
-end
-
-get :debug do
-  @debug = get_overall(debug = true)
-
-  slim :debug
 end
 
 get :operations do

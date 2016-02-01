@@ -239,23 +239,21 @@ post :budget do
       date = Date.parse(params[:date])
     rescue StandardError, ArgumentError
       flash[:error] = "Invalid date: #{params[:date]}"
-      redirect path_to(:budget)
+      throw StandardError.new
     end
 
     if params[:operation_type] == "expense"
-      op = BudgetExpense.new(date: date,
-            amount: params[:amount].to_f,
-            description: params[:description])
-      op.save
+      op = BudgetExpense.new
     elsif params[:operation_type] == "income"
-      op = BudgetIncome.new(date: date,
-            amount: params[:amount].to_f,
-            description: params[:description])
-      op.save
+      op = BudgetIncome.new
     else
       flash[:error] = "Invalid operation_type: #{params[:operation_type]}"
-      redirect path_to(:budget)
+      throw StandardError.new
     end
+    op.date = date
+    op.amount = params[:amount].to_f
+    op.description = params[:description]
+    op.save
 
     flash[:notice] = "Record successfully created"
   rescue StandardError

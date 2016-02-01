@@ -222,6 +222,15 @@ def get_days_range(d)
   return [dprev, dnext]
 end
 
+def get_date_hash(items_array, date_key)
+  h = {}
+  items_array.each do |i|
+    h[i[date_key]] ||= []
+    h[i[date_key]] << i
+  end
+  return h
+end
+
 def get_budget_data
   # d1 -- d2 -- today -- d3 -- d4
   d1, d2 = get_days_range(Date.today.prev_month)
@@ -229,11 +238,11 @@ def get_budget_data
 
   @drange = [d1, d2, d3, d4]
   @incomes = BudgetIncome.where(date: d1..(d2-1) ).order(date: :asc)
-  @expenses = BudgetExpense.where(date: d2..(d3-1) ).order(date: :asc)
+  @expenses = get_date_hash(BudgetExpense.where(date: d2..(d3-1) ).order(date: :asc), :date)
   @req_expenses = BudgetRequiredExpense.where(date: d2..(d3-1) ).order(date: :asc)
 
   @next_incomes = BudgetIncome.where(date: d2..(d3-1) ).order(date: :asc)
-  @next_expenses = [] # always empty
+  @next_expenses = {} # always empty
   @next_req_expenses = BudgetRequiredExpense.where(date: d3..(d4-1) ).order(date: :asc)
 end
 

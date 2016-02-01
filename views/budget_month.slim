@@ -42,8 +42,34 @@ table
     td style="font-weight: bold;"
       ' Daily quota:
     td
-      = (total_income / days_in_month.to_f).round(2)
+      - daily_quota = total_income / days_in_month.to_f
+      = daily_quota.round(2)
 
-- expenses.each do |e|
-  = e.amount
+- d = date_start
+- balance = 0
+table
+  tr
+    th Date
+    th Expenses
+    th Description
+    th Balance
+  - while d <= date_end
+    - balance += daily_quota
+    - date_printed = false
+    - if expenses.has_key?(d)
+      - expenses[d].each do |e|
+        - balance -= e.amount
+        tr
+          td = date_printed ? "" : d.strftime("%b %-e")
+          td = e.amount.round(2)
+          td = e.description
+          td = balance.round(2)
+        - date_printed = true
+    - else
+      tr
+        td = d.strftime("%b %-e")
+        td -
+        td
+        td = balance.round(2)
+    - d += 1
 

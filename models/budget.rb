@@ -9,6 +9,3 @@ end
 
 class BudgetSaving < ActiveRecord::Base
 end
-
-class BudgetDailyQuota < ActiveRecord::Base
-end

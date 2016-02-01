@@ -1,33 +1,6 @@
 == slim :flashes
 
-form method="POST" action=path_to(:budget)
-  table
-    tr
-      td
-        ' Date:
-      td
-        input type="text" name="date" value=Date.today
-    tr
-      td
-        ' Amount:
-      td
-        input type="text" name="amount" value=0
-    tr
-      td
-        ' Description:
-      td
-        input type="text" name="description"
-    tr
-      td
-        ' Type:
-      td
-        input type="radio" name="operation_type" value="expense" checked=true Expense
-        input type="radio" name="operation_type" value="income" Income
-        input type="radio" name="operation_type" value="required_expense" Required expense
-    tr
-      td
-      td
-        input type="submit" value="Submit"
+== slim :budget_item_form, locals: {item: BudgetExpense.new, submit_path: path_to(:budget)}
 
 ruby:
   current_month = {

@@ -22,7 +22,10 @@ paths index: '/',
     account_charge: '/account_charge/:id', # edit page, modify
     expenses: '/expenses', # post(new)
     expense: '/expense/:id', # edit page, modify
-    budget: '/budget'
+    budget: '/budget',
+    budget_expense: '/budget/expense/:id',
+    budget_income: '/budget/income/:id',
+    budget_req_expense: '/budget/req_expense/:id'
 
 configure do
   puts '---> init <---'
@@ -430,3 +433,39 @@ post :expense do
   redirect path_to(:index)
 end
 
+get :budget_expense do
+  @item = BudgetExpense.find(params[:id])
+  slim :budget_item, locals: {operation_type: :budget_expense}
+end
+
+get :budget_income do
+  @item = BudgetIncome.find(params[:id])
+  slim :budget_item, locals: {operation_type: :budget_income}
+end
+
+get :budget_req_expense do
+  @item = BudgetRequiredExpense.find(params[:id])
+  slim :budget_item, locals: {operation_type: :budget_req_expense}
+end
+
+def update_budget_item(i)
+  i.date = params[:date]
+  i.amount = params[:amount]
+  i.description = params[:description]
+  i.save
+end
+
+post :budget_expense do
+  update_budget_item(BudgetExpense.find(params[:id]))
+  redirect path_to(:index)
+end
+
+post :budget_income do
+  update_budget_item(BudgetIncome.find(params[:id]))
+  redirect path_to(:index)
+end
+
+post :budget_req_expense do
+  update_budget_item(BudgetRequiredExpense.find(params[:id]))
+  redirect path_to(:index)
+end

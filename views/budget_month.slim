@@ -8,12 +8,11 @@ table
   - incomes.each do |i|
     - total_income += i.amount
     tr
+      td = i.date
+      td = i.description
+      td = i.amount
       td
-        = i.date
-      td
-        = i.description
-      td
-        = i.amount
+        a href=path_to(:budget_income).with(i.id) Edit
   tr
     - savings = total_income * 0.15
     - total_income -= savings
@@ -25,12 +24,11 @@ table
   - req_expenses.each do |i|
     - total_income -= i.amount
     tr
+      td = i.date
+      td = i.description
+      td = i.amount
       td
-        = i.date
-      td
-        = i.description
-      td
-        = i.amount
+        a href=path_to(:budget_req_expense).with(i.id) Edit
   tr
     td
     td style="font-weight: bold;"
@@ -62,7 +60,9 @@ table
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
           td = e.amount.round(2)
-          td = e.description
+          td
+            = e.description
+            a< href=path_to(:budget_expense).with(e.id) Edit
           td = balance.round(2)
         - date_printed = true
     - else

@@ -1,21 +1,32 @@
 / locals: expense, action_path
 
 form method="POST" action=action_path
-  ' Date:
-  input type="text" autocomplete="off" name="date" value=(expense.date || Date.today)
-  br
+  table
+    tr
+      td
+        ' Date:
+      td
+        input type="text" autocomplete="off" name="date" value=(expense.date || Date.today)
 
-  ' Spent:
-  input type="text" autocomplete="off" name="amount" value=expense.amount
-  select name="cur"
-    - ["usd", $config["currencies"]].flatten.each do |c|
-      - expense.cur = 'usd' unless expense.cur
-      option selected=(expense.cur == c)
-        = c.upcase
-  br
+    tr
+      td
+        ' Spent:
+      td
+        input type="text" autocomplete="off" name="amount" value=expense.amount
+        select name="cur"
+          - ["usd", $config["currencies"]].flatten.each do |c|
+            - expense.cur = 'usd' unless expense.cur
+            option selected=(expense.cur == c)
+              = c.upcase
 
-  ' Notes:
-  textarea name="notes"
-    = expense.notes
-  br
-  input type="submit" value="Save"
+    tr
+      td
+        ' Notes:
+      td
+        textarea name="notes"
+          = expense.notes
+
+    tr
+      td
+      td
+        input type="submit" value="Save"

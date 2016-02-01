@@ -1,21 +1,31 @@
 / locals: profit, action_path
 
 form method="POST" action=action_path
-  ' Date:
-  input type="text" autocomplete="off" name="date" value=(profit.date || Date.today)
-  br
+  table
+    tr
+      td
+        ' Date:
+      td
+        input type="text" autocomplete="off" name="date" value=(profit.date || Date.today)
 
-  ' Profit:
-  input type="text" autocomplete="off" name="amount" value=profit.amount
-  select name="cur"
-    - ["usd", $config["currencies"]].flatten.each do |c|
-      - profit.cur = 'usd' unless profit.cur
-      option selected=(profit.cur == c)
-        = c.upcase
-  br
+    tr
+      td
+        ' Profit:
+      td
+        input type="text" autocomplete="off" name="amount" value=profit.amount
+        select name="cur"
+          - ["usd", $config["currencies"]].flatten.each do |c|
+            - profit.cur = 'usd' unless profit.cur
+            option selected=(profit.cur == c)
+              = c.upcase
+    tr
+      td
+        ' Notes:
+      td
+        textarea name="notes"
+          = profit.notes
 
-  ' Notes:
-  textarea name="notes"
-    = profit.notes
-  br
-  input type="submit" value="Save"
+    tr
+      td
+      td
+        input type="submit" value="Save"

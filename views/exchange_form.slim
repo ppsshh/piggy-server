@@ -1,31 +1,46 @@
 form method="POST" action=action_path
-  ' Date:
-  input type="text" autocomplete="off" name="date" value=(exchange.date || Date.today)
-  br
+  table
+    tr
+      td
+        ' Date:
+      td
+        input type="text" autocomplete="off" name="date" value=(exchange.date || Date.today)
 
-  input type="checkbox" name="is_income" value="is_income" checked=(exchange.is_income ? "true" : false) Is income?
-  br
+    tr
+      td
+      td
+        input type="checkbox" name="is_income" value="is_income" checked=(exchange.is_income ? "true" : false) Is income?
 
-  ' Bought:
-  input type="text" autocomplete="off" name="bought_amount" value=exchange.bought_amount
-  select name="bought_cur"
-    - ["usd", $config["currencies"]].flatten.each do |c|
-      - exchange.bought_cur = 'usd' unless exchange.bought_cur
-      option selected=(exchange.bought_cur == c)
-        = c.upcase
-  br
+    tr
+      td
+        ' Bought:
+      td
+        input type="text" autocomplete="off" name="bought_amount" value=exchange.bought_amount
+        select name="bought_cur"
+          - ["usd", $config["currencies"]].flatten.each do |c|
+            - exchange.bought_cur = 'usd' unless exchange.bought_cur
+            option selected=(exchange.bought_cur == c)
+              = c.upcase
 
-  ' Sold:
-  input type="text" autocomplete="off" name="sold_amount" value=exchange.sold_amount
-  select name="sold_cur"
-    - ["usd", $config["currencies"]].flatten.each do |c|
-      - exchange.sold_cur = 'rub' unless exchange.sold_cur
-      option selected=(exchange.sold_cur == c)
-        = c.upcase
-  br
+    tr
+      td
+        ' Sold:
+      td
+        input type="text" autocomplete="off" name="sold_amount" value=exchange.sold_amount
+        select name="sold_cur"
+          - ["usd", $config["currencies"]].flatten.each do |c|
+            - exchange.sold_cur = 'rub' unless exchange.sold_cur
+            option selected=(exchange.sold_cur == c)
+              = c.upcase
 
-  ' Notes:
-  textarea name="notes"
-    = exchange.notes
-  br
-  input type="submit" value="Save"
+    tr
+      td
+        ' Notes:
+      td
+        textarea name="notes"
+          = exchange.notes
+
+    tr
+      td
+      td
+        input type="submit" value="Save"

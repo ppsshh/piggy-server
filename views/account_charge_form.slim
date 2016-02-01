@@ -1,27 +1,39 @@
 / locals: acch (account_charge), action_path
 
 form method="POST" action=action_path
-  ' Date:
-  input type="text" autocomplete="off" name="date" value=(acch.date || Date.today)
-  br
+  table
+    tr
+      td
+        ' Date:
+      td
+        input type="text" autocomplete="off" name="date" value=(acch.date || Date.today)
 
-  ' Charged:
-  input type="text" autocomplete="off" name="charge_amount" value=acch.charge_amount
-  - acch.charge_cur = 'usd' unless acch.charge_cur
-  select name="charge_cur"
-    - ["usd", $config["currencies"]].flatten.each do |c|
-      option selected=(acch.charge_cur.downcase == c.downcase)
-        = c.upcase
-  ' in favor of:
-  - acch.target_cur = 'usd' unless acch.target_cur
-  select name="target_cur"
-    - ["usd", $config["currencies"]].flatten.each do |c|
-      option selected=(acch.target_cur.downcase == c.downcase)
-        = c.upcase
-  br
+    tr
+      td
+        ' Charged:
+      td
+        input type="text" autocomplete="off" name="charge_amount" value=acch.charge_amount
+        - acch.charge_cur = 'usd' unless acch.charge_cur
+        select name="charge_cur"
+          - ["usd", $config["currencies"]].flatten.each do |c|
+            option selected=(acch.charge_cur.downcase == c.downcase)
+              = c.upcase
+        br
+        ' in favor of:
+        - acch.target_cur = 'usd' unless acch.target_cur
+        select name="target_cur"
+          - ["usd", $config["currencies"]].flatten.each do |c|
+            option selected=(acch.target_cur.downcase == c.downcase)
+              = c.upcase
 
-  ' Notes:
-  textarea name="notes"
-    = acch.notes
-  br
-  input type="submit" value="Save"
+    tr
+      td
+        ' Notes:
+      td
+        textarea name="notes"
+          = acch.notes
+
+    tr
+      td
+      td
+        input type="submit" value="Save"

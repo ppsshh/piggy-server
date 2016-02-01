@@ -10,6 +10,6 @@ class BudgetSaving < ActiveRecord::Base
 
 end
 
-class BudgetDailyQuote < ActiveRecord::Base
+class BudgetDailyQuota < ActiveRecord::Base
 
 end

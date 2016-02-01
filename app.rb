@@ -11,6 +11,7 @@ require 'date'
 require_relative './models/all.rb'
 
 paths index: '/',
+    savings: '/savings',
     operations: '/operations/', # list of all operations
     graph: '/graph',
     exchanges: '/exchanges', # post (new)
@@ -194,7 +195,7 @@ def convert_currency(rates, amount, cur1, cur2)
 end
 
 
-get :index do
+get :savings do
   get_overall()
 
   @rates = {}
@@ -221,11 +222,11 @@ def get_days_range(d)
   return [dprev, dnext]
 end
 
-get :budget do   
+def get_budget_data
   # d1 -- d2 -- today -- d3 -- d4
   d1, d2 = get_days_range(Date.today.prev_month)
   d3, d4 = get_days_range(Date.today.next_month)
-  
+
   @drange = [d1, d2, d3, d4]
   @incomes = BudgetIncome.where(date: d1..(d2-1) ).order(date: :asc)
   @expenses = BudgetExpense.where(date: d2..(d3-1) ).order(date: :asc)
@@ -234,7 +235,15 @@ get :budget do
   @next_incomes = BudgetIncome.where(date: d2..(d3-1) ).order(date: :asc)
   @next_expenses = [] # always empty
   @next_req_expenses = BudgetRequiredExpense.where(date: d3..(d4-1) ).order(date: :asc)
+end
 
+get :index do
+  get_budget_data
+  slim :budget
+end
+
+get :budget do
+  get_budget_data
   slim :budget
 end
 

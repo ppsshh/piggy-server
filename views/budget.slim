@@ -1,0 +1,81 @@
+== slim :flashes
+
+form method="POST" action=path_to(:budget)
+  table
+    tr
+      td
+        ' Date:
+      td
+        input type="text" name="date" value=Date.today
+    tr
+      td
+        ' Amount:
+      td
+        input type="text" name="amount" value=0
+    tr
+      td
+        ' Description:
+      td
+        input type="text" name="description"
+    tr
+      td
+        ' Type:
+      td
+        input type="radio" name="operation_type" value="expense" checked=true Expense
+        input type="radio" name="operation_type" value="income" Income
+    tr
+      td
+      td
+        input type="submit" value="Submit"
+
+h2 Current month
+
+table
+  - total_income = 0
+  - @current_incomes.each do |i|
+    - total_income += i.amount
+    tr
+      td
+        = i.date
+      td
+        = i.description
+      td
+        = i.amount
+  tr
+    td
+    td style="font-weight: bold;"
+      ' Total:
+    td
+      = total_income
+  tr
+    td
+    td style="font-weight: bold;"
+      ' Daily quota:
+    td
+      = (total_income / (Date.today.next_month - Date.today).to_f).round(2)
+
+h2 Coming month
+
+table
+  - total_income = 0
+  - @coming_incomes.each do |i|
+    - total_income += i.amount
+    tr
+      td
+        = i.date
+      td
+        = i.description
+      td
+        = i.amount
+  tr
+    td
+    td style="font-weight: bold;"
+      ' Total:
+    td
+      = total_income
+  tr
+    td
+    td style="font-weight: bold;"
+      ' Daily quota:
+    td
+      = (total_income / (Date.today.next_month - Date.today).to_f).round(2)

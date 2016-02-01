@@ -20,7 +20,8 @@ paths index: '/',
     account_charges: '/account_charges', # post(new)
     account_charge: '/account_charge/:id', # edit page, modify
     expenses: '/expenses', # post(new)
-    expense: '/expense/:id' # edit page, modify
+    expense: '/expense/:id', # edit page, modify
+    budget: '/budget'
 
 configure do
   puts '---> init <---'
@@ -209,6 +210,56 @@ get :index do
   end
 
   slim :index
+end
+
+get :budget do
+  dnext = Date.today
+  while dnext.day != $config['budget_start_day'] do dnext += 1 end
+  dprev = Date.today
+  while dprev.day != $config['budget_start_day'] do dprev -= 1 end
+
+  @coming_incomes = BudgetIncome.where(date: dprev..(dnext-1) ).order(date: :asc)
+
+  dnext = Date.today.prev_month
+  while dnext.day != $config['budget_start_day'] do dnext += 1 end
+  dprev = Date.today.prev_month
+  while dprev.day != $config['budget_start_day'] do dprev -= 1 end
+
+  @current_incomes = BudgetIncome.where(date: dprev..(dnext-1) ).order(date: :asc)
+
+  slim :budget
+end
+
+post :budget do
+  begin
+    begin
+      date = Date.parse(params[:date])
+    rescue StandardError, ArgumentError
+      flash[:error] = "Invalid date: #{params[:date]}"
+      redirect path_to(:budget)
+    end
+
+    if params[:operation_type] == "expense"
+      op = BudgetExpense.new(date: date,
+            amount: params[:amount].to_f,
+            description: params[:description])
+      op.save
+    elsif params[:operation_type] == "income"
+      op = BudgetIncome.new(date: date,
+            amount: params[:amount].to_f,
+            description: params[:description])
+      op.save
+    else
+      flash[:error] = "Invalid operation_type: #{params[:operation_type]}"
+      redirect path_to(:budget)
+    end
+
+    flash[:notice] = "Record successfully created"
+  rescue StandardError
+    flash[:error] ||= "Unable to create new record: #{params[:date]}, #{params[:amount]}, #{params[:description]}, #{params[:operation_type]}"
+  end
+
+  redirect path_to(:budget)
 end
 
 get :operations do

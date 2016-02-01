@@ -5,3 +5,4 @@ currencies:
   - rub
   - eur
   - jpy
+budget_start_day: 20

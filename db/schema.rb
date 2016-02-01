@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216144856) do
+ActiveRecord::Schema.define(version: 20160201144214) do
 
   create_table "account_charges", force: :cascade do |t|
     t.datetime "date"
@@ -21,6 +21,37 @@ ActiveRecord::Schema.define(version: 20151216144856) do
     t.text     "notes"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+  end
+
+  create_table "budget_daily_quotes", force: :cascade do |t|
+    t.date     "date",                     null: false
+    t.float    "amount",     default: 0.0, null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "budget_expenses", force: :cascade do |t|
+    t.date     "date",                      null: false
+    t.float    "amount",      default: 0.0, null: false
+    t.string   "description"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "budget_incomes", force: :cascade do |t|
+    t.date     "date",                      null: false
+    t.float    "amount",      default: 0.0, null: false
+    t.string   "description"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "budget_savings", force: :cascade do |t|
+    t.date     "date",                      null: false
+    t.float    "amount",      default: 0.0, null: false
+    t.string   "description"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "currencies", force: :cascade do |t|

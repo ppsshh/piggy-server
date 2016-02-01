@@ -221,14 +221,19 @@ def get_days_range(d)
   return [dprev, dnext]
 end
 
-get :budget do
-  dprev, dnext = get_days_range(Date.today)
-  @coming_incomes = BudgetIncome.where(date: dprev..(dnext-1) ).order(date: :asc)
-  @coming_incomes_range = [dprev, dnext]
+get :budget do   
+  # d1 -- d2 -- today -- d3 -- d4
+  d1, d2 = get_days_range(Date.today.prev_month)
+  d3, d4 = get_days_range(Date.today.next_month)
+  
+  @drange = [d1, d2, d3, d4]
+  @incomes = BudgetIncome.where(date: d1..(d2-1) ).order(date: :asc)
+  @expenses = BudgetExpense.where(date: d2..(d3-1) ).order(date: :asc)
+  @req_expenses = BudgetRequiredExpense.where(date: d2..(d3-1) ).order(date: :asc)
 
-  dprev, dnext = get_days_range(Date.today.prev_month)
-  @current_incomes = BudgetIncome.where(date: dprev..(dnext-1) ).order(date: :asc)
-  @current_incomes_range = [dprev, dnext]
+  @next_incomes = BudgetIncome.where(date: d2..(d3-1) ).order(date: :asc)
+  @next_expenses = [] # always empty
+  @next_req_expenses = BudgetRequiredExpense.where(date: d3..(d4-1) ).order(date: :asc)
 
   slim :budget
 end
@@ -246,6 +251,8 @@ post :budget do
       op = BudgetExpense.new
     elsif params[:operation_type] == "income"
       op = BudgetIncome.new
+    elsif params[:operation_type] == "required_expense"
+      op = BudgetRequiredExpense.new
     else
       flash[:error] = "Invalid operation_type: #{params[:operation_type]}"
       throw StandardError.new

@@ -1,4 +1,4 @@
-// template locals: incomes, date_start, date_end
+// template locals: incomes, expenses, req_expenses, date_start, date_end
 
 ruby:
   total_income = 0
@@ -7,6 +7,23 @@ ruby:
 table
   - incomes.each do |i|
     - total_income += i.amount
+    tr
+      td
+        = i.date
+      td
+        = i.description
+      td
+        = i.amount
+  tr
+    - savings = total_income * 0.15
+    - total_income -= savings
+    td
+    td style="font-weight: bold;"
+      ' Savings
+    td
+      = savings.round(2)
+  - req_expenses.each do |i|
+    - total_income -= i.amount
     tr
       td
         = i.date
@@ -27,3 +44,5 @@ table
     td
       = (total_income / days_in_month.to_f).round(2)
 
+- expenses.each do |e|
+  = e.amount

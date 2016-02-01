@@ -23,16 +23,29 @@ form method="POST" action=path_to(:budget)
       td
         input type="radio" name="operation_type" value="expense" checked=true Expense
         input type="radio" name="operation_type" value="income" Income
+        input type="radio" name="operation_type" value="required_expense" Required expense
     tr
       td
       td
         input type="submit" value="Submit"
 
-h2 Current month
+ruby:
+  current_month = {
+    incomes: @incomes,
+    expenses: @expenses,
+    req_expenses: @req_expenses,
+    date_start: @drange[1],
+    date_end: @drange[2] }
+  next_month = {
+    incomes: @next_incomes,
+    expenses: @next_expenses,
+    req_expenses: @next_req_expenses,
+    date_start: @drange[2],
+    date_end: @drange[3]}
 
-== slim :budget_month, locals: {incomes: @current_incomes, date_start: @current_incomes_range[0], date_end: @current_incomes_range[1]}
+h2 Current month
+== slim :budget_month, locals: current_month
 
 h2 Coming month
-
-== slim :budget_month, locals: {incomes: @coming_incomes, date_start: @coming_incomes_range[0], date_end: @coming_incomes_range[1]}
+== slim :budget_month, locals: next_month
 

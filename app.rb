@@ -212,20 +212,23 @@ get :index do
   slim :index
 end
 
+def get_days_range(d)
+  dnext = d
+  while dnext.day != $config['budget_start_day'] do dnext += 1 end
+  dprev = d
+  while dprev.day != $config['budget_start_day'] do dprev -= 1 end
+
+  return [dprev, dnext]
+end
+
 get :budget do
-  dnext = Date.today
-  while dnext.day != $config['budget_start_day'] do dnext += 1 end
-  dprev = Date.today
-  while dprev.day != $config['budget_start_day'] do dprev -= 1 end
-
+  dprev, dnext = get_days_range(Date.today)
   @coming_incomes = BudgetIncome.where(date: dprev..(dnext-1) ).order(date: :asc)
+  @coming_incomes_range = [dprev, dnext]
 
-  dnext = Date.today.prev_month
-  while dnext.day != $config['budget_start_day'] do dnext += 1 end
-  dprev = Date.today.prev_month
-  while dprev.day != $config['budget_start_day'] do dprev -= 1 end
-
+  dprev, dnext = get_days_range(Date.today.prev_month)
   @current_incomes = BudgetIncome.where(date: dprev..(dnext-1) ).order(date: :asc)
+  @current_incomes_range = [dprev, dnext]
 
   slim :budget
 end

@@ -1,0 +1,29 @@
+// template locals: incomes, date_start, date_end
+
+ruby:
+  total_income = 0
+  days_in_month = Date.today.next_month - Date.today
+
+table
+  - incomes.each do |i|
+    - total_income += i.amount
+    tr
+      td
+        = i.date
+      td
+        = i.description
+      td
+        = i.amount
+  tr
+    td
+    td style="font-weight: bold;"
+      ' Total:
+    td
+      = total_income
+  tr
+    td
+    td style="font-weight: bold;"
+      ' Daily quota:
+    td
+      = (total_income / days_in_month.to_f).round(2)
+

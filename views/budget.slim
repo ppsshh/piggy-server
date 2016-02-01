@@ -30,52 +30,9 @@ form method="POST" action=path_to(:budget)
 
 h2 Current month
 
-table
-  - total_income = 0
-  - @current_incomes.each do |i|
-    - total_income += i.amount
-    tr
-      td
-        = i.date
-      td
-        = i.description
-      td
-        = i.amount
-  tr
-    td
-    td style="font-weight: bold;"
-      ' Total:
-    td
-      = total_income
-  tr
-    td
-    td style="font-weight: bold;"
-      ' Daily quota:
-    td
-      = (total_income / (Date.today.next_month - Date.today).to_f).round(2)
+== slim :budget_month, locals: {incomes: @current_incomes, date_start: @current_incomes_range[0], date_end: @current_incomes_range[1]}
 
 h2 Coming month
 
-table
-  - total_income = 0
-  - @coming_incomes.each do |i|
-    - total_income += i.amount
-    tr
-      td
-        = i.date
-      td
-        = i.description
-      td
-        = i.amount
-  tr
-    td
-    td style="font-weight: bold;"
-      ' Total:
-    td
-      = total_income
-  tr
-    td
-    td style="font-weight: bold;"
-      ' Daily quota:
-    td
-      = (total_income / (Date.today.next_month - Date.today).to_f).round(2)
+== slim :budget_month, locals: {incomes: @coming_incomes, date_start: @coming_incomes_range[0], date_end: @coming_incomes_range[1]}
+

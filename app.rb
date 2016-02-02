@@ -240,6 +240,8 @@ def get_budget_data
   d3, d4 = get_days_range(Date.today.next_month)
 
   @drange = [d1, d2, d3, d4]
+  # eg. incomes:  11 jan .. 10 feb
+  # eg. expenses: 10 feb ..  9 mar
   @incomes = BudgetIncome.where(date: (d1+1)..d2 ).order(date: :asc)
   @expenses = get_date_hash(BudgetExpense.where(date: d2..(d3-1) ).order(date: :asc), :date)
   @req_expenses = BudgetRequiredExpense.where(date: d2..(d3-1) ).order(date: :asc)

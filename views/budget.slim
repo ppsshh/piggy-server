@@ -16,9 +16,12 @@ ruby:
     date_start: @drange[2],
     date_end: @drange[3]}
 
-h2 Current month
-== slim :budget_month, locals: current_month
-
-h2 Coming month
-== slim :budget_month, locals: next_month
+table
+  tr
+    td
+      h2 Current month
+      == slim :budget_month, locals: current_month
+    td style="vertical-align: top;"
+      h2 Coming month
+      == slim :budget_month, locals: next_month
 

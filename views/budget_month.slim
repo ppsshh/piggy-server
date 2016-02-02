@@ -2,7 +2,7 @@
 
 ruby:
   total_income = 0
-  days_in_month = Date.today.next_month - Date.today
+  days_in_month = date_end - date_start
 
 table
   - incomes.each do |i|
@@ -54,7 +54,7 @@ table
     th Expenses
     th Description
     th Balance
-  - while d <= date_end
+  - while d < date_end
     - balance += daily_quota
     - date_printed = false
     - if expenses.has_key?(d)

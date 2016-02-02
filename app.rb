@@ -14,14 +14,14 @@ paths index: '/',
     savings: '/savings',
     operations: '/operations/', # list of all operations
     graph: '/graph',
-    exchanges: '/exchanges', # post (new)
-    exchange: '/exchange/:id', # edit page, modify, delete
-    profits: '/profits', # post(new)
-    profit: '/profit/:id', # edit page, modify
-    account_charges: '/account_charges', # post(new)
-    account_charge: '/account_charge/:id', # edit page, modify
-    expenses: '/expenses', # post(new)
-    expense: '/expense/:id', # edit page, modify
+    savings_exchanges: '/savings/exchanges', # post (new)
+    savings_exchange: '/savings/exchange/:id', # edit page, modify, delete
+    savings_profits: '/savings/profits', # post(new)
+    savings_profit: '/savings/profit/:id', # edit page, modify
+    savings_account_charges: '/savings/account_charges', # post(new)
+    savings_account_charge: '/savings/account_charge/:id', # edit page, modify
+    savings_expenses: '/savings/expenses', # post(new)
+    savings_expense: '/savings/expense/:id', # edit page, modify
     budget: '/budget',
     budget_expense: '/budget/expense/:id',
     budget_income: '/budget/income/:id',
@@ -132,10 +132,10 @@ end
 def get_operations_sorted()
   operations = []
 
-  Exchange.all.each { |i| operations << i }
-  Profit.all.each   { |i| operations << i }
-  AccountCharge.all.each { |i| operations << i }
-  Expense.all.each  { |i| operations << i }
+  SavingsExchange.all.each { |i| operations << i }
+  SavingsProfit.all.each   { |i| operations << i }
+  SavingsAccountCharge.all.each { |i| operations << i }
+  SavingsExpense.all.each  { |i| operations << i }
 
   return operations
 end
@@ -150,7 +150,7 @@ def get_overall()
 
   cur_hash = {}
   operations.sort.each do |o|
-    if o.kind_of?(Exchange)
+    if o.kind_of?(SavingsExchange)
       c= cursym(o.bought_cur)
       cur_hash[c] ||= CurObj.new
       cur_hash[c].exchange(o.bought_amount, o.sold_cur, o.sold_amount)
@@ -159,12 +159,12 @@ def get_overall()
         cur_hash[cursym(o.sold_cur)].subtract(o.sold_amount)
       end
 
-    elsif o.kind_of?(Profit)
+    elsif o.kind_of?(SavingsProfit)
       c = cursym(o.cur)
       cur_hash[c] ||= CurObj.new
       cur_hash[c].append(o.amount)
 
-    elsif o.kind_of?(AccountCharge)
+    elsif o.kind_of?(SavingsAccountCharge)
       c = cursym(o.target_cur)
       cur_hash[c] ||= CurObj.new
       if c == cursym(o.charge_cur)
@@ -173,7 +173,7 @@ def get_overall()
         cur_hash[c].charge(o.charge_cur, o.charge_amount)
       end
 
-    elsif o.kind_of?(Expense)
+    elsif o.kind_of?(SavingsExpense)
       c = cursym(o.cur)
       cur_hash[c] ||= CurObj.new
       cur_hash[c].subtract(o.amount)
@@ -213,7 +213,7 @@ get :savings do
     @total_rub += convert_currency(@rates, amount, c, 'rub')
   end
 
-  slim :index
+  slim :savings
 end
 
 def get_days_range(d)
@@ -300,7 +300,7 @@ get :operations do
 end
 
 get :graph do
-  @operations = Exchange.all
+  @operations = SavingsExchange.all
 
   slim :graph
 end
@@ -317,30 +317,30 @@ def exchange_attrs(p)
   }
 end
 
-post :exchanges do
-  o = Exchange.new
+post :savings_exchanges do
+  o = SavingsExchange.new
   o.attributes = exchange_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
-get :exchange do
-  o = Exchange.find(params[:id])
-  slim :exchange, locals: {exchange: o}
+get :savings_exchange do
+  o = SavingsExchange.find(params[:id])
+  slim :savings_exchange, locals: {exchange: o}
 end
 
-post :exchange do
-  o = Exchange.find(params[:id])
+post :savings_exchange do
+  o = SavingsExchange.find(params[:id])
   o.attributes = exchange_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
-delete :exchange do
-  Exchange.delete(params[:id])
-  redirect path_to(:index)
+delete :savings_exchange do
+  SavingsExchange.delete(params[:id])
+  redirect path_to(:savings)
 end
 
 def profit_attrs(p)
@@ -352,25 +352,25 @@ def profit_attrs(p)
   }
 end
 
-post :profits do
-  o = Profit.new
+post :savings_profits do
+  o = SavingsProfit.new
   o.attributes = profit_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
-get :profit do
-  o = Profit.find(params[:id])
-  slim :profit, locals: {profit: o}
+get :savings_profit do
+  o = SavingsProfit.find(params[:id])
+  slim :savings_profit, locals: {profit: o}
 end
 
-post :profit do
-  o = Profit.find(params[:id])
+post :savings_profit do
+  o = SavingsProfit.find(params[:id])
   o.attributes = profit_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
 def account_charge_attrs(p)
@@ -384,25 +384,25 @@ def account_charge_attrs(p)
   }
 end
 
-post :account_charges do
-  o = AccountCharge.new
+post :savings_account_charges do
+  o = SavingsAccountCharge.new
   o.attributes = account_charge_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
-get :account_charge do
-  o = AccountCharge.find(params[:id])
-  slim :account_charge, locals: {acch: o}
+get :savings_account_charge do
+  o = SavingsAccountCharge.find(params[:id])
+  slim :savings_account_charge, locals: {acch: o}
 end
 
-post :account_charge do
-  o = AccountCharge.find(params[:id])
+post :savings_account_charge do
+  o = SavingsAccountCharge.find(params[:id])
   o.attributes = account_charge_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
 def expense_attrs(p)
@@ -414,25 +414,25 @@ def expense_attrs(p)
   }
 end
 
-post :expenses do
-  o = Expense.new
+post :savings_expenses do
+  o = SavingsExpense.new
   o.attributes = expense_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
-get :expense do
-  o = Expense.find(params[:id])
-  slim :expense, locals: {expense: o}
+get :savings_expense do
+  o = SavingsExpense.find(params[:id])
+  slim :savings_expense, locals: {expense: o}
 end
 
-post :expense do
-  o = Expense.find(params[:id])
+post :savings_expense do
+  o = SavingsExpense.find(params[:id])
   o.attributes = expense_attrs(params)
   o.save
 
-  redirect path_to(:index)
+  redirect path_to(:savings)
 end
 
 get :budget_expense do
@@ -459,15 +459,15 @@ end
 
 post :budget_expense do
   update_budget_item(BudgetExpense.find(params[:id]))
-  redirect path_to(:index)
+  redirect path_to(:budget)
 end
 
 post :budget_income do
   update_budget_item(BudgetIncome.find(params[:id]))
-  redirect path_to(:index)
+  redirect path_to(:budget)
 end
 
 post :budget_req_expense do
   update_budget_item(BudgetRequiredExpense.find(params[:id]))
-  redirect path_to(:index)
+  redirect path_to(:budget)
 end

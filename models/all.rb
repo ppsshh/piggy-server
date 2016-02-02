@@ -1,6 +1,3 @@
 require_relative 'currency.rb'
-require_relative 'exchange.rb'
-require_relative 'profit.rb'
-require_relative 'account_charge.rb'
-require_relative 'expense.rb'
+require_relative 'savings.rb'
 require_relative 'budget.rb'

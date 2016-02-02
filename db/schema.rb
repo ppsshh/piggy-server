@@ -11,17 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160201232615) do
-
-  create_table "account_charges", force: :cascade do |t|
-    t.datetime "date"
-    t.text     "target_cur"
-    t.text     "charge_cur"
-    t.float    "charge_amount"
-    t.text     "notes"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
+ActiveRecord::Schema.define(version: 20160202112522) do
 
   create_table "budget_expenses", force: :cascade do |t|
     t.date     "date",                      null: false
@@ -63,7 +53,17 @@ ActiveRecord::Schema.define(version: 20160201232615) do
     t.datetime "updated_at"
   end
 
-  create_table "exchanges", force: :cascade do |t|
+  create_table "savings_account_charges", force: :cascade do |t|
+    t.datetime "date"
+    t.text     "target_cur"
+    t.text     "charge_cur"
+    t.float    "charge_amount"
+    t.text     "notes"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "savings_exchanges", force: :cascade do |t|
     t.datetime "date"
     t.text     "sold_cur"
     t.float    "sold_amount"
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 20160201232615) do
     t.boolean  "is_income",     default: true
   end
 
-  create_table "expenses", force: :cascade do |t|
+  create_table "savings_expenses", force: :cascade do |t|
     t.datetime "date"
     t.text     "cur"
     t.float    "amount"
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20160201232615) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "profits", force: :cascade do |t|
+  create_table "savings_profits", force: :cascade do |t|
     t.datetime "date"
     t.text     "cur"
     t.float    "amount"

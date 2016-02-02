@@ -1,4 +1,4 @@
-== slim :all_forms
+== slim :savings_all_forms
 br
 br
 
@@ -7,32 +7,32 @@ table border=1
     tr
       td
         = op.date.strftime("%Y.%m.%d %H")
-      - if op.kind_of?(Exchange)
+      - if op.kind_of?(SavingsExchange)
         td = "exchange" + (op.is_income ? " 💰" : "")
         td
           = "#{money_format(op.sold_amount, op.sold_cur)} → #{money_format(op.bought_amount, op.bought_cur)}"
           br
           = "#{money_format(op.sold_amount / op.bought_amount, op.sold_cur)} per #{currency_symbol(op.bought_cur)}"
         td
-          a> href=path_to(:exchange).with(op.id) Edit
-      - elsif op.kind_of?(Profit)
+          a> href=path_to(:savings_exchange).with(op.id) Edit
+      - elsif op.kind_of?(SavingsProfit)
         td profit
         td
           = "#{money_format(op.amount, op.cur)}"
         td
-          a> href=path_to(:profit).with(op.id) Edit
-      - elsif op.kind_of?(AccountCharge)
+          a> href=path_to(:savings_profit).with(op.id) Edit
+      - elsif op.kind_of?(SavingsAccountCharge)
         td account charge
         td
           = "#{money_format(op.charge_amount, op.charge_cur)} for #{currency_symbol(op.target_cur)}"
         td
-          a> href=path_to(:account_charge).with(op.id) Edit
-      - elsif op.kind_of?(Expense)
+          a> href=path_to(:savings_account_charge).with(op.id) Edit
+      - elsif op.kind_of?(SavingsExpense)
         td expense
         td
           = "#{money_format(op.amount, op.cur)}"
         td
-          a> href=path_to(:expense).with(op.id) Edit
+          a> href=path_to(:savings_expense).with(op.id) Edit
       td
         - op.notes.split("\n").each do |n|
           = n

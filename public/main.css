@@ -11,3 +11,9 @@ body {
   vertical-align: top;
   padding: 0 8px;
 }
+.table-cell-right-align td {
+  text-align: right;
+}
+td.td-left-align {
+  text-align: left;
+}

@@ -3,14 +3,15 @@
 ruby:
   total_income = 0
   days_in_month = date_end - date_start
+  currency = :rub
 
-table
+table.table-cell-right-align
   - incomes.each do |i|
     - total_income += i.amount
     tr
       td = i.date
-      td = i.description
-      td = i.amount
+      td.td-left-align = i.description
+      td = money_format(i.amount, currency)
       td
         a href=path_to(:budget_income).with(i.id) Edit
   tr
@@ -20,13 +21,13 @@ table
     td style="font-weight: bold;"
       ' Reserved for savings:
     td
-      = savings.round(2)
+      = money_format(savings, currency)
   - req_expenses.each do |i|
     - total_income -= i.amount
     tr
       td = i.date
-      td = i.description
-      td = i.amount
+      td.td-left-align = i.description
+      td = money_format(i.amount, currency)
       td
         a href=path_to(:budget_req_expense).with(i.id) Edit
   tr
@@ -34,21 +35,21 @@ table
     td style="font-weight: bold;"
       ' Total:
     td
-      = total_income
+      = money_format(total_income, currency)
   tr
     td
     td style="font-weight: bold;"
       ' Daily quota:
     td
       - daily_quota = total_income / days_in_month.to_f
-      = daily_quota.round(2)
+      = money_format(daily_quota, currency)
 
 h3 Expenses
 
 - d = date_start
 - balance = 0
 - total_expenses = 0
-table
+table.table-cell-right-align
   tr
     th Date
     th Expenses
@@ -63,27 +64,27 @@ table
         - total_expenses += e.amount
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
-          td = e.amount.round(2)
-          td
+          td = money_format(e.amount, currency)
+          td.td-left-align
             = e.description
             a< href=path_to(:budget_expense).with(e.id) Edit
-          td = balance.round(2)
+          td = money_format(balance, currency)
         - date_printed = true
     - else
       tr style=(d == Date.today ? "background: yellow" : "visibility: collapse")
         td = d.strftime("%b %-e")
         td -
         td
-        td = balance.round(2)
+        td = money_format(balance, currency)
     - d += 1
   tr
     td
     td
     td style="font-weight: bold;" Total expenses:
-    td = total_expenses.round(2)
+    td = money_format(total_expenses, currency)
   tr
     td
     td
     td style="font-weight: bold;" Final balance:
-    td = balance.round(2)
+    td = money_format(balance, currency)
 

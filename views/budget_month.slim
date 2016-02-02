@@ -43,8 +43,11 @@ table
       - daily_quota = total_income / days_in_month.to_f
       = daily_quota.round(2)
 
+h3 Expenses
+
 - d = date_start
 - balance = 0
+- total_expenses = 0
 table
   tr
     th Date
@@ -57,6 +60,7 @@ table
     - if expenses.has_key?(d)
       - expenses[d].each do |e|
         - balance -= e.amount
+        - total_expenses += e.amount
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
           td = e.amount.round(2)
@@ -66,10 +70,20 @@ table
           td = balance.round(2)
         - date_printed = true
     - else
-      tr
+      tr style=(d == Date.today ? "background: yellow" : "visibility: collapse")
         td = d.strftime("%b %-e")
         td -
         td
         td = balance.round(2)
     - d += 1
+  tr
+    td
+    td
+    td style="font-weight: bold;" Total expenses:
+    td = total_expenses.round(2)
+  tr
+    td
+    td
+    td style="font-weight: bold;" Final balance:
+    td = balance.round(2)
 

@@ -8,10 +8,10 @@ require 'rack-flash'
 require 'yaml'
 require 'date'
 
+require_relative './helpers.rb'
 require_relative './models/all.rb'
 require_relative './savings.rb'
 require_relative './budget.rb'
-require_relative './helpers.rb'
 
 paths index: '/',
     savings: '/savings',
@@ -43,6 +43,8 @@ configure do
         secret: $config['secret']
   use Rack::Flash
 end
+
+helpers PiggyHelpers
 
 get :savings do
   get_overall()

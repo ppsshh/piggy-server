@@ -19,7 +19,7 @@ form method="POST" action=action_path
         select name="bought_cur"
           - ["usd", $config["currencies"]].flatten.each do |c|
             - exchange.bought_cur = 'usd' unless exchange.bought_cur
-            option selected=(exchange.bought_cur == c)
+            option selected=("selected" if cursym(exchange.bought_cur) == cursym(c))
               = c.upcase
 
     tr

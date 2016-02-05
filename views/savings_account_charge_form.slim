@@ -16,14 +16,14 @@ form method="POST" action=action_path
         - acch.charge_cur = 'usd' unless acch.charge_cur
         select name="charge_cur"
           - ["usd", $config["currencies"]].flatten.each do |c|
-            option selected=(acch.charge_cur.downcase == c.downcase)
+            option selected=("selected" if cursym(acch.charge_cur) == cursym(c))
               = c.upcase
         br
         ' in favor of:
         - acch.target_cur = 'usd' unless acch.target_cur
         select name="target_cur"
           - ["usd", $config["currencies"]].flatten.each do |c|
-            option selected=(acch.target_cur.downcase == c.downcase)
+            option selected=("selected" if cursym(acch.target_cur) == cursym(c))
               = c.upcase
 
     tr

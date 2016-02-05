@@ -16,7 +16,7 @@ form method="POST" action=action_path
         select name="cur"
           - ["usd", $config["currencies"]].flatten.each do |c|
             - profit.cur = 'usd' unless profit.cur
-            option selected=(profit.cur == c)
+            option selected=("selected" if cursym(profit.cur) == cursym(c))
               = c.upcase
     tr
       td

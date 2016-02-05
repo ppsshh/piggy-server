@@ -52,8 +52,8 @@ h3 Expenses
 table.table-cell-right-align
   tr
     th Date
-    th Expenses
     th Description
+    th Expenses
     th Balance
   - while d < date_end
     - balance += daily_quota
@@ -64,27 +64,28 @@ table.table-cell-right-align
         - total_expenses += e.amount
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
-          td = money_format(e.amount, currency)
           td.td-left-align
             = e.description
             a< href=path_to(:budget_expense).with(e.id) Edit
+          td = money_format(e.amount, currency)
           td = money_format(balance, currency)
         - date_printed = true
     - else
-      tr style=(d == Date.today ? "background: yellow" : "visibility: collapse")
-        td = d.strftime("%b %-e")
-        td -
-        td
-        td = money_format(balance, currency)
+      - if d == Date.today
+        tr style="background: #ffc90e"
+          td = d.strftime("%b %-e")
+          td.td-left-align Today
+          td -
+          td = money_format(balance, currency)
     - d += 1
   tr
     td
-    td
-    td style="font-weight: bold;" Total expenses:
+    td style="font-weight: bold;" Total expenses
     td = money_format(total_expenses, currency)
+    td
   tr
     td
-    td
     td style="font-weight: bold;" Final balance:
+    td
     td = money_format(balance, currency)
 

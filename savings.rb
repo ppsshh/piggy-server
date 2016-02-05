@@ -1,3 +1,5 @@
+include PiggyHelpers
+
 class CurObj # currency object
   attr_reader :total, :parts
   def total
@@ -73,11 +75,6 @@ def get_operations_sorted()
   SavingsExpense.all.each  { |i| operations << i }
 
   return operations
-end
-
-def cursym(cur)
-  cur.to_s unless cur.kind_of?(String)
-  return cur.downcase.to_sym
 end
 
 def get_overall()

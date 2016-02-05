@@ -1,4 +1,4 @@
-helpers do
+module PiggyHelpers
   def currency_symbol(currency)
     currency = currency.to_s.downcase.to_sym
     currency_symbols = {
@@ -17,6 +17,11 @@ helpers do
     parts.delete_at(1) if parts[1] == "0"
 
     return "#{parts.join('.')} #{currency_symbol(currency)}"
+  end
+
+  def cursym(cur)
+    cur.to_s unless cur.kind_of?(String)
+    return cur.downcase.to_sym
   end
 end
 

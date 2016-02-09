@@ -3,6 +3,7 @@ def get_days_range(d)
   while dnext.day != $config['budget_start_day'] do dnext += 1 end
   dprev = d
   while dprev.day != $config['budget_start_day'] do dprev -= 1 end
+  dprev = dprev.prev_month if dnext == dprev
 
   return [dprev, dnext]
 end

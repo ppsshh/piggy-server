@@ -36,9 +36,11 @@ configure do
   $config = YAML.load(File.open('config/app.yml'))
 
   $expense_types = {
-    0 => {title: "default", color: "#ffffff"},
-    1 => {title: "food", color: "#00ff00"},
-    2 => {title: "gasoline", color: "#ff0000"}
+    0 => {name: "default", description: "Не выбрано"},
+    1 => {name: "food", description: "Еда (и хозтовары)"},
+    2 => {name: "car", description: "Машина"},
+    3 => {name: "beauty", description: "Одежда и имидж"},
+    4 => {name: "transport", description: "Общественный транспорт"}
   }
 
   use Rack::Session::Cookie,

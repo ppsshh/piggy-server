@@ -18,3 +18,19 @@ body {
 td.td-left-align {
   text-align: left;
 }
+
+.budget-type-default {
+}
+.budget-type-food {
+  background: #92b34b;
+}
+.budget-type-car {
+  background: #f87a00;
+}
+.budget-type-beauty {
+  background: #b84a9f;
+}
+.budget-type-transport {
+  background: #416971;
+  color: white;
+}

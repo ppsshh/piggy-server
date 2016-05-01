@@ -64,7 +64,7 @@ table.table-cell-right-align
         - total_expenses += e.amount
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
-          td.td-left-align
+          td class="td-left-align budget-type-#{$expense_types[e.expense_type][:name]}"
             = e.description
             a< href=path_to(:budget_expense).with(e.id) Edit
           td = money_format(e.amount, currency)

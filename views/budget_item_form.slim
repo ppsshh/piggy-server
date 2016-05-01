@@ -19,7 +19,7 @@ form method="POST" action=submit_path
       td
         select name="expense_type"
           - $expense_types.each do |idx, et|
-            option value=idx selected=("selected" if item && (item.expense_type == idx)) = et[:title]
+            option value=idx selected=("selected" if item && (item.expense_type == idx)) = et[:description]
     tr
       td Type:
       td

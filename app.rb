@@ -35,6 +35,12 @@ configure do
 
   $config = YAML.load(File.open('config/app.yml'))
 
+  $expense_types = {
+    0 => {title: "default", color: "#ffffff"},
+    1 => {title: "food", color: "#00ff00"},
+    2 => {title: "gasoline", color: "#ff0000"}
+  }
+
   use Rack::Session::Cookie,
         key: 'piggy.fc',
 #        domain: '172.16.0.11',
@@ -271,7 +277,10 @@ def update_budget_item(i)
 end
 
 post :budget_expense do
-  update_budget_item(BudgetExpense.find(params[:id]))
+  item = BudgetExpense.find(params[:id])
+  update_budget_item(item)
+  item.expense_type = params[:expense_type]
+  item.save
   redirect path_to(:budget)
 end
 

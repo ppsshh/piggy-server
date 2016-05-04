@@ -6,3 +6,35 @@ currencies:
   - eur
   - jpy
 budget_start_day: 20
+expense_types:
+  0:
+    name: "default"
+    description: "Не выбрано"
+  1:
+    name: "food"
+    description: "Еда"
+  2:
+    name: "car"
+    description: "Машина"
+  3:
+    name: "beauty"
+    description: "Одежда и имидж"
+  4:
+    name: "transport"
+    description: "Общественный транспорт"
+  5:
+    name: "household"
+    description: "Хозтовары"
+  6:
+    name: "entertainment"
+    description: "Развлечения"
+  7:
+    name: "utilities"
+    description: "Связь; коммунальные услуги"
+  8:
+    name: "gifts"
+    description: "Подарки"
+  9:
+    name: "electric-appliances"
+    description: "Электротехника"
+

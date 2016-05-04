@@ -34,3 +34,19 @@ td.td-left-align {
   background: #416971;
   color: white;
 }
+.budget-type-household {
+  background: #08d6ff;
+}
+.budget-type-entertainment {
+  background: #fffb2b;
+}
+.budget-type-utilities {
+ background: #88a8f2;
+}
+.budget-type-gifts {
+  background: #cc1d5d;
+}
+.budget-type-electric-appliances {
+  background: #00611e;
+  color: white;
+}

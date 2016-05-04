@@ -26,6 +26,7 @@ paths index: '/',
     savings_expenses: '/savings/expenses', # post(new)
     savings_expense: '/savings/expense/:id', # edit page, modify
     budget: '/budget',
+    budget_month: '/budget/month/:id',
     budget_expense: '/budget/expense/:id',
     budget_income: '/budget/income/:id',
     budget_req_expense: '/budget/req_expense/:id'
@@ -80,6 +81,22 @@ end
 get :budget do
   get_budget_data
   slim :budget
+end
+
+get :budget_month do
+  d = Date.today
+  params[:id].to_i.times do |i|
+    d = d.prev_month
+  end
+
+  get_budget_data(d)
+  slim :budget_month, locals: {
+    incomes: @incomes,
+    expenses: @expenses,
+    req_expenses: @req_expenses,
+    date_start: @drange[1],
+    date_end: @drange[2]
+  }
 end
 
 post :budget do

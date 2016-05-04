@@ -17,10 +17,10 @@ def get_date_hash(items_array, date_key)
   return h
 end
 
-def get_budget_data
+def get_budget_data(cur = Date.today)
   # d1 -- d2 -- today -- d3 -- d4
-  d1, d2 = get_days_range(Date.today.prev_month)
-  d3, d4 = get_days_range(Date.today.next_month)
+  d1, d2 = get_days_range(cur.prev_month)
+  d3, d4 = get_days_range(cur.next_month)
 
   @drange = [d1, d2, d3, d4]
   # eg. incomes:  11 jan .. 10 feb

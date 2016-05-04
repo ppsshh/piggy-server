@@ -49,6 +49,7 @@ h3 Expenses
 - d = date_start
 - balance = 0
 - total_expenses = 0
+- types_sum = {}
 table.table-cell-right-align
   tr
     th Date
@@ -62,6 +63,8 @@ table.table-cell-right-align
       - expenses[d].each do |e|
         - balance -= e.amount
         - total_expenses += e.amount
+        - types_sum[e.expense_type] ||= 0
+        - types_sum[e.expense_type] += e.amount
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
           td class="td-left-align budget-type-#{$expense_types[e.expense_type]["name"]}"
@@ -89,3 +92,10 @@ table.table-cell-right-align
     td
     td = money_format(balance, currency)
 
+table
+  tr
+    th Расходы по категориям:
+  - types_sum.each do |tkey, tval|
+    tr
+      td = $expense_types[tkey]["description"]
+      td = money_format(tval, currency)

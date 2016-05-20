@@ -50,7 +50,7 @@ h3 Expenses
 - balance = 0
 - total_expenses = 0
 - types_sum = {}
-table.table-cell-right-align
+table.table-cell-right-align#expenses-table
   tr
     th Date
     th Description
@@ -97,5 +97,10 @@ table
     th Расходы по категориям:
   - types_sum.each do |tkey, tval|
     tr
-      td = $expense_types[tkey]["description"]
+      td
+        a href="#" data-name=$expense_types[tkey]["name"] class="expense-button" = $expense_types[tkey]["description"]
       td = money_format(tval, currency)
+
+/- $expense_types.each do |k, et|
+/  a> href="#" data-name=et['name'] class="expense-button" = et["name"]
+

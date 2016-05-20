@@ -68,6 +68,8 @@ table.table-cell-right-align#expenses-table
         tr
           td = date_printed ? "" : d.strftime("%b %-e")
           td class="td-left-align budget-type-#{$expense_types[e.expense_type]["name"]}"
+            - if e.expense_type == 0
+              ' 📌
             = e.description
             a< href=path_to(:budget_expense).with(e.id) Edit
           td = money_format(e.amount, currency)
@@ -95,12 +97,8 @@ table.table-cell-right-align#expenses-table
 table
   tr
     th Расходы по категориям:
-  - types_sum.each do |tkey, tval|
+  - types_sum.sort_by {|k,v| v}.reverse.each do |tkey, tval|
     tr
       td
         a href="#" data-name=$expense_types[tkey]["name"] class="expense-button" = $expense_types[tkey]["description"]
       td = money_format(tval, currency)
-
-/- $expense_types.each do |k, et|
-/  a> href="#" data-name=et['name'] class="expense-button" = et["name"]
-

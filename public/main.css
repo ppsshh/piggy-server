@@ -19,34 +19,15 @@ td.td-left-align {
   text-align: left;
 }
 
-#expenses-table.default .budget-type-default {
-}
-#expenses-table.food .budget-type-food {
-  background: #92b34b;
-}
-#expenses-table.car .budget-type-car {
-  background: #f87a00;
-}
-#expenses-table.beauty .budget-type-beauty {
-  background: #b84a9f;
-}
-#expenses-table.transport .budget-type-transport {
-  background: #416971;
-  color: white;
-}
-#expenses-table.household .budget-type-household {
-  background: #08d6ff;
-}
-#expenses-table.entertainment .budget-type-entertainment {
-  background: #fffb2b;
-}
-#expenses-table.utilities .budget-type-utilities {
- background: #88a8f2;
-}
-#expenses-table.gifts .budget-type-gifts {
-  background: #cc1d5d;
-}
-#expenses-table.electric-appliances .budget-type-electric-appliances {
-  background: #00611e;
-  color: white;
+#expenses-table.expense-default tr.expense-default td,
+#expenses-table.expense-food tr.expense-food td,
+#expenses-table.expense-car tr.expense-car td,
+#expenses-table.expense-beauty tr.expense-beauty td,
+#expenses-table.expense-transport tr.expense-transport td,
+#expenses-table.expense-household tr.expense-household td,
+#expenses-table.expense-entertainment tr.expense-entertainment td,
+#expenses-table.expense-utilities tr.expense-utilities td,
+#expenses-table.expense-gifts tr.expense-gifts td,
+#expenses-table.expense-electric-appliances tr.expense-electric-appliances td {
+  background: #ffab33;
 }

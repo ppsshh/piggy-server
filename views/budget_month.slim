@@ -70,7 +70,7 @@ table.table-cell-right-align#expenses-table
           td class="td-left-align"
             - if e.expense_type == 0
               ' 📌
-            = e.description
+            span.expense-description = e.description
             a< href=path_to(:budget_expense).with(e.id) Edit
           td = money_format(e.amount, currency)
           td = money_format(balance, currency)
@@ -100,5 +100,5 @@ table
   - types_sum.sort_by {|k,v| v}.reverse.each do |tkey, tval|
     tr
       td
-        a href="#" data-name="expense-#{$expense_types[tkey]['name']}" class="expense-button" = $expense_types[tkey]["description"]
+        a data-name="expense-#{$expense_types[tkey]['name']}" class="expense-button" = $expense_types[tkey]["description"]
       td = money_format(tval, currency)

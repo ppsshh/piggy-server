@@ -32,27 +32,9 @@ a.expense-button {
 .expense-description {
   cursor: pointer;
 }
-#expenses-table.expense-default-fixed tr.expense-default td,
-#expenses-table.expense-food-fixed tr.expense-food td,
-#expenses-table.expense-car-fixed tr.expense-car td,
-#expenses-table.expense-beauty-fixed tr.expense-beauty td,
-#expenses-table.expense-transport-fixed tr.expense-transport td,
-#expenses-table.expense-household-fixed tr.expense-household td,
-#expenses-table.expense-entertainment-fixed tr.expense-entertainment td,
-#expenses-table.expense-utilities-fixed tr.expense-utilities td,
-#expenses-table.expense-gifts-fixed tr.expense-gifts td,
-#expenses-table.expense-electric-appliances-fixed tr.expense-electric-appliances td {
+.expense-hl-permanent {
   background: #33d3ff;
 }
-#expenses-table.expense-default tr.expense-default td:nth-child(2),
-#expenses-table.expense-food tr.expense-food td:nth-child(2),
-#expenses-table.expense-car tr.expense-car td:nth-child(2),
-#expenses-table.expense-beauty tr.expense-beauty td:nth-child(2),
-#expenses-table.expense-transport tr.expense-transport td:nth-child(2),
-#expenses-table.expense-household tr.expense-household td:nth-child(2),
-#expenses-table.expense-entertainment tr.expense-entertainment td:nth-child(2),
-#expenses-table.expense-utilities tr.expense-utilities td:nth-child(2),
-#expenses-table.expense-gifts tr.expense-gifts td:nth-child(2),
-#expenses-table.expense-electric-appliances tr.expense-electric-appliances td:nth-child(2) {
+.expense-hl td:nth-child(2) {
   background: #ffab33;
 }

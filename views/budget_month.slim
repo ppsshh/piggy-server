@@ -65,7 +65,7 @@ table.table-cell-right-align#expenses-table
         - total_expenses += e.amount
         - types_sum[e.expense_type] ||= 0
         - types_sum[e.expense_type] += e.amount
-        tr class="expense-row expense-#{$expense_types[e.expense_type]['name']}" data-name="expense-#{$expense_types[e.expense_type]['name']}"
+        tr class="expense-row expense-#{e.expense_type}" data-id=e.expense_type
           td = date_printed ? "" : d.strftime("%b %-e")
           td class="td-left-align"
             - if e.expense_type == 0
@@ -100,5 +100,5 @@ table
   - types_sum.sort_by {|k,v| v}.reverse.each do |tkey, tval|
     tr
       td
-        a data-name="expense-#{$expense_types[tkey]['name']}" class="expense-button" = $expense_types[tkey]["description"]
+        a data-id=tkey class="expense-button" = $expense_types[tkey]["description"]
       td = money_format(tval, currency)

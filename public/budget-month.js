@@ -1,22 +1,21 @@
 $(document).ready(function(){
-  var fixedHighlight = function(expenseType){
-    expenseType = expenseType + "-fixed";
-    $('#expenses-table').toggleClass(expenseType);
-    return false;
-  };
   $('.expense-button').click(function(event){
     event.preventDefault();
-    fixedHighlight( $(this).attr("data-name") );
+    var hlClass = ".expense-row.expense-" + $(this).attr("data-id");
+    $(hlClass).toggleClass("expense-hl-permanent");
+    return false;
   });
   $('.expense-row').click(function(){
-    fixedHighlight( $(this).attr("data-name") );
+    var hlClass = ".expense-row.expense-" + $(this).attr("data-id");
+    $(hlClass).toggleClass("expense-hl-permanent");
+    return false;
   });
   $('.expense-row').hover(function(){
-    var myClass = $(this).attr("data-name");
-    $('#expenses-table').addClass(myClass);
+    var hlClass = ".expense-row.expense-" + $(this).attr("data-id");
+    $(hlClass).addClass("expense-hl");
   }, function() {
-    var myClass = $(this).attr("data-name");
-    $('#expenses-table').removeClass(myClass);
+    var hlClass = ".expense-row.expense-" + $(this).attr("data-id");
+    $(hlClass).removeClass("expense-hl");
   });
 });
 

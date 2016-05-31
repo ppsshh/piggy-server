@@ -36,7 +36,8 @@ configure do
 
   $config = YAML.load(File.open('config/app.yml'))
 
-  $expense_types = $config['expense_types']
+  $expense_types = {}
+  ExpenseType.all.each { |et| $expense_types[et.id] = et.description }
 
   use Rack::Session::Cookie,
         key: 'piggy.fc',

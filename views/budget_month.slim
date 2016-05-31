@@ -100,5 +100,5 @@ table
   - types_sum.sort_by {|k,v| v}.reverse.each do |tkey, tval|
     tr
       td
-        a data-id=tkey class="expense-button" = $expense_types[tkey]["description"]
+        a data-id=tkey class="expense-button" = $expense_types[tkey]
       td = money_format(tval, currency)

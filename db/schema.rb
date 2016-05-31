@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160501094842) do
+ActiveRecord::Schema.define(version: 20160531070906) do
 
   create_table "budget_expenses", force: :cascade do |t|
     t.date     "date",                       null: false
@@ -52,6 +52,12 @@ ActiveRecord::Schema.define(version: 20160501094842) do
     t.float    "rate"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "expense_types", force: :cascade do |t|
+    t.text     "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "savings_account_charges", force: :cascade do |t|

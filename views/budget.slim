@@ -7,21 +7,11 @@ ruby:
     incomes: @incomes,
     expenses: @expenses,
     req_expenses: @req_expenses,
-    date_start: @drange[1],
-    date_end: @drange[2] }
-  next_month = {
-    incomes: @next_incomes,
-    expenses: @next_expenses,
-    req_expenses: @next_req_expenses,
-    date_start: @drange[2],
-    date_end: @drange[3]}
+    date_start: @date_start,
+    date_end: @date_end }
 
-table
-  tr
-    td
-      h2 Current month
-      == slim :budget_month, locals: current_month
-    td style="vertical-align: top;"
-      h2 Coming month
-      == slim :budget_month, locals: next_month
+a> href=path_to(:budget_month).with((@month_delta + 1).to_s) Previous month
+a href=path_to(:budget_month).with((@month_delta - 1).to_s) Next month
 
+h2 Current month
+== slim :budget_month, locals: current_month

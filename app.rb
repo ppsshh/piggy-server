@@ -13,6 +13,11 @@ require_relative './models/all.rb'
 require_relative './savings.rb'
 require_relative './budget.rb'
 
+also_reload './helpers.rb'
+also_reload './savings.rb'
+also_reload './budget.rb'
+also_reload './models/'
+
 paths index: '/',
     savings: '/savings',
     operations: '/operations/', # list of all operations
@@ -70,28 +75,20 @@ end
 
 get :index do
   get_budget_data
+  @month_delta = 0
   slim :budget
 end
 
 get :budget do
   get_budget_data
+  @month_delta = 0
   slim :budget
 end
 
 get :budget_month do
-  d = Date.today
-  params[:id].to_i.times do |i|
-    d = d.prev_month
-  end
-
-  get_budget_data(d)
-  slim :budget_month, locals: {
-    incomes: @incomes,
-    expenses: @expenses,
-    req_expenses: @req_expenses,
-    date_start: @drange[1],
-    date_end: @drange[2]
-  }
+  @month_delta = params[:id].to_i
+  get_budget_data(@month_delta)
+  slim :budget
 end
 
 post :budget do

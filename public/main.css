@@ -29,12 +29,12 @@ a.expense-button {
   text-decoration-style: dashed;
   cursor: pointer;
 }
-.expense-description {
+.expense-icon {
   cursor: pointer;
 }
 .expense-hl-permanent {
   background: #33d3ff;
 }
-.expense-hl td:nth-child(2) {
+.expense-hl td:nth-child(3) {
   background: #ffab33;
 }

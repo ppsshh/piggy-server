@@ -271,5 +271,10 @@ end
 post :budget_record do
   item = BudgetRecord.find(params[:id])
   update_budget_item(item)
-  redirect path_to(:budget)
+
+  d = item.date
+  today = Date.today
+  delta = (today.year - d.year)*12 + (today.month - d.month)
+
+  redirect path_to(:budget_month).with(delta)
 end

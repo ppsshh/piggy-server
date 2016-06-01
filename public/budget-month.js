@@ -5,7 +5,7 @@ $(document).ready(function(){
     $(hlClass).toggleClass("expense-hl-permanent");
     return false;
   });
-  $('.expense-row').click(function(){
+  $('.expense-icon').click(function(){
     var hlClass = ".expense-row.expense-" + $(this).attr("data-id");
     $(hlClass).toggleClass("expense-hl-permanent");
     return false;

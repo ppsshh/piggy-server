@@ -45,6 +45,7 @@ h3 Expenses
 table.table-cell-right-align#expenses-table
   tr
     th Date
+    th Type
     th Description
     th Expenses
     th Balance
@@ -59,6 +60,8 @@ table.table-cell-right-align#expenses-table
         - types_sum[e.expense_type] += e.amount
         tr class="expense-row expense-#{e.expense_type}" data-id=e.expense_type
           td = date_printed ? "" : d.strftime("%b %-e")
+          td class="expense-icon expense-#{e.expense_type}" data-id=e.expense_type
+            = e.expense_type
           td class="td-left-align"
             - if e.expense_type == 0
               ' 📌
@@ -71,16 +74,19 @@ table.table-cell-right-align#expenses-table
       - if d == Date.today
         tr style="background: #ffc90e"
           td = d.strftime("%b %-e")
+          td
           td.td-left-align Today
           td -
           td = money_format(balance, currency)
     - d += 1
   tr
     td
+    td
     td style="font-weight: bold;" Total expenses
     td = money_format(total_expenses, currency)
     td
   tr
+    td
     td
     td style="font-weight: bold;" Final balance:
     td

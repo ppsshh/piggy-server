@@ -1,6 +1,6 @@
-// locals: item, submit_path
+// locals: item
 
-form method="POST" action=submit_path
+form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : path_to(:budget))
   table
     tr
       td Date:
@@ -21,11 +21,9 @@ form method="POST" action=submit_path
           - $expense_types.each do |idx, et|
             option value=idx selected=("selected" if item && (item.expense_type == idx)) = et
     tr
-      td Type:
       td
-        input type="radio" name="operation_type" value="expense" checked=item.kind_of?(BudgetExpense) disabled=item.id Expense
-        input type="radio" name="operation_type" value="income" checked=item.kind_of?(BudgetIncome) disabled=item.id Income
-        input type="radio" name="operation_type" value="required_expense" checked=item.kind_of?(BudgetRequiredExpense) disabled=item.id Required expense
+      td
+        input type="checkbox" name="is_income" checked=item.is_income Is income
     tr
       td
       td

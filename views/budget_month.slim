@@ -1,4 +1,4 @@
-// template locals: incomes, expenses, req_expenses, date_start, date_end
+// template locals: incomes, expenses, date_start, date_end
 
 ruby:
   total_income = 0
@@ -13,7 +13,7 @@ table.table-cell-right-align
       td.td-left-align = i.description
       td = money_format(i.amount, currency)
       td
-        a href=path_to(:budget_income).with(i.id) Edit
+        a href=path_to(:budget_record).with(i.id) Edit
   tr
     - savings = total_income * 0.15
     - total_income -= savings
@@ -22,14 +22,6 @@ table.table-cell-right-align
       ' Reserved for savings:
     td
       = money_format(savings, currency)
-  - req_expenses.each do |i|
-    - total_income -= i.amount
-    tr
-      td = i.date
-      td.td-left-align = i.description
-      td = money_format(i.amount, currency)
-      td
-        a href=path_to(:budget_req_expense).with(i.id) Edit
   tr
     td
     td style="font-weight: bold;"
@@ -71,7 +63,7 @@ table.table-cell-right-align#expenses-table
             - if e.expense_type == 0
               ' 📌
             span.expense-description = e.description
-            a< href=path_to(:budget_expense).with(e.id) Edit
+            a< href=path_to(:budget_record).with(e.id) Edit
           td = money_format(e.amount, currency)
           td = money_format(balance, currency)
         - date_printed = true

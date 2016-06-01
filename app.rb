@@ -16,7 +16,6 @@ require_relative './budget.rb'
 also_reload './helpers.rb'
 also_reload './savings.rb'
 also_reload './budget.rb'
-also_reload './models/'
 
 paths index: '/',
     savings: '/savings',
@@ -32,9 +31,7 @@ paths index: '/',
     savings_expense: '/savings/expense/:id', # edit page, modify
     budget: '/budget',
     budget_month: '/budget/month/:id',
-    budget_expense: '/budget/expense/:id',
-    budget_income: '/budget/income/:id',
-    budget_req_expense: '/budget/req_expense/:id'
+    budget_record: '/budget/record/:id'
 
 configure do
   puts '---> init <---'
@@ -100,19 +97,11 @@ post :budget do
       throw StandardError.new
     end
 
-    if params[:operation_type] == "expense"
-      op = BudgetExpense.new
-    elsif params[:operation_type] == "income"
-      op = BudgetIncome.new
-    elsif params[:operation_type] == "required_expense"
-      op = BudgetRequiredExpense.new
-    else
-      flash[:error] = "Invalid operation_type: #{params[:operation_type]}"
-      throw StandardError.new
-    end
+    op = BudgetRecord.new
     op.date = date
     op.amount = params[:amount].to_f
     op.description = params[:description]
+    op.is_income = params[:is_income] ? params[:is_income] : false
     op.save
 
     flash[:notice] = "Record successfully created"
@@ -265,42 +254,21 @@ post :savings_expense do
   redirect path_to(:savings)
 end
 
-get :budget_expense do
-  @item = BudgetExpense.find(params[:id])
-  slim :budget_item, locals: {operation_type: :budget_expense}
-end
-
-get :budget_income do
-  @item = BudgetIncome.find(params[:id])
-  slim :budget_item, locals: {operation_type: :budget_income}
-end
-
-get :budget_req_expense do
-  @item = BudgetRequiredExpense.find(params[:id])
-  slim :budget_item, locals: {operation_type: :budget_req_expense}
+get :budget_record do
+  @item = BudgetRecord.find(params[:id])
+  slim :budget_item
 end
 
 def update_budget_item(i)
   i.date = params[:date]
   i.amount = params[:amount]
   i.description = params[:description]
+  i.is_income = params[:is_income]
   i.save
 end
 
-post :budget_expense do
-  item = BudgetExpense.find(params[:id])
+post :budget_record do
+  item = BudgetRecord.find(params[:id])
   update_budget_item(item)
-  item.expense_type = params[:expense_type]
-  item.save
-  redirect path_to(:budget)
-end
-
-post :budget_income do
-  update_budget_item(BudgetIncome.find(params[:id]))
-  redirect path_to(:budget)
-end
-
-post :budget_req_expense do
-  update_budget_item(BudgetRequiredExpense.find(params[:id]))
   redirect path_to(:budget)
 end

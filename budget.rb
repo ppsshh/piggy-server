@@ -21,8 +21,7 @@ def get_budget_data(month_delta = 0)
   @date_start = Date.today.beginning_of_month.prev_month(month_delta)
   @date_end = Date.today.end_of_month.prev_month(month_delta)
 
-  @incomes = BudgetIncome.where(date: @date_start..@date_end).order(date: :asc)
-  @expenses = get_date_hash(BudgetExpense.where(date: @date_start..@date_end).order(date: :asc), :date)
-  @req_expenses = BudgetRequiredExpense.where(date: @date_start..@date_end).order(date: :asc)
+  @budget_incomes = BudgetRecord.where(date: @date_start..@date_end, is_income: true).order(date: :asc)
+  @budget_expenses = get_date_hash(BudgetRecord.where(date: @date_start..@date_end, is_income: 0).order(date: :asc), :date)
 end
 

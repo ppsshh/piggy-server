@@ -1,12 +1,11 @@
 == slim :flashes
 
-== slim :budget_item_form, locals: {item: BudgetExpense.new, submit_path: path_to(:budget)}
+== slim :budget_item_form, locals: {item: BudgetRecord.new, submit_path: path_to(:budget)}
 
 ruby:
   current_month = {
-    incomes: @incomes,
-    expenses: @expenses,
-    req_expenses: @req_expenses,
+    incomes: @budget_incomes,
+    expenses: @budget_expenses,
     date_start: @date_start,
     date_end: @date_end }
 

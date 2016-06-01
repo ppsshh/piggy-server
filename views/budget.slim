@@ -10,6 +10,9 @@ ruby:
     date_end: @date_end }
 
 a> href=path_to(:budget_month).with((@month_delta + 1).to_s) Previous month
+' |
+a> href=path_to(:budget) Current month
+' |
 a href=path_to(:budget_month).with((@month_delta - 1).to_s) Next month
 
 h2 Current month

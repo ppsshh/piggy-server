@@ -263,7 +263,8 @@ def update_budget_item(i)
   i.date = params[:date]
   i.amount = params[:amount]
   i.description = params[:description]
-  i.is_income = params[:is_income]
+  i.expense_type = params[:expense_type] ? params[:expense_type] : 0
+  i.is_income = params[:is_income] ? params[:is_income] : false
   i.save
 end
 

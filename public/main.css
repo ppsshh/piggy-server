@@ -38,3 +38,11 @@ a.expense-button {
 .expense-hl td:nth-child(3) {
   background: #ffab33;
 }
+body.hide-money .money {
+  color: #eee;
+  background: #eee;
+}
+body.hide-money .money:hover {
+  color: black;
+  background: none;
+}

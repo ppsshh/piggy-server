@@ -11,7 +11,7 @@ table.table-cell-right-align
     tr
       td = i.date
       td.td-left-align = i.description
-      td = money_format(i.amount, currency)
+      td.money = money_format(i.amount, currency)
       td
         a href=path_to(:budget_record).with(i.id) Edit
   tr
@@ -20,19 +20,19 @@ table.table-cell-right-align
     td
     td style="font-weight: bold;"
       ' Reserved for savings:
-    td
+    td.money
       = money_format(savings, currency)
   tr
     td
     td style="font-weight: bold;"
       ' Total:
-    td
+    td.money
       = money_format(total_income, currency)
   tr
     td
     td style="font-weight: bold;"
       ' Daily quota:
-    td
+    td.money
       - daily_quota = total_income / days_in_month.to_f
       = money_format(daily_quota, currency)
 
@@ -68,7 +68,7 @@ table.table-cell-right-align#expenses-table
             span.expense-description = e.description
             a< href=path_to(:budget_record).with(e.id) Edit
           td = money_format(e.amount, currency)
-          td = money_format(balance, currency)
+          td.money = money_format(balance, currency)
         - date_printed = true
     - else
       - if d == Date.today
@@ -83,14 +83,14 @@ table.table-cell-right-align#expenses-table
     td
     td
     td style="font-weight: bold;" Total expenses
-    td = money_format(total_expenses, currency)
+    td.money = money_format(total_expenses, currency)
     td
   tr
     td
     td
     td style="font-weight: bold;" Final balance:
     td
-    td = money_format(balance, currency)
+    td.money = money_format(balance, currency)
 
 table
   tr
@@ -99,4 +99,4 @@ table
     tr
       td
         a data-id=tkey class="expense-button" = $expense_types[tkey]
-      td = money_format(tval, currency)
+      td.money = money_format(tval, currency)

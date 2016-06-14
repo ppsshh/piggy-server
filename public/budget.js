@@ -17,5 +17,17 @@ $(document).ready(function(){
     var hlClass = ".expense-row.expense-" + $(this).attr("data-id");
     $(hlClass).removeClass("expense-hl");
   });
+  $('.hide-money-checkbox').click(function(){
+    $.ajax({
+      method: "POST",
+      url: "/hide-money",
+      data: {"hide-money": this.checked}
+    });
+    if (this.checked) {
+      $('body').addClass("hide-money");
+    } else {
+      $('body').removeClass("hide-money");
+    };
+  });
 });
 

@@ -31,7 +31,8 @@ paths index: '/',
     savings_expense: '/savings/expense/:id', # edit page, modify
     budget: '/budget',
     budget_month: '/budget/month/:id',
-    budget_record: '/budget/record/:id'
+    budget_record: '/budget/record/:id',
+    hide_money: '/hide-money'
 
 configure do
   puts '---> init <---'
@@ -275,4 +276,14 @@ post :budget_record do
   delta = (today.year - d.year)*12 + (today.month - d.month)
 
   redirect path_to(:budget_month).with(delta)
+end
+
+post :hide_money do
+  if params["hide-money"] && params["hide-money"] == "true"
+    request.session["hide-money"] = true
+    return 200, '{"hide-money": true}'
+  else
+    request.session["hide-money"] = false
+    return 200, '{"hide-money": false}'
+  end
 end

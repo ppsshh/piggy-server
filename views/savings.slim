@@ -7,9 +7,9 @@ table
   - ['usd', $config['currencies']].flatten.each do |c|
     - c = c.to_sym
     tr
-      td.wide-cell
+      td.wide-cell.money
         = money_format(@result[c] ? @result[c].total : 0, c)
-      td.wide-cell
+      td.wide-cell.money
         - if @result[c]
           - @result[c].parts.each do |k,v|
             = money_format(v[:from], k)

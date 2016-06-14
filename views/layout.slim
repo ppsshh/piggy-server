@@ -6,9 +6,9 @@ html
     / script src="http://code.jquery.com/jquery-2.1.1.min.js"
     script src="/jquery-2.1.1.min.js"
     script src="/jquery-rails.js"
-    script src="/budget-month.js"
+    script src="/budget.js"
     link rel="stylesheet" type="text/css" href="/main.css"
-  body
+  body class=("hide-money" if request.session["hide-money"] && request.session["hide-money"] == true)
     div
       a href=path_to(:budget) Budget spreadsheet
       |  | 
@@ -17,6 +17,8 @@ html
       a href=path_to(:operations) Operations
       |  | 
       a href=path_to(:graph) Graph
+      |  |
+      input.hide-money-checkbox type="checkbox" checked=("checked" if request.session["hide-money"] && request.session["hide-money"] == true) Hide money
     div#container
       == yield
 

@@ -101,7 +101,8 @@ post :budget do
     op.date = date
     op.amount = params[:amount].to_f
     op.description = params[:description]
-    op.is_income = params[:is_income] ? params[:is_income] : false
+    op.expense_type = params[:expense_type]
+    op.is_income = params[:is_income] ? true : false
     op.save
 
     flash[:notice] = "Record successfully created"
@@ -259,18 +260,15 @@ get :budget_record do
   slim :budget_item
 end
 
-def update_budget_item(i)
-  i.date = params[:date]
-  i.amount = params[:amount]
-  i.description = params[:description]
-  i.expense_type = params[:expense_type] ? params[:expense_type] : 0
-  i.is_income = params[:is_income] ? params[:is_income] : false
-  i.save
-end
-
 post :budget_record do
   item = BudgetRecord.find(params[:id])
-  update_budget_item(item)
+
+  item.date = params[:date]
+  item.amount = params[:amount]
+  item.description = params[:description]
+  item.expense_type = params[:expense_type] ? params[:expense_type] : 0
+  item.is_income = params[:is_income] ? true : false
+  item.save
 
   d = item.date
   today = Date.today

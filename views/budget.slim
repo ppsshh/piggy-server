@@ -8,12 +8,14 @@ ruby:
     expenses: @budget_expenses,
     date_start: @date_start,
     date_end: @date_end }
+  previous_month = @budget_date.prev_month
+  next_month = @budget_date.next_month
 
-a> href=path_to(:budget_month).with((@month_delta + 1).to_s) Previous month
+a> href=path_to(:budget_year_month).with(previous_month.year, previous_month.month) Previous month
 ' |
 a> href=path_to(:budget) Current month
 ' |
-a href=path_to(:budget_month).with((@month_delta - 1).to_s) Next month
+a href=path_to(:budget_year_month).with(next_month.year, next_month.month) Next month
 
 h2 Current month
 == slim :budget_month, locals: current_month

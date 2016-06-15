@@ -17,9 +17,9 @@ def get_date_hash(items_array, date_key)
   return h
 end
 
-def get_budget_data(month_delta = 0)
-  @date_start = Date.today.months_ago(month_delta).beginning_of_month
-  @date_end = Date.today.months_ago(month_delta - 1).beginning_of_month
+def get_budget_data(year = Date.today.year, month = Date.today.month)
+  @date_start = Date.new(year, month)
+  @date_end = Date.new(year, month).next_month
 
   @budget_incomes = BudgetRecord.where(date: @date_start..@date_end, is_income: true).order(date: :asc)
   @budget_expenses = get_date_hash(BudgetRecord.where(date: @date_start..@date_end).where.not(is_income: true).order(date: :asc), :date)

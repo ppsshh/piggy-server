@@ -30,7 +30,7 @@ paths index: '/',
     savings_expenses: '/savings/expenses', # post(new)
     savings_expense: '/savings/expense/:id', # edit page, modify
     budget: '/budget',
-    budget_month: '/budget/month/:id',
+    budget_year_month: '/budget/:year/:month',
     budget_record: '/budget/record/:id',
     hide_money: '/hide-money'
 
@@ -73,19 +73,20 @@ end
 
 get :index do
   get_budget_data
-  @month_delta = 0
+  @budget_date = Date.today
   slim :budget
 end
 
 get :budget do
   get_budget_data
-  @month_delta = 0
+  @budget_date = Date.today
   slim :budget
 end
 
-get :budget_month do
-  @month_delta = params[:id].to_i
-  get_budget_data(@month_delta)
+get :budget_year_month do
+  y, m = params[:year].to_i, params[:month].to_i
+  get_budget_data(y, m)
+  @budget_date = Date.new(y, m)
   slim :budget
 end
 
@@ -111,7 +112,7 @@ post :budget do
     flash[:error] ||= "Unable to create new record: #{params[:date]}, #{params[:amount]}, #{params[:description]}, #{params[:operation_type]}"
   end
 
-  redirect path_to(:budget)
+  redirect path_to(:budget_year_month).with(op.date.year, op.date.month)
 end
 
 get :operations do
@@ -271,11 +272,7 @@ post :budget_record do
   item.is_income = params[:is_income] ? true : false
   item.save
 
-  d = item.date
-  today = Date.today
-  delta = (today.year - d.year)*12 + (today.month - d.month)
-
-  redirect path_to(:budget_month).with(delta)
+  redirect path_to(:budget_year_month).with(item.date.year, item.date.month)
 end
 
 post :hide_money do

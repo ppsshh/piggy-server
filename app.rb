@@ -30,8 +30,8 @@ paths index: '/',
     savings_expenses: '/savings/expenses', # post(new)
     savings_expense: '/savings/expense/:id', # edit page, modify
     budget: '/budget',
-    budget_year_month: '/budget/:year/:month',
     budget_record: '/budget/record/:id',
+    budget_year_month: '/budget/month/:year/:month',
     hide_money: '/hide-money'
 
 configure do

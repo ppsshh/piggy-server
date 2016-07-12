@@ -15,14 +15,6 @@ table.table-cell-right-align
       td
         a href=path_to(:budget_record).with(i.id) Edit
   tr
-    - savings = total_income * 0.15
-    - total_income -= savings
-    td
-    td style="font-weight: bold;"
-      ' Reserved for savings:
-    td.money
-      = money_format(savings, currency)
-  tr
     td
     td style="font-weight: bold;"
       ' Total:
@@ -91,6 +83,15 @@ table.table-cell-right-align#expenses-table
     td style="font-weight: bold;" Final balance:
     td
     td.money = money_format(balance, currency)
+  tr
+    - savings = balance * 0.15
+    - balance -= savings
+    td
+    td
+    td style="font-weight: bold;" For savings (15%):
+    td
+    td.money
+      = money_format(savings, currency)
 
 table
   tr

@@ -99,9 +99,11 @@ table.table-cell-right-align
     td.money
       = money_format(savings, currency)
     td
-  tr
-    - @budget_savings.each do |bs|
-      td.td-left-align = bs.description
+  - @budget_savings.each do |bs|
+    tr
+      td.td-left-align
+        = bs.description
+        a< href=path_to(:budget_record).with(bs.id) Edit
       td.money = money_format(bs.amount, currency)
       - savings -= bs.amount
       td.money = money_format(savings, currency)

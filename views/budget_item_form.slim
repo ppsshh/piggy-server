@@ -15,16 +15,18 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         input type="text" name="description" value=(item ? item.description : "")
     tr
+      td Record type:
+      td
+        select name="record_type"
+          - {0 => "Expense", 1 => "Income", 2 => "Saving"}.each do |k,v|
+            option value=k selected=("selected" if item.record_type == k) = v
+    tr
       td Expense type:
       td
         select name="expense_type"
           option value="0" selected=("selected" if item && item.expense_type == 0) ---
           - $expense_types.each do |idx, et|
             option value=idx selected=("selected" if item && (item.expense_type == idx)) = et
-    tr
-      td
-      td
-        input type="checkbox" name="is_income" checked=item.is_income Is income
     tr
       td
       td

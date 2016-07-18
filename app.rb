@@ -104,7 +104,7 @@ post :budget do
     op.amount = params[:amount].to_f
     op.description = params[:description]
     op.expense_type = params[:expense_type]
-    op.is_income = params[:is_income] ? true : false
+    op.record_type = params[:record_type].to_i
     op.save
 
     flash[:notice] = "Record successfully created"
@@ -269,7 +269,7 @@ post :budget_record do
   item.amount = params[:amount]
   item.description = params[:description]
   item.expense_type = params[:expense_type] ? params[:expense_type] : 0
-  item.is_income = params[:is_income] ? true : false
+  item.record_type = params[:record_type].to_i
   item.save
 
   redirect path_to(:budget_year_month).with(item.date.year, item.date.month)

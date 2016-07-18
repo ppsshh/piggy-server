@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160601111843) do
+ActiveRecord::Schema.define(version: 20160718141256) do
 
   create_table "budget_records", force: :cascade do |t|
     t.date     "date",                         null: false
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20160601111843) do
     t.datetime "updated_at",                   null: false
     t.integer  "expense_type", default: 0
     t.boolean  "is_income",    default: false
+    t.integer  "record_type",  default: 0
   end
 
   create_table "currencies", force: :cascade do |t|

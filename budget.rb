@@ -22,6 +22,7 @@ def get_budget_data(year = Date.today.year, month = Date.today.month)
   @date_end = Date.new(year, month).next_month
 
   @budget_incomes = BudgetRecord.where(date: @date_start...@date_end, record_type: 1).order(date: :asc)
-  @budget_expenses = get_date_hash(BudgetRecord.where(date: @date_start...@date_end).where(record_type: 0).order(date: :asc), :date)
+  @budget_expenses = get_date_hash(BudgetRecord.where(date: @date_start...@date_end, record_type: 0).order(date: :asc), :date)
+  @budget_savings = BudgetRecord.where(date: @date_start...@date_end, record_type: 2).order(date: :asc)
 end
 

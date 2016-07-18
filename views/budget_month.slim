@@ -83,19 +83,36 @@ table.table-cell-right-align#expenses-table
     td style="font-weight: bold;" Final balance:
     td
     td.money = money_format(balance, currency)
+
+h3 Savings
+
+table.table-cell-right-align
+  tr
+    th Description
+    th Saved
+    th Remainder for savings
   tr
     - savings = balance * 0.15
     - balance -= savings
-    td
-    td
     td style="font-weight: bold;" For savings (15%):
     td
     td.money
       = money_format(savings, currency)
+    td
+  tr
+    - @budget_savings.each do |bs|
+      td.td-left-align = bs.description
+      td = money_format(bs.amount, currency)
+      - savings -= bs.amount
+      td = money_format(savings, currency)
+  tr
+    td style="font-weight: bold;" Final balance
+    td
+    td = money_format(balance + savings, currency)
+
+h3 Расходы по категориям
 
 table
-  tr
-    th Расходы по категориям:
   - types_sum.sort_by {|k,v| v}.reverse.each do |tkey, tval|
     tr
       td

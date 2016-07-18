@@ -102,13 +102,13 @@ table.table-cell-right-align
   tr
     - @budget_savings.each do |bs|
       td.td-left-align = bs.description
-      td = money_format(bs.amount, currency)
+      td.money = money_format(bs.amount, currency)
       - savings -= bs.amount
-      td = money_format(savings, currency)
+      td.money = money_format(savings, currency)
   tr
-    td style="font-weight: bold;" Final balance
+    td style="font-weight: bold;" Final balance:
     td
-    td = money_format(balance + savings, currency)
+    td.money = money_format(balance + savings, currency)
 
 h3 Расходы по категориям
 

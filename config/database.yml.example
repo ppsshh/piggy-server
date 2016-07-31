@@ -8,3 +8,11 @@ database: db/piggy.sqlite3
 #password: password
 #database: todo
 #socket: /tmp/mysql.sock
+
+#adapter: postgresql
+#encoding: unicode
+#database: dbname
+#pool: 5
+#username: username
+#password: pwd**
+

@@ -14,6 +14,9 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td Description:
       td
         input type="text" name="description" value=(item ? item.description : "")
+      td @
+      td
+        input type="text" name="shop" value=(item ? item.shop : "")
     tr
       td Record type:
       td

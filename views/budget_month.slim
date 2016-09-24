@@ -57,7 +57,7 @@ table.table-cell-right-align#expenses-table
           td class="td-left-align"
             - if e.expense_type == 0
               ' 📌
-            span.expense-description = e.description
+            span.expense-description = e.shop ? "#{e.description} @ #{e.shop}" : e.description
             a< href=path_to(:budget_record).with(e.id) Edit
           td = money_format(e.amount, currency)
           td.money = money_format(balance, currency)

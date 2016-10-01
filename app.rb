@@ -32,6 +32,7 @@ configure do
 
   $expense_types = {}
   ExpenseType.all.each { |et| $expense_types[et.id] = et.description }
+  $purse = {0 => "Normal", 1 => "Savings"}
 
   use Rack::Session::Cookie,
         key: 'piggy.fc',

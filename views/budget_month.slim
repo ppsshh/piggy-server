@@ -110,6 +110,8 @@ ruby:
 div.main_column
   h3 Savings
 
+  div.money == print_savings(@savings)
+
   table.table-cell-right-align
     tr
       th Date
@@ -125,5 +127,5 @@ div.main_column
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency)
 
-  == print_savings(@savings)
+  div.money == print_savings(@savings)
 

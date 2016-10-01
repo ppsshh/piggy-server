@@ -22,15 +22,17 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         input type="text" name="shop" value=(item ? item.shop : "")
     tr
-      td Purse:
-      td
-        input type="number" name="purse" value=(item ? item.purse : 0)
       td Expense type:
       td
         select name="expense_type"
           option value="0" selected=("selected" if item && item.expense_type == 0) ---
           - $expense_types.each do |idx, et|
             option value=idx selected=("selected" if item && (item.expense_type == idx)) = et
+      td Purse:
+      td
+        select name="purse"
+          - $purse.each do |k,v|
+            option value=k selected=("selected" if item && item.purse == k) = v
     tr
       td
     tr

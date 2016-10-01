@@ -1,3 +1,19 @@
+ruby:
+  graph_width = 1000
+  graph_height = 300
+  bar_width = (graph_width/@savings.length).round
+  max_savings_value = 0
+  @savings.each do |k,v|
+    max_savings_value = v if max_savings_value < v
+  end
+
+- iter = 0
+svg height=graph_height width=graph_width
+  - @savings.each do |k,v|
+    - h = (graph_height*v/max_savings_value).round
+    rect x=(bar_width*iter) y=graph_height-h width=(bar_width - 3) height=h fill="#558abb" rx=2 ry=2
+    - iter += 1
+
 - prev = 0
 
 table

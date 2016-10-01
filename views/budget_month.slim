@@ -101,16 +101,17 @@ div.main_column
 
 
 ruby:
-  def print_savings(sav)
+  def print_savings(sav, total)
     savings_array = []
     sav.each { |k,v| savings_array << money_format(v, k) if v > 0 }
-    return "<b>TOTAL:</b> #{savings_array.join(' + ')} = #{total_in_rub(sav)}"
+    return "<b>TOTAL:</b> #{savings_array.join(' + ')} = #{total}"
   end
 
 div.main_column
   h3 Savings
 
-  div.money == print_savings(@savings)
+  - prev_total_savings = total_in_rub(@savings)
+  div.money == print_savings(@savings, money_format(prev_total_savings, "rub"))
 
   table.table-cell-right-align
     tr
@@ -127,5 +128,7 @@ div.main_column
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency)
 
-  div.money == print_savings(@savings)
+  - total_savings = total_in_rub(@savings)
+  - diff_total_savings = total_savings - prev_total_savings
+  div.money == print_savings(@savings, "#{money_format(total_savings, 'rub')} (#{diff_total_savings >= 0 ? '+' : ''}#{money_format(diff_total_savings, 'rub')})")
 

@@ -50,7 +50,7 @@ module PiggyHelpers
       total_rub += convert_currency(rates, amount, c, 'rub')
     end
 
-    return money_format(total_rub, "rub")
+    return total_rub
   end
 end
 

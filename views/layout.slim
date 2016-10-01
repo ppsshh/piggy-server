@@ -12,10 +12,6 @@ html
     div
       a href=path_to(:budget) Budget spreadsheet
       |  | 
-      a href=path_to(:savings) Savings
-      |  | 
-      a href=path_to(:operations) Operations
-      |  | 
       a href=path_to(:graph) Graph
       |  |
       input.hide-money-checkbox type="checkbox" checked=("checked" if request.session["hide-money"] && request.session["hide-money"] == true) Hide money

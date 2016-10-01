@@ -10,20 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160924125616) do
+ActiveRecord::Schema.define(version: 20161001143740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "budget_records", force: :cascade do |t|
-    t.date     "date",                       null: false
-    t.float    "amount",       default: 0.0, null: false
+    t.date     "date",                         null: false
+    t.float    "amount",       default: 0.0,   null: false
     t.string   "description"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.integer  "expense_type", default: 0
-    t.integer  "record_type",  default: 0
     t.string   "shop"
+    t.integer  "purse",        default: 0
+    t.string   "title"
+    t.string   "currency",     default: "rub"
   end
 
   create_table "currencies", force: :cascade do |t|
@@ -38,46 +40,6 @@ ActiveRecord::Schema.define(version: 20160924125616) do
     t.text     "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
-  end
-
-  create_table "savings_account_charges", force: :cascade do |t|
-    t.datetime "date"
-    t.text     "target_cur"
-    t.text     "charge_cur"
-    t.float    "charge_amount"
-    t.text     "notes"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  create_table "savings_exchanges", force: :cascade do |t|
-    t.datetime "date"
-    t.text     "sold_cur"
-    t.float    "sold_amount"
-    t.text     "bought_cur"
-    t.float    "bought_amount"
-    t.text     "notes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "is_income",     default: true
-  end
-
-  create_table "savings_expenses", force: :cascade do |t|
-    t.datetime "date"
-    t.text     "cur"
-    t.float    "amount"
-    t.text     "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "savings_profits", force: :cascade do |t|
-    t.datetime "date"
-    t.text     "cur"
-    t.float    "amount"
-    t.text     "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
 end

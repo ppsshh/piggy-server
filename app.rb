@@ -78,15 +78,14 @@ get :index do
 end
 
 get :budget do
-  get_budget_data
-  @budget_date = Date.today
-  slim :budget
+  redirect path_to(:budget_year_month).with(Date.today.year, Date.today.month)
 end
 
 get :budget_year_month do
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
+  @savings = BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:currency).sum(:amount)
   slim :budget
 end
 
@@ -102,10 +101,12 @@ post :budget do
     op = BudgetRecord.new
     op.date = date
     op.amount = params[:amount].to_f
+    op.currency = params[:currency].downcase
     op.description = params[:description]
+    op.title = params[:title]
     op.shop = params[:shop]
     op.expense_type = params[:expense_type]
-    op.record_type = params[:record_type].to_i
+    op.purse = params[:purse].to_i
     op.save
 
     flash[:notice] = "Record successfully created"
@@ -267,14 +268,25 @@ post :budget_record do
   item = BudgetRecord.find(params[:id])
 
   item.date = params[:date]
-  item.amount = params[:amount]
+  item.amount = params[:amount].to_f
+  item.currency = params[:currency].downcase
   item.description = params[:description]
+  item.title = params[:title]
   item.shop = params[:shop]
   item.expense_type = params[:expense_type] ? params[:expense_type] : 0
-  item.record_type = params[:record_type].to_i
+  item.purse = params[:purse].to_i
   item.save
 
   redirect path_to(:budget_year_month).with(item.date.year, item.date.month)
+end
+
+delete :budget_record do
+  item = BudgetRecord.find(params[:id])
+  y, m = item.date.year, item.date.month
+
+  item.destroy
+
+  redirect path_to(:budget_year_month).with(y, m)
 end
 
 post :hide_money do

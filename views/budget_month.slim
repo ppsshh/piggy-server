@@ -5,118 +5,127 @@ ruby:
   days_in_month = date_end - date_start
   currency = :rub
 
-table.table-cell-right-align
-  - incomes.each do |i|
-    - total_income += i.amount
-    tr
-      td = i.date
-      td.td-left-align = i.description
-      td.money = money_format(i.amount, currency)
-      td
-        a href=path_to(:budget_record).with(i.id) Edit
-  tr
-    td
-    td style="font-weight: bold;"
-      ' Total:
-    td.money
-      = money_format(total_income, currency)
-  tr
-    td
-    td style="font-weight: bold;"
-      ' Daily quota:
-    td.money
-      - daily_quota = total_income / days_in_month.to_f
-      = money_format(daily_quota, currency)
+div.main_column
 
-h3 Expenses
+  h3 Incomings
 
-- d = date_start
-- balance = 0
-- total_expenses = 0
-- types_sum = {}
-table.table-cell-right-align#expenses-table
-  tr
-    th Date
-    th Type
-    th Description
-    th Expenses
-    th Balance
-  - while d < date_end
-    - balance += daily_quota
-    - date_printed = false
-    - if expenses.has_key?(d)
-      - expenses[d].each do |e|
-        - balance -= e.amount
-        - total_expenses += e.amount
-        - types_sum[e.expense_type] ||= 0
-        - types_sum[e.expense_type] += e.amount
-        tr class="expense-row expense-#{e.expense_type}" data-id=e.expense_type
-          td = date_printed ? "" : d.strftime("%b %-e")
-          td class="expense-icon expense-#{e.expense_type}" data-id=e.expense_type
-            = e.expense_type
-          td class="td-left-align"
-            - if e.expense_type == 0
-              ' 📌
-            span.expense-description = e.shop ? "#{e.description} @ #{e.shop}" : e.description
-            a< href=path_to(:budget_record).with(e.id) Edit
-          td = money_format(e.amount, currency)
-          td.money = money_format(balance, currency)
-        - date_printed = true
-    - else
-      - if d == Date.today
-        tr style="background: #ffc90e"
-          td = d.strftime("%b %-e")
-          td
-          td.td-left-align Today
-          td -
-          td = money_format(balance, currency)
-    - d += 1
-  tr
-    td
-    td
-    td style="font-weight: bold;" Total expenses
-    td.money = money_format(total_expenses, currency)
-    td
-  tr
-    td
-    td
-    td style="font-weight: bold;" Final balance:
-    td
-    td.money = money_format(balance, currency)
-
-h3 Savings
-
-table.table-cell-right-align
-  tr
-    th Description
-    th Saved
-    th Remainder for savings
-  tr
-    - savings = balance * 0.15
-    - balance -= savings
-    td style="font-weight: bold;" For savings (15%):
-    td
-    td.money
-      = money_format(savings, currency)
-    td
-  - @budget_savings.each do |bs|
-    tr
-      td.td-left-align
-        = bs.description
-        a< href=path_to(:budget_record).with(bs.id) Edit
-      td.money = money_format(bs.amount, currency)
-      - savings -= bs.amount
-      td.money = money_format(savings, currency)
-  tr
-    td style="font-weight: bold;" Final balance:
-    td
-    td.money = money_format(balance + savings, currency)
-
-h3 Расходы по категориям
-
-table
-  - types_sum.sort_by {|k,v| v}.reverse.each do |tkey, tval|
+  table.table-cell-right-align
+    - incomes.each do |i|
+      - total_income += i.amount
+      tr
+        td = i.date
+        td.td-left-align = i.title
+        td.money = money_format(i.amount, currency)
+        td
+          a href=path_to(:budget_record).with(i.id) Edit
+          a< href=path_to(:budget_record).with(i.id) data-method="delete" data-confirm="Delete?" Delete
     tr
       td
-        a data-id=tkey class="expense-button" = $expense_types[tkey]
-      td.money = money_format(tval, currency)
+      td style="font-weight: bold;"
+        ' Total:
+      td.money
+        = money_format(total_income, currency)
+    tr
+      td
+      td style="font-weight: bold;"
+        ' Daily quota:
+      td.money
+        - daily_quota = total_income / days_in_month.to_f
+        = money_format(daily_quota, currency)
+
+  h3 Expenses
+
+  - d = date_start
+  - balance = 0
+  - total_expenses = 0
+  - types_sum = {}
+  table.table-cell-right-align#expenses-table
+    tr
+      th Date
+      th Type
+      th Description
+      th Expenses
+      th Balance
+    - while d < date_end
+      - balance += daily_quota
+      - date_printed = false
+      - if expenses.has_key?(d)
+        - expenses[d].each do |e|
+          - balance += e.amount
+          - total_expenses += e.amount
+          - types_sum[e.expense_type] ||= 0
+          - types_sum[e.expense_type] += e.amount
+          tr class="expense-row expense-#{e.expense_type}" data-id=e.expense_type
+            td = date_printed ? "" : d.strftime("%b %-e")
+            td class="expense-icon expense-#{e.expense_type}" data-id=e.expense_type
+              = e.expense_type
+            td class="td-left-align"
+              - if e.expense_type == 0
+                ' 📌
+              span.expense-description = (e.shop && !e.shop.empty?) ? "#{e.title} @ #{e.shop}" : e.title
+              a< href=path_to(:budget_record).with(e.id) Edit
+              a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
+            td = money_format(e.amount, currency)
+            td.money = money_format(balance, currency)
+          - date_printed = true
+      - else
+        - if d == Date.today
+          tr style="background: #ffc90e"
+            td = d.strftime("%b %-e")
+            td
+            td.td-left-align Today
+            td -
+            td = money_format(balance, currency)
+      - d += 1
+    tr
+      td
+      td
+      td style="font-weight: bold;" Total expenses
+      td.money = money_format(total_expenses, currency)
+      td
+    tr
+      td
+      td
+      td style="font-weight: bold;" Final balance:
+      td
+      td.money = money_format(balance, currency)
+
+  h3 Расходы по категориям
+
+  table
+    - types_sum.sort_by {|k,v| v}.each do |tkey, tval|
+      tr
+        td
+          a data-id=tkey class="expense-button" = $expense_types[tkey]
+        td.money = money_format(tval * -1, currency)
+
+div.main_column
+  h3 Savings
+
+  - savings_array = []
+  - @savings.each do |k,v|
+    - if v > 0
+      - savings_array << money_format(v, k)
+  = "TOTAL: #{savings_array.join(" + ")}"
+
+  table.table-cell-right-align
+    tr
+      th Date
+      th Description
+      th Amount
+    - @budget_savings.each do |bs|
+      - @savings[bs.currency] += bs.amount
+      tr
+        td = bs.date.strftime("%b %-e")
+        td.td-left-align
+          = bs.title
+          a< href=path_to(:budget_record).with(bs.id) Edit
+          a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
+        td.money = money_format(bs.amount, bs.currency)
+
+  - savings_array = []
+  - @savings.each do |k,v|
+    - if v > 0
+      - savings_array << money_format(v, k)
+  = "TOTAL: #{savings_array.join(" + ")}"
+

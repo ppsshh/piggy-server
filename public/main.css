@@ -46,3 +46,8 @@ body.hide-money .money:hover {
   color: black;
   background: none;
 }
+div.main_column {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 25px 0 15px;
+}

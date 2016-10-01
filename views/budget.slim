@@ -17,5 +17,11 @@ a> href=path_to(:budget) Current month
 ' |
 a href=path_to(:budget_year_month).with(next_month.year, next_month.month) Next month
 
-h2 Current month
+br
+
+- if @budget_date.year == Date.today.year && @budget_date.month == Date.today.month
+  h2 Current month
+- else
+  h2 = @budget_date.strftime("%B %Y")
+
 == slim :budget_month, locals: current_month

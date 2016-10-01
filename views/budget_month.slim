@@ -14,7 +14,7 @@ div.main_column
       - total_income += i.amount
       tr
         td = i.date
-        td.td-left-align = i.title
+        td.td-left-align.title-table-cell = i.title
         td.money = money_format(i.amount, currency)
         td
           a href=path_to(:budget_record).with(i.id) Edit
@@ -59,7 +59,7 @@ div.main_column
             td = date_printed ? "" : d.strftime("%b %-e")
             td class="expense-icon expense-#{e.expense_type}" data-id=e.expense_type
               = e.expense_type
-            td class="td-left-align"
+            td class="td-left-align title-table-cell"
               - if e.expense_type == 0
                 ' 📌
               span.expense-description = (e.shop && !e.shop.empty?) ? "#{e.title} @ #{e.shop}" : e.title
@@ -99,14 +99,16 @@ div.main_column
           a data-id=tkey class="expense-button" = $expense_types[tkey]
         td.money = money_format(tval * -1, currency)
 
+
+ruby:
+  def print_savings(sav)
+    savings_array = []
+    sav.each { |k,v| savings_array << money_format(v, k) if v > 0 }
+    return "<b>TOTAL:</b> #{savings_array.join(' + ')} = #{total_in_rub(sav)}"
+  end
+
 div.main_column
   h3 Savings
-
-  - savings_array = []
-  - @savings.each do |k,v|
-    - if v > 0
-      - savings_array << money_format(v, k)
-  = "TOTAL: #{savings_array.join(" + ")}"
 
   table.table-cell-right-align
     tr
@@ -117,15 +119,11 @@ div.main_column
       - @savings[bs.currency] += bs.amount
       tr
         td = bs.date.strftime("%b %-e")
-        td.td-left-align
+        td.td-left-align.title-table-cell
           = bs.title
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency)
 
-  - savings_array = []
-  - @savings.each do |k,v|
-    - if v > 0
-      - savings_array << money_format(v, k)
-  = "TOTAL: #{savings_array.join(" + ")}"
+  == print_savings(@savings)
 

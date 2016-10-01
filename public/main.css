@@ -51,3 +51,6 @@ div.main_column {
   vertical-align: top;
   padding: 0 25px 0 15px;
 }
+.title-table-cell {
+  max-width: 450px;
+}

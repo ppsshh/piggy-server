@@ -1,3 +1,9 @@
+class BudgetRecord < ActiveRecord::Base
+end
+
+class ExpenseType < ActiveRecord::Base
+end
+
 class Currency < ActiveRecord::Base
   class << self
     def closest(curr, date)
@@ -5,3 +11,4 @@ class Currency < ActiveRecord::Base
     end
   end
 end
+

@@ -23,5 +23,34 @@ module PiggyHelpers
     cur.to_s unless cur.kind_of?(String)
     return cur.downcase.to_sym
   end
+
+  def convert_currency(rates, amount, cur1, cur2)
+    cur1 = cur1.to_s.downcase
+    cur2 = cur2.to_s.downcase
+
+    if cur1 == 'usd'
+      return amount if cur2 == 'usd'
+      return amount / rates[cur2]
+    elsif cur2 == 'usd'
+      return rates[cur1] * amount
+    else
+      return rates[cur1] * amount / rates[cur2]
+    end
+  end
+
+  def total_in_rub(savings)
+    rates = {}
+    $config["currencies"].each do |c|
+      rates[c] ||= Currency.closest(c, Date.today).rate
+    end
+
+    total_rub = 0
+    ['usd', $config['currencies']].flatten.each do |c|
+      amount = savings[c] ? savings[c] : 0
+      total_rub += convert_currency(rates, amount, c, 'rub')
+    end
+
+    return money_format(total_rub, "rub")
+  end
 end
 

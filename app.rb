@@ -17,12 +17,11 @@ also_reload './budget.rb'
 also_reload './models.rb'
 
 paths index: '/',
-    savings: '/savings',
-    operations: '/operations/', # list of all operations
-    graph: '/graph',
     budget: '/budget',
     budget_record: '/budget/record/:id',
     budget_year_month: '/budget/month/:year/:month',
+    savings: '/savings',
+    graph: '/graph',
     hide_money: '/hide-money'
 
 configure do
@@ -133,4 +132,16 @@ post :hide_money do
     request.session["hide-money"] = false
     return 200, '{"hide-money": false}'
   end
+end
+
+get :savings do
+  d = $config['start_date'].beginning_of_month
+  @savings = {}
+  while d <= Date.today
+    s = BudgetRecord.where("purse = ? AND date < ?", 1, d).group(:currency).sum(:amount)
+    @savings["#{d.year}-#{d.month}"] = total_in_rub(s)
+    d = d.next_month
+  end
+
+  slim :savings
 end

@@ -39,12 +39,12 @@ a.expense-button {
   background: #ffab33;
 }
 body.hide-money .money {
-  color: #eee;
-  background: #eee;
+  color: #eee !important;
+  background: #eee !important;
 }
 body.hide-money .money:hover {
-  color: black;
-  background: none;
+  color: black !important;
+  background: none !important;
 }
 div.main_column {
   display: inline-block;

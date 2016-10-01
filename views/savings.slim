@@ -1,0 +1,15 @@
+- prev = 0
+
+table
+  - @savings.each do |k,v|
+    tr
+      td = k
+      td.money = money_format(v, 'rub')
+      - diff = v - prev
+      - if diff > 0
+        td.money style="color: #00bb00" = "+#{money_format(diff, 'rub')}"
+      - elsif diff < 0
+        td.money style="color: #990000" = money_format(diff, 'rub')
+      - else
+        td ~
+      - prev = v

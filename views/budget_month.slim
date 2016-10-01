@@ -119,6 +119,7 @@ div.main_column
       th Description
       th Amount
     - @budget_savings.each do |bs|
+      - @savings[bs.currency] ||= 0
       - @savings[bs.currency] += bs.amount
       tr
         td = bs.date.strftime("%b %-e")

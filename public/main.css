@@ -54,3 +54,6 @@ div.main_column {
 .title-table-cell {
   max-width: 450px;
 }
+.highlight {
+  background: #ffc90e;
+}

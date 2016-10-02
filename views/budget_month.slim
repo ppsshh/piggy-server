@@ -74,7 +74,7 @@ div.main_column
           - date_printed = true
       - else
         - if d == Date.today
-          tr style="background: #ffc90e"
+          tr.highlight
             td = d.strftime("%b %-e")
             td
             td.td-left-align Today

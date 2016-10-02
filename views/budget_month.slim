@@ -10,10 +10,14 @@ div.main_column
   h3 Incomings
 
   table.table-cell-right-align
+    - d = Date.new
     - incomes.each do |i|
       - total_income += i.amount
       tr
-        td = i.date
+        td
+          - if d != i.date
+            = i.date.strftime("%b %-e")
+            - d = i.date
         td.td-left-align.title-table-cell = i.title
         td.money = money_format(i.amount, currency)
         td
@@ -118,11 +122,15 @@ div.main_column
       th Date
       th Description
       th Amount
+    - d = Date.new
     - @budget_savings.each do |bs|
       - @savings[bs.currency] ||= 0
       - @savings[bs.currency] += bs.amount
       tr
-        td = bs.date.strftime("%b %-e")
+        td
+          - if bs.date != d
+            = bs.date.strftime("%b %-e")
+            - d = bs.date
         td.td-left-align.title-table-cell
           = bs.title
           a< href=path_to(:budget_record).with(bs.id) Edit

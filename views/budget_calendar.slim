@@ -1,0 +1,25 @@
+/ locals: start_date, selected_date
+
+table.calendar-table
+  - d1 = start_date
+  - d = d1.beginning_of_year
+  - d2 = Date.today
+  - while d.year <= d2.year
+    tr
+      td = d.year
+      - d3 = d.next_year
+      - while d < d3
+        td class=("highlight" if d.year == selected_date.year && d.month == selected_date.month)
+          - if d < d1 || d > d2
+            = d.strftime("%b")
+          - else
+            a href=path_to(:budget_year_month).with(d.year, d.month) = d.strftime("%b")
+          - d = d.next_month
+  tr
+    td style="text-align: center;" colspan=13
+      a> href=path_to(:budget_year_month).with(selected_date.prev_month.year, selected_date.prev_month.month) Previous month
+      ' |
+      a> href=path_to(:budget) Current month
+      ' |
+      a href=path_to(:budget_year_month).with(selected_date.next_month.year, selected_date.next_month.month) Next month
+

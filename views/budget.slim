@@ -1,38 +1,17 @@
 == slim :flashes
 
-== slim :budget_item_form, locals: {item: BudgetRecord.new, submit_path: path_to(:budget)}
-
 ruby:
   current_month = {
     incomes: @budget_incomes,
     expenses: @budget_expenses,
     date_start: @date_start,
     date_end: @date_end }
-  previous_month = @budget_date.prev_month
-  next_month = @budget_date.next_month
 
-table.calendar-table
-  - d1 = $config['start_date']
-  - d = d1.beginning_of_year
-  - d2 = Date.today
-  - while d.year <= d2.year
-    tr
-      td = d.year
-      - d3 = d.next_year
-      - while d < d3
-        td class=("highlight" if d.year == @budget_date.year && d.month == @budget_date.month)
-          - if d < d1 || d > d2
-            = d.strftime("%b")
-          - else
-            a href=path_to(:budget_year_month).with(d.year, d.month) = d.strftime("%b")
-          - d = d.next_month
-  tr
-    td style="text-align: center;" colspan=13
-      a> href=path_to(:budget_year_month).with(previous_month.year, previous_month.month) Previous month
-      ' |
-      a> href=path_to(:budget) Current month
-      ' |
-      a href=path_to(:budget_year_month).with(next_month.year, next_month.month) Next month
+table
+  td
+    == slim :budget_item_form, locals: {item: BudgetRecord.new, submit_path: path_to(:budget)}
+  td
+    == slim :budget_calendar, locals: {start_date: $config['start_date'], selected_date: @budget_date}
 
 br
 

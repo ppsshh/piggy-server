@@ -1,11 +1,12 @@
 // locals: item
+// optional: new_date
 
 form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : path_to(:budget))
   table
     tr
       td Date:
       td
-        input type="text" name="date" value=(item.date ? item.date : Date.today)
+        input type="text" name="date" value=(item.date ? item.date : new_date)
     tr
       td Amount:
       td

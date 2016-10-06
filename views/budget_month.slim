@@ -79,7 +79,7 @@ div.main_column
             td
             td.td-left-align Today
             td -
-            td = money_format(balance, currency)
+            td.money = money_format(balance, currency)
       - d += 1
     tr
       td
@@ -132,7 +132,7 @@ div.main_column
             = bs.date.strftime("%b %-e")
             - d = bs.date
         td.td-left-align.title-table-cell
-          = bs.title
+          = bs.title && !bs.title.empty? ? bs.title : "<no title>"
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency)

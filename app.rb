@@ -82,7 +82,6 @@ post :budget do
     op.amount = params[:amount].to_f
     op.currency = params[:currency].downcase
     op.description = params[:description]
-    op.title = params[:title]
     op.shop = params[:shop]
     op.expense_type = params[:expense_type]
     op.tag_id = params[:tag_id].to_i
@@ -115,7 +114,6 @@ post :budget_record do
   item.amount = params[:amount].to_f
   item.currency = params[:currency].downcase
   item.description = params[:description]
-  item.title = params[:title]
   item.shop = params[:shop]
   item.expense_type = params[:expense_type] ? params[:expense_type] : 0
   item.tag_id = params[:tag_id].to_i

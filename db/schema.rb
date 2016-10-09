@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161009065936) do
+ActiveRecord::Schema.define(version: 20161009083724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(version: 20161009065936) do
     t.integer  "expense_type", default: 0
     t.string   "shop"
     t.integer  "purse",        default: 0
-    t.string   "title"
     t.string   "currency",     default: "rub"
     t.integer  "tag_id",       default: 0
   end

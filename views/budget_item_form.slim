@@ -24,9 +24,9 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         input type="text" name="shop" value=(item ? item.shop : "")
     tr
-      td Details:
+      td Desc:
       td
-        input type="text" name="title" value=(item ? item.title : "")
+        input type="text" name="description" value=(item ? item.description : "")
       td Expense type:
       td
         select name="expense_type" disabled="disabled"

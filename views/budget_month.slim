@@ -18,7 +18,7 @@ div.main_column
           - if d != i.date
             = i.date.strftime("%b %-e")
             - d = i.date
-        td.td-left-align.title-table-cell = i.title
+        td.td-left-align.title-table-cell = i.description
         td.money = money_format(i.amount, currency)
         td
           a href=path_to(:budget_record).with(i.id) Edit
@@ -69,7 +69,7 @@ div.main_column
               span.expense-description = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
-              div style="color: #888; font-size: 8pt" = e.title
+              div style="color: #888; font-size: 8pt" = e.description
             td = money_format(e.amount, currency)
             td.money = money_format(balance, currency)
           - date_printed = true
@@ -133,7 +133,7 @@ div.main_column
             = bs.date.strftime("%b %-e")
             - d = bs.date
         td.td-left-align.title-table-cell
-          = bs.title && !bs.title.empty? ? bs.title : "<no title>"
+          = bs.description && !bs.description.empty? ? bs.description : "<no desc>"
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency)

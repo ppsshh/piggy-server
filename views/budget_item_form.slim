@@ -23,7 +23,7 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
             option value=k selected=("selected" if item && item.tag_id == k) = full_category
       td @
       td
-        input type="text" name="shop" value=(item ? item.shop : "")
+        input#shop-autocomplete type="text" name="shop" value=(item ? item.shop : "")
     tr
       td Desc:
       td
@@ -41,3 +41,10 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         input type="submit" value="Submit"
 
+javascript:
+  $(function(){
+    $("#shop-autocomplete").autocomplete({
+      source: "/autocomplete/shop",
+      minLength: 2
+    });
+  });

@@ -67,10 +67,10 @@ div.main_column
             td class="td-left-align title-table-cell"
               - if e.tag_id == 0
                 ' 📌
-              span.expense-description = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
+              = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
-              div style="color: #888; font-size: 8pt" = e.description
+              div.expense-description = e.description
             td = money_format(e.amount, currency)
             td.money = money_format(balance, currency)
           - date_printed = true

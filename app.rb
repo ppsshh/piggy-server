@@ -22,7 +22,8 @@ paths index: '/',
     budget_year_month: '/budget/month/:year/:month',
     savings: '/savings',
     graph: '/graph',
-    hide_money: '/hide-money'
+    hide_money: '/hide-money',
+    autocomplete_shop: '/autocomplete/shop'
 
 configure do
   puts '---> init <---'
@@ -143,4 +144,13 @@ get :savings do
   end
 
   slim :savings
+end
+
+get :autocomplete_shop do
+  items = BudgetRecord.select(:shop).where('"shop" ILIKE ?', "%#{params[:term]}%").group(:shop).limit(10)
+  items_array = []
+  items.each { |i| items_array << i.shop }
+
+  content_type :json
+  items_array.to_json
 end

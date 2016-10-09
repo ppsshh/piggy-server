@@ -147,7 +147,8 @@ get :savings do
 end
 
 get :autocomplete_shop do
-  items = BudgetRecord.select(:shop).where('"shop" ILIKE ?', "%#{params[:term]}%").group(:shop).limit(10)
+  term2 = params[:term].downcase.tr("qwertyuiop[]asdfghjkl;'zxcvbnm,.`", "йцукенгшщзхъфывапролджэячсмитьбюё")
+  items = BudgetRecord.select(:shop).where('"shop" ILIKE ? OR "shop" ILIKE ?', "%#{params[:term]}%", "%#{term2}%").group(:shop).limit(10)
   items_array = []
   items.each { |i| items_array << i.shop }
 

@@ -18,6 +18,5 @@ html
       |  |
       input.hide-money-checkbox type="checkbox" checked=("checked" if request.session["hide-money"] && request.session["hide-money"] == true) Hide money
     div#container
-      = $tags
       == yield
 

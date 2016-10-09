@@ -29,8 +29,6 @@ configure do
 
   $config = YAML.load(File.open('config/app.yml'))
 
-  $expense_types = {}
-  ExpenseType.all.each { |et| $expense_types[et.id] = et.description }
   $purse = {0 => "Normal", 1 => "Savings"}
 
   use Rack::Session::Cookie,
@@ -54,12 +52,7 @@ end
 
 get :budget_year_month do
   $tags = {0 => {title: "NONAME"} }
-  Tag.all.each { |t| $tags[t.id] = {title: t.title, parent: t.parent_id} }
-  $tags.each do |k,v|
-    if v[:parent] != nil
-      $tags[k][:title] = $tags[v[:parent]][:title] + "/" + v[:title]
-    end
-  end
+  Tag.all.order(:parent_id).each { |t| $tags[t.id] = {title: t.title, parent: t.parent_id} }
 
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
@@ -83,7 +76,6 @@ post :budget do
     op.currency = params[:currency].downcase
     op.description = params[:description]
     op.shop = params[:shop]
-    op.expense_type = params[:expense_type]
     op.tag_id = params[:tag_id].to_i
     op.purse = params[:purse].to_i
     op.save
@@ -115,7 +107,6 @@ post :budget_record do
   item.currency = params[:currency].downcase
   item.description = params[:description]
   item.shop = params[:shop]
-  item.expense_type = params[:expense_type] ? params[:expense_type] : 0
   item.tag_id = params[:tag_id].to_i
   item.purse = params[:purse].to_i
   item.save

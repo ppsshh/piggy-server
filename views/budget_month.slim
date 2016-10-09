@@ -57,12 +57,13 @@ div.main_column
         - expenses[d].each do |e|
           - balance += e.amount
           - total_expenses += e.amount
-          - types_sum[e.expense_type] ||= 0
-          - types_sum[e.expense_type] += e.amount
-          tr class="expense-row expense-#{e.expense_type}" data-id=e.expense_type
+          - item_category = $tags[e.tag_id][:parent] ? $tags[e.tag_id][:parent] : e.tag_id
+          - types_sum[item_category] ||= 0
+          - types_sum[item_category] += e.amount
+          tr class="expense-row expense-#{item_category}" data-id=item_category
             td = date_printed ? "" : d.strftime("%b %-e")
-            td class="expense-icon expense-#{e.expense_type}" data-id=e.expense_type
-              = e.expense_type
+            td class="expense-icon expense-#{item_category}" data-id=item_category
+              = $tags[item_category][:title]
             td class="td-left-align title-table-cell"
               - if e.tag_id == 0
                 ' 📌
@@ -101,7 +102,7 @@ div.main_column
     - types_sum.sort_by {|k,v| v}.each do |tkey, tval|
       tr
         td
-          a data-id=tkey class="expense-button" = $expense_types[tkey]
+          a data-id=tkey class="expense-button" = $tags[tkey][:title]
         td.money = money_format(tval * -1, currency)
 
 

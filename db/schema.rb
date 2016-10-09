@@ -10,22 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161009083724) do
+ActiveRecord::Schema.define(version: 20161009114223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "budget_records", force: :cascade do |t|
-    t.date     "date",                         null: false
-    t.float    "amount",       default: 0.0,   null: false
+    t.date     "date",                        null: false
+    t.float    "amount",      default: 0.0,   null: false
     t.string   "description"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.integer  "expense_type", default: 0
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.string   "shop"
-    t.integer  "purse",        default: 0
-    t.string   "currency",     default: "rub"
-    t.integer  "tag_id",       default: 0
+    t.integer  "purse",       default: 0
+    t.string   "currency",    default: "rub"
+    t.integer  "tag_id",      default: 0
   end
 
   create_table "currencies", force: :cascade do |t|
@@ -34,13 +33,6 @@ ActiveRecord::Schema.define(version: 20161009083724) do
     t.float    "rate"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "expense_types", force: :cascade do |t|
-    t.text     "description"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "parent",      default: 0
   end
 
   create_table "tags", force: :cascade do |t|

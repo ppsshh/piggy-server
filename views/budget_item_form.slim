@@ -19,7 +19,8 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         select name="tag_id"
           - $tags.each do |k,v|
-            option value=k selected=("selected" if item && item.tag_id == k) = v[:title]
+            - full_category = v[:parent] ? $tags[v[:parent]][:title] + '/' + v[:title] : v[:title]
+            option value=k selected=("selected" if item && item.tag_id == k) = full_category
       td @
       td
         input type="text" name="shop" value=(item ? item.shop : "")
@@ -27,12 +28,6 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td Desc:
       td
         input type="text" name="description" value=(item ? item.description : "")
-      td Expense type:
-      td
-        select name="expense_type" disabled="disabled"
-          option value="0" selected=("selected" if item && item.expense_type == 0) ---
-          - $expense_types.each do |idx, et|
-            option value=idx selected=("selected" if item && (item.expense_type == idx)) = et
     tr
       td Purse:
       td

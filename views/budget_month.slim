@@ -64,11 +64,12 @@ div.main_column
             td class="expense-icon expense-#{e.expense_type}" data-id=e.expense_type
               = e.expense_type
             td class="td-left-align title-table-cell"
-              - if e.expense_type == 0
+              - if e.tag_id == 0
                 ' 📌
-              span.expense-description = (e.shop && !e.shop.empty?) ? "#{e.title} @ #{e.shop}" : e.title
+              span.expense-description = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
+              div style="color: #888; font-size: 8pt" = e.title
             td = money_format(e.amount, currency)
             td.money = money_format(balance, currency)
           - date_printed = true
@@ -107,7 +108,7 @@ div.main_column
 ruby:
   def print_savings(sav, total)
     savings_array = []
-    sav.each { |k,v| savings_array << money_format(v, k) if v > 0 }
+    sav.each { |k,v| savings_array << money_format(v, k) if v != 0 }
     return "<b>TOTAL:</b> #{savings_array.join(' + ')} = #{total}"
   end
 

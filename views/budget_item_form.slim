@@ -11,24 +11,29 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td Amount:
       td
         input type="text" name="amount" value=(item ? item.amount : 0)
-      td
         select name="currency"
           - ["rub", "usd", "eur", "jpy"].each do |k|
             option value=k selected=("selected" if item && (item.currency == k)) = k
     tr
-      td Title:
+      td Tag:
       td
-        input type="text" name="title" value=(item ? item.title : "")
+        select name="tag_id"
+          - $tags.each do |k,v|
+            option value=k selected=("selected" if item && item.tag_id == k) = v[:title]
       td @
       td
         input type="text" name="shop" value=(item ? item.shop : "")
     tr
+      td Details:
+      td
+        input type="text" name="title" value=(item ? item.title : "")
       td Expense type:
       td
-        select name="expense_type"
+        select name="expense_type" disabled="disabled"
           option value="0" selected=("selected" if item && item.expense_type == 0) ---
           - $expense_types.each do |idx, et|
             option value=idx selected=("selected" if item && (item.expense_type == idx)) = et
+    tr
       td Purse:
       td
         select name="purse"

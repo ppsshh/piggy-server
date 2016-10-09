@@ -53,6 +53,14 @@ get :budget do
 end
 
 get :budget_year_month do
+  $tags = {0 => {title: "NONAME"} }
+  Tag.all.each { |t| $tags[t.id] = {title: t.title, parent: t.parent_id} }
+  $tags.each do |k,v|
+    if v[:parent] != nil
+      $tags[k][:title] = $tags[v[:parent]][:title] + "/" + v[:title]
+    end
+  end
+
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
@@ -77,6 +85,7 @@ post :budget do
     op.title = params[:title]
     op.shop = params[:shop]
     op.expense_type = params[:expense_type]
+    op.tag_id = params[:tag_id].to_i
     op.purse = params[:purse].to_i
     op.save
 
@@ -109,6 +118,7 @@ post :budget_record do
   item.title = params[:title]
   item.shop = params[:shop]
   item.expense_type = params[:expense_type] ? params[:expense_type] : 0
+  item.tag_id = params[:tag_id].to_i
   item.purse = params[:purse].to_i
   item.save
 

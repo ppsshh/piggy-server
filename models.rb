@@ -4,6 +4,9 @@ end
 class ExpenseType < ActiveRecord::Base
 end
 
+class Tag < ActiveRecord::Base
+end
+
 class Currency < ActiveRecord::Base
   class << self
     def closest(curr, date)

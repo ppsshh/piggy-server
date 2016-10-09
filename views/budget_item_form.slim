@@ -17,10 +17,8 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
     tr
       td Tag:
       td
-        select name="tag_id"
-          - $tags.each do |k,v|
-            - full_category = v[:parent] ? $tags[v[:parent]][:title] + '/' + v[:title] : v[:title]
-            option value=k selected=("selected" if item && item.tag_id == k) = full_category
+        input#tag-autocomplete type="text" value=(item ? $tags[item.tag_id][:title] : "")
+        input#tag-id-field style="width: 20px; text-align: center;" name="tag_id" value=(item ? item.tag_id : 0) tabindex="-1" readonly="readonly"
       td @
       td
         input#shop-autocomplete type="text" name="shop" value=(item ? item.shop : "")
@@ -41,10 +39,25 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         input type="submit" value="Submit"
 
+ruby:
+  tags_array = []
+  $tags.each { |k,v| tags_array << {value: (v[:parent] ? $tags[v[:parent]][:title] + '/' + v[:title] : v[:title]), id: k} }
+
 javascript:
   $(function(){
+    var tags = #{{tags_array.to_json}};
     $("#shop-autocomplete").autocomplete({
-      source: "/autocomplete/shop",
+      source: "#{path_to(:autocomplete_shop)}",
       minLength: 2
+    });
+    $("#tag-autocomplete").autocomplete({
+      source: tags,
+      minLength: 1,
+      select: function(event,ui){
+        $("#tag-autocomplete").val(ui.item.value);
+        $("#tag-id-field").val(ui.item.id);
+
+        return false;
+      }
     });
   });

@@ -53,7 +53,7 @@ end
 
 get :budget_year_month do
   $tags = {0 => {title: "NONAME"} }
-  Tag.all.order(:parent_id).each { |t| $tags[t.id] = {title: t.title, parent: t.parent_id} }
+  Tag.all.order(parent_id: :desc).each { |t| $tags[t.id] = {title: t.title, parent: t.parent_id} }
 
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)

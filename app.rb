@@ -21,6 +21,7 @@ paths index: '/',
     budget_record: '/budget/record/:id',
     budget_year_month: '/budget/month/:year/:month',
     savings: '/savings',
+    summary: '/summary/:year',
     graph: '/graph',
     hide_money: '/hide-money',
     autocomplete_shop: '/autocomplete/shop'
@@ -52,9 +53,6 @@ get :budget do
 end
 
 get :budget_year_month do
-  $tags = {0 => {title: "NONAME"} }
-  Tag.all.order(parent_id: :desc).each { |t| $tags[t.id] = {title: t.title, parent: t.parent_id} }
-
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
@@ -135,7 +133,7 @@ post :hide_money do
 end
 
 get :savings do
-  d = $config['start_date'].beginning_of_month
+  d = $config['savings_start_date'].beginning_of_month
   @savings = {}
   while d <= Date.today
     s = BudgetRecord.where("purse = ? AND date < ?", 1, d).group(:currency).sum(:amount)
@@ -144,6 +142,13 @@ get :savings do
   end
 
   slim :savings
+end
+
+get :summary do
+  year = params[:year].to_i || 2016
+  @expenses = BudgetRecord.where(date: (Date.new(year, 1, 1)..Date.new(year, 12, 31)), purse: 0).where('amount < 0').group(:tag_id).order("sum_amount").sum(:amount)
+
+  slim :summary
 end
 
 get :autocomplete_shop do

@@ -52,5 +52,11 @@ module PiggyHelpers
 
     return total_rub
   end
+
+  def tags
+    _tags = {0 => {title: "NONAME"} }
+    Tag.all.order(parent_id: :desc).each { |t| _tags[t.id] = {title: t.title, parent: t.parent_id} }
+    return _tags
+  end
 end
 

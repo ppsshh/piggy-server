@@ -1,0 +1,61 @@
+table
+  tr
+    td style="vertical-align: top"
+      div#svg-graph
+        svg viewBox="0 0 300 300" width="300px" height="300px"
+          circle cx="0" cy="0" r="150" fill="#eee" transform="translate(150 150)"
+          g#arcs transform="translate(150 150)"
+            /path d="M0 0L0 150A150 150 0 0 1 -150 0Z" fill="#f0f"
+    td
+      table
+        - @expenses.each do |k,v|
+          tr class="expense-row expense-#{k}"
+            td
+            td
+            td = tags[k][:title]
+            td = money_format(v, :rub)
+
+
+ruby:
+  total = 0
+  expenses_order = []
+  @expenses.each do |k,v|
+    expenses_order << k
+    total += v
+  end
+  
+
+javascript:
+  $(function(){
+    var radius = 150;
+
+    function createSvgArc (startAngle, endAngle, largeArc) {
+      return ['M', 0, 0,
+              'L', Math.cos(startAngle)*radius, 0-(Math.sin(startAngle)*radius), 
+              'A', radius, radius, 0, largeArc, 0, Math.cos(endAngle)*radius, 0-(Math.sin(endAngle)*radius),
+              'Z'].join(' ');
+    }
+
+    var colors = ['#f6c715', '#68703f', '#b2b1af', '#d95c3c', '#4588a3', '#1e3a50', '#bfd1b9', '#ce7790', '#35ba92'];
+    var colorIndex = 0;
+    var expenses = #{{@expenses.to_json}};
+    var expenses_order = #{{expenses_order.to_json}};
+    var total = #{total};
+
+    var startAngle = 0;
+    for (var i = 0; i < expenses_order.length; i++) {
+      var key = expenses_order[i];
+      var part = expenses[key] / total;
+      endAngle = startAngle + Math.PI * 2 * part;
+      var color = colors[colorIndex];
+
+      $('<path />').attr('d', createSvgArc(startAngle, endAngle, part > 0.5 ? 1 : 0)).attr('fill', color).attr('class', "expense-row").attr('data-id', key).appendTo($('#arcs'));
+
+      startAngle = endAngle;
+      colorIndex = colorIndex + 1;
+      if (colorIndex >= colors.length) { colorIndex = 0; }
+    }
+    $("#svg-graph").html($("#svg-graph").html());
+    hover_functions();
+  });
+

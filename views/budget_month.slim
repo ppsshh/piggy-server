@@ -70,7 +70,7 @@ div.main_column
               = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
-              div.expense-description = e.description
+              div.expense-description == e.description.gsub(/\n/, "<br/>")
             td = money_format(e.amount, currency)
             td.money = money_format(balance, currency)
           - date_printed = true

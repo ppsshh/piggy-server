@@ -53,6 +53,7 @@ get :budget do
 end
 
 get :budget_year_month do
+  $tags = tags
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
@@ -137,7 +138,7 @@ get :savings do
   @savings = {}
   while d <= Date.today
     s = BudgetRecord.where("purse = ? AND date < ?", 1, d).group(:currency).sum(:amount)
-    @savings["#{d.year}-#{d.month}"] = total_in_rub(s)
+    @savings["#{d.year}-#{d.month}"] = total_in_rub(s, Date.new(d.year, d.month, 1).end_of_month)
     d = d.next_month
   end
 

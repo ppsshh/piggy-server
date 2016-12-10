@@ -6,9 +6,9 @@ gem 'sinatra-reloader'
 gem 'slim'
 
 gem 'sinatra-activerecord'
-#gem 'pg' # postgresql
+gem 'pg' # postgresql
 #gem 'mysql2'
-gem 'sqlite3'
+#gem 'sqlite3'
 
 gem 'rack-flash3'
-
+gem 'puma'

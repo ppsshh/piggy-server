@@ -12,7 +12,7 @@ table
           tr class="expense-row expense-#{k}"
             td
             td
-            td = tags[k][:title]
+            td = @tags[k][:title]
             td = money_format(v, :rub)
 
 
@@ -36,10 +36,12 @@ javascript:
               'Z'].join(' ');
     }
 
-    var colors = ['#f6c715', '#68703f', '#b2b1af', '#d95c3c', '#4588a3', '#1e3a50', '#bfd1b9', '#ce7790', '#35ba92'];
+    var colors = ['#f6c715', '#d95c3c', '#4588a3', '#1e3a50', '#bfd1b9', '#ce7790', '#35ba92', '#68703f', '#b2b1af'];
     var colorIndex = 0;
     var expenses = #{{@expenses.to_json}};
     var expenses_order = #{{expenses_order.to_json}};
+    var expenses_sub = #{{@expenses_sub.to_json}}
+    var expenses_sub_order = #{{ @expenses_sub.map{|k,v|{k => v.map{|k,v|k}}}.reduce(:merge).to_json  }}
     var total = #{total};
 
     var startAngle = 0;
@@ -49,7 +51,17 @@ javascript:
       endAngle = startAngle + Math.PI * 2 * part;
       var color = colors[colorIndex];
 
-      $('<path />').attr('d', createSvgArc(startAngle, endAngle, part > 0.5 ? 1 : 0)).attr('fill', color).attr('class', "expense-row").attr('data-id', key).appendTo($('#arcs'));
+      $('<path />').attr('d', createSvgArc(startAngle, endAngle, part > 0.5 ? 1 : 0)).attr('fill', color).appendTo($('#arcs'));
+
+      var subKeys = expenses_sub_order[key];
+      for (var j = 0; j < subKeys.length; j++) {
+        var subKey = subKeys[j];
+        var subPart = expenses_sub[key][subKey] / total;
+        
+        var subEndAngle = startAngle + Math.PI * 2 * subPart;
+        $('<path />').attr('d', createSvgArc(startAngle, subEndAngle, part > 0.5 ? 1 : 0)).attr('stroke', '#FFFFFF').attr('fill', 'none').attr('class', "expense-row").attr('data-id', subKey).appendTo($('#arcs'));
+        startAngle = subEndAngle;
+      }
 
       startAngle = endAngle;
       colorIndex = colorIndex + 1;

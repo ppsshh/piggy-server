@@ -147,7 +147,27 @@ end
 
 get :summary do
   year = params[:year].to_i || 2016
-  @expenses = BudgetRecord.where(date: (Date.new(year, 1, 1)..Date.new(year, 12, 31)), purse: 0).where('amount < 0').group(:tag_id).order("sum_amount").sum(:amount)
+  expenses_by_tag = BudgetRecord.where(date: (Date.new(year, 1, 1)..Date.new(year, 12, 31)), purse: 0).where('amount < 0').group(:tag_id).sum(:amount)
+
+  expenses = {}
+  expenses_sub = {}
+  @tags = tags
+  expenses_by_tag.each do |k,v|
+    tag_parent = @tags[k][:parent] || k
+
+    expenses[tag_parent] ||= 0
+    expenses[tag_parent] += v
+
+    expenses_sub[tag_parent] ||= {}
+    expenses_sub[tag_parent][k] = v
+  end
+
+  @expenses_sub = {}
+  expenses_sub.each do |k,v|
+    @expenses_sub[k] = expenses_sub[k].sort_by { |k,v| v }.to_h
+  end
+
+  @expenses = expenses.sort_by { |k,v| v }.to_h
 
   slim :summary
 end

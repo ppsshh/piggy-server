@@ -1,3 +1,11 @@
+ruby:
+  total = 0
+  expenses_order = []
+  @expenses.each do |k,v|
+    expenses_order << k
+    total += v
+  end
+
 table
   tr
     td style="vertical-align: top"
@@ -9,21 +17,19 @@ table
     td
       table
         - @expenses.each do |k,v|
-          tr class="expense-row expense-#{k}"
+          tr
             td
             td
-            td = @tags[k][:title]
+            td style="background: #444; color: white;" = @tags[k][:title]
             td = money_format(v, :rub)
-
-
-ruby:
-  total = 0
-  expenses_order = []
-  @expenses.each do |k,v|
-    expenses_order << k
-    total += v
-  end
-  
+            td = "#{ (v/total*100).round(1) }%"
+          - @expenses_sub[k].each do |k2,v2|
+            tr class="expense-row expense-#{k2}"
+              td
+              td
+              td = @tags[k2][:title]
+              td = money_format(v2, :rub)
+              td = "#{ (v2/total*100).round(1) }%"
 
 javascript:
   $(function(){
@@ -59,7 +65,7 @@ javascript:
         var subPart = expenses_sub[key][subKey] / total;
         
         var subEndAngle = startAngle + Math.PI * 2 * subPart;
-        $('<path />').attr('d', createSvgArc(startAngle, subEndAngle, part > 0.5 ? 1 : 0)).attr('stroke', '#FFFFFF').attr('fill', 'none').attr('class', "expense-row").attr('data-id', subKey).appendTo($('#arcs'));
+        $('<path />').attr('d', createSvgArc(startAngle, subEndAngle, subPart > 0.5 ? 1 : 0)).attr('stroke', '#FFFFFF').attr('fill', color).attr('class', "expense-row").attr('data-id', subKey).appendTo($('#arcs'));
         startAngle = subEndAngle;
       }
 

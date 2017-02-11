@@ -134,13 +134,8 @@ post :hide_money do
 end
 
 get :savings do
-  d = $config['savings_start_date'].beginning_of_month
-  @savings = {}
-  while d <= Date.today
-    s = BudgetRecord.where("purse = ? AND date < ?", 1, d).group(:currency).sum(:amount)
-    @savings["#{d.year}-#{d.month}"] = total_in_rub(s, Date.new(d.year, d.month, 1))
-    d = d.next_month
-  end
+  update_anchors
+  @anchors = Anchor.all.order(date: :asc)
 
   slim :savings
 end

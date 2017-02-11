@@ -1,31 +1,65 @@
 ruby:
   graph_width = 1000
   graph_height = 300
-  bar_width = (graph_width/@savings.length).round
+  bar_width = (graph_width/@anchors.length).round
   max_savings_value = 0
-  @savings.each do |k,v|
+  @anchors.each do |a|
+    v = a.sum_old + a.sum_new
     max_savings_value = v if max_savings_value < v
   end
 
 - iter = 0
 svg height=graph_height width=graph_width
-  - @savings.each do |k,v|
-    - h = (graph_height*v/max_savings_value).round
-    rect x=(bar_width*iter) y=graph_height-h width=(bar_width - 3) height=h fill="#558abb" rx=2 ry=2
+  - prev_h = 0
+  - @anchors.each do |a|
+    rect x=(bar_width*iter) y=graph_height-prev_h width=(bar_width - 3) height=prev_h fill="#d24000"
+    - h = (graph_height*a.sum_old/max_savings_value).round
+    - h_new = (graph_height*(a.sum_old+a.sum_new)/max_savings_value).round
+    - h_incr = h - prev_h
+    rect x=(bar_width*iter) y=graph_height-h_new width=(bar_width - 3) height=h_new fill="#e9c500"
+    rect x=(bar_width*iter) y=graph_height-h width=(bar_width - 3) height=h fill="#558abb"
+    - if h_incr > 0
+      rect x=(bar_width*iter) y=graph_height-h_incr width=(bar_width - 3) height=h_incr fill="#00d23b"
+    - prev_h = h_new
     - iter += 1
 
-- prev = 0
+ruby:
+  prev = Anchor.new(sum_old: 0, sum_new: 0)
+  anchors_table = []
+  @anchors.each do |a|
+    anchors_table << {date: a.date,
+           sum_old: money_format(a.sum_old, 'rub'),
+           sum_new: money_format(a.sum_new, 'rub'),
+           diff1: (a.sum_old - prev.sum_old - prev.sum_new).round(2),
+           diff2: (a.sum_old - prev.sum_old).round(2)
+       }
+    prev = a
+  end
 
 table
-  - @savings.each do |k,v|
+  tr
+    th date
+    th balance @ start of month
+    th new incomings
+    th diff (currency fluctuations)
+    th diff (total savings)
+  - prev = Anchor.new(sum_old: 0, sum_new: 0)
+  - anchors_table.reverse.each do |a|
     tr
-      td = k
-      td.money = money_format(v, 'rub')
-      - diff = v - prev
-      - if diff > 0
-        td.money style="color: #00bb00" = "+#{money_format(diff, 'rub')}"
-      - elsif diff < 0
-        td.money style="color: #990000" = money_format(diff, 'rub')
+      td = a[:date]
+      td.money = a[:sum_old]
+      td.money = a[:sum_new]
+
+      - if a[:diff1] > 0
+        td.money style="color: #00bb00" = "+#{money_format(a[:diff1], 'rub')}"
+      - elsif a[:diff1] < 0
+        td.money style="color: #990000" = money_format(a[:diff1], 'rub')
       - else
         td ~
-      - prev = v
+
+      - if a[:diff2] > 0
+        td.money style="color: #00bb00" = "+#{money_format(a[:diff2], 'rub')}"
+      - elsif a[:diff2] < 0
+        td.money style="color: #990000" = money_format(a[:diff2], 'rub')
+      - else
+        td ~

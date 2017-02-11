@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161009114223) do
+ActiveRecord::Schema.define(version: 20170211105449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "anchors", force: :cascade do |t|
+    t.date     "date",                     null: false
+    t.float    "sum_old",                  null: false
+    t.float    "sum_new",    default: 0.0
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "budget_records", force: :cascade do |t|
     t.date     "date",                        null: false

@@ -58,5 +58,43 @@ module PiggyHelpers
     Tag.all.order(parent_id: :desc).each { |t| _tags[t.id] = {title: t.title, parent: t.parent_id} }
     return _tags
   end
+
+  def calculate_anchor(date)
+    d1 = date.beginning_of_month
+    d2 = d1.next_month
+
+    a = Anchor.find_or_initialize_by(date: d1)
+
+    sum_old = BudgetRecord.where("purse = ? AND date < ?", 1, d1).group(:currency).sum(:amount)
+    a.sum_old = total_in_rub(sum_old, d1)
+    sum_new = BudgetRecord.where("purse = ? AND date >= ? AND date <= ?", 1, d1, d2).group(:currency).sum(:amount)
+    a.sum_new = total_in_rub(sum_new, d2)
+
+    a.save
+  end
+
+  def recalculate_anchors
+    d = $config['savings_start_date'].beginning_of_month
+    while d <= Date.today
+      calculate_anchor(d)
+      d = d.next_month
+    end
+  end
+
+  def update_anchors
+    a = Anchor.order(date: :desc).take
+    unless a
+      recalculate_anchors
+      return
+    end
+
+    d = a.date.prev_month.prev_month
+# TODO: update only those months, where currency ratios have been changed/updated
+    while d <= Date.today
+      calculate_anchor(d)
+      d = d.next_month
+    end
+  end
+
 end
 

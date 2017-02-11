@@ -17,3 +17,5 @@ class Currency < ActiveRecord::Base
   end
 end
 
+class Anchor < ActiveRecord::Base
+end

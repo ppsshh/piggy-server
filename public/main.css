@@ -74,3 +74,4 @@ svg rect.incoming  { fill: #e9c500; }
 svg rect.normal    { fill: #558abb; }
 svg rect.profit    { fill: #00d23b; }
 svg rect.loss      { fill: #d24000; }
+svg rect.expense   { fill: #ffffff; }

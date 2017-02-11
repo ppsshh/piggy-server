@@ -3,6 +3,7 @@ ruby:
   graph_height = 300
   expense_padding = 6
   bar_width = (graph_width/@anchors.length).round
+  bar_padding = 3
   max_savings_value = 0
   @anchors.each do |a|
     v = a.sum_old + a.sum_new
@@ -19,20 +20,22 @@ svg height=graph_height width=graph_width
     line class=grid_class x1=0 x2=graph_width y1=grid_y y2=grid_y stroke-width=1
   - prev_h = 0
   - @anchors.each do |a|
+    - if a.date.month == 1
+      line class="bold_grid" x1=bar_width*iter-bar_padding/2-1 x2=bar_width*iter-bar_padding/2-1 y1=0 y2=graph_height
     - h      = (graph_height * a.sum_old / max_savings_value).round
     - h_incoming  = (graph_height * a.sum_new / max_savings_value).round
     - h_loss = h_incoming > 0 ? prev_h + h_incoming : prev_h
     - h_profit = h - prev_h
-    rect class="loss"     x=(bar_width*iter) y=graph_height-h_loss width=(bar_width - 3) height=h_loss
-    rect class="normal"   x=(bar_width*iter) y=graph_height-h      width=(bar_width - 3) height=h
+    rect class="loss"     x=(bar_width*iter) y=graph_height-h_loss width=(bar_width - bar_padding) height=h_loss
+    rect class="normal"   x=(bar_width*iter) y=graph_height-h      width=(bar_width - bar_padding) height=h
 
     - if h_profit > 0
-      rect class="profit" x=(bar_width*iter) y=graph_height-h width=(bar_width - 3) height=h_profit
+      rect class="profit" x=(bar_width*iter) y=graph_height-h width=(bar_width - bar_padding) height=h_profit
 
     - if h_incoming > 0
-      rect class="incoming" x=(bar_width*iter) y=graph_height-h-h_incoming  width=(bar_width - 3) height=h_incoming
+      rect class="incoming" x=(bar_width*iter) y=graph_height-h-h_incoming  width=(bar_width - bar_padding) height=h_incoming
     - else                                                    
-      rect class="expense" x=(bar_width*iter)+expense_padding y=graph_height-h  width=(bar_width - 3)-expense_padding*2 height=-1*h_incoming
+      rect class="expense" x=(bar_width*iter)+expense_padding y=graph_height-h  width=(bar_width - bar_padding)-expense_padding*2 height=-1*h_incoming
 
     - prev_h = h + h_incoming
     - iter += 1

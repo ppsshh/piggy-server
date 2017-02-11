@@ -64,3 +64,13 @@ div.main_column {
   font-size: 8pt;
   opacity: 0.5;
 }
+svg line,
+svg rect {
+  shape-rendering: crispEdges;
+}
+svg line.bold_grid   { stroke: #000000; }
+svg line.normal_grid { stroke: #cccccc; }
+svg rect.incoming  { fill: #e9c500; }
+svg rect.normal    { fill: #558abb; }
+svg rect.profit    { fill: #00d23b; }
+svg rect.loss      { fill: #d24000; }

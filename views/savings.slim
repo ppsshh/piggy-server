@@ -10,16 +10,22 @@ ruby:
 
 - iter = 0
 svg height=graph_height width=graph_width
+  - grid_y_val = 0
+  - while grid_y_val < max_savings_value
+    - grid_y_val += 100000
+    - grid_y = (graph_height - grid_y_val / max_savings_value * graph_height).round
+    - grid_class = grid_y_val % 500000 == 0 ? "bold_grid" : "normal_grid"
+    line class=grid_class x1=0 x2=graph_width y1=grid_y y2=grid_y stroke-width=1
   - prev_h = 0
   - @anchors.each do |a|
-    rect x=(bar_width*iter) y=graph_height-prev_h width=(bar_width - 3) height=prev_h fill="#d24000"
+    rect class="loss" x=(bar_width*iter) y=graph_height-prev_h width=(bar_width - 3) height=prev_h
     - h = (graph_height*a.sum_old/max_savings_value).round
     - h_new = (graph_height*(a.sum_old+a.sum_new)/max_savings_value).round
     - h_incr = h - prev_h
-    rect x=(bar_width*iter) y=graph_height-h_new width=(bar_width - 3) height=h_new fill="#e9c500"
-    rect x=(bar_width*iter) y=graph_height-h width=(bar_width - 3) height=h fill="#558abb"
+    rect class="incoming" x=(bar_width*iter) y=graph_height-h_new width=(bar_width - 3) height=h_new
+    rect class="normal" x=(bar_width*iter) y=graph_height-h width=(bar_width - 3) height=h
     - if h_incr > 0
-      rect x=(bar_width*iter) y=graph_height-h_incr width=(bar_width - 3) height=h_incr fill="#00d23b"
+      rect class="profit" x=(bar_width*iter) y=graph_height-h_incr width=(bar_width - 3) height=h_incr
     - prev_h = h_new
     - iter += 1
 

@@ -12,7 +12,7 @@ namespace :piggy do
     require 'json'
 
     history = {}
-    lc = Currency.order(date: :desc).take
+    lc = Price.order(date: :desc).take
     lc_date = lc ? lc.date - 7 : Date.new(2010, 1, 1)
 
     $config['currencies'].each do |curr|
@@ -22,12 +22,18 @@ namespace :piggy do
         date = Time.at(dv[0]/1000).to_date
         if date >= lc_date
           att = {date: date, currency: curr.downcase}
-          c = Currency.where(att).take || Currency.new(att)
+          c = Price.where(att).take || Price.new(att)
           c.rate = dv[1]
           c.save
         end
       end
 
     end
+  end
+
+  desc "Recalculate anchors"
+  task :recalc => :configuration do
+    include PiggyHelpers
+    recalculate_anchors
   end
 end

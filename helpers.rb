@@ -41,7 +41,7 @@ module PiggyHelpers
   def total_in_rub(savings, date = Date.today)
     rates = {}
     $config["currencies"].each do |c|
-      rates[c] ||= Currency.closest(c, date).rate
+      rates[c] ||= Price.closest(c, date).rate
     end
 
     total_rub = 0

@@ -4,7 +4,7 @@ ruby:
   days_count = 360
 
   start_date = Date.today - days_count
-  rates = Currency.where("date > ? AND currency = ?", start_date, "rub")
+  rates = Price.where("date > ? AND currency = ?", start_date, "rub")
 
   min_rate = rates[0].rate
   max_rate = rates[0].rate

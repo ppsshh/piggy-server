@@ -21,7 +21,7 @@ namespace :piggy do
       JSON.parse(cmdout)["data_values"].each do |dv|
         date = Time.at(dv[0]/1000).to_date
         if date >= lc_date
-          att = {date: date, currency: curr.downcase}
+          att = {date: date, currency_title: curr.downcase}
           c = Price.where(att).take || Price.new(att)
           c.rate = dv[1]
           c.save

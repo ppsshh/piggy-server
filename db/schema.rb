@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301043257) do
+ActiveRecord::Schema.define(version: 20170302123129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,12 +35,22 @@ ActiveRecord::Schema.define(version: 20170301043257) do
     t.integer  "tag_id",      default: 0
   end
 
+  create_table "currencies", force: :cascade do |t|
+    t.string   "title"
+    t.string   "description"
+    t.boolean  "is_stock",         default: false
+    t.boolean  "update_regularly", default: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
   create_table "prices", force: :cascade do |t|
     t.date     "date"
-    t.text     "currency"
+    t.text     "currency_title"
     t.float    "rate"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "currency_id"
   end
 
   create_table "tags", force: :cascade do |t|

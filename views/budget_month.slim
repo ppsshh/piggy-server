@@ -126,8 +126,8 @@ div.main_column
       th Amount
     - d = Date.new
     - @budget_savings.each do |bs|
-      - @savings[bs.currency_title] ||= 0
-      - @savings[bs.currency_title] += bs.amount
+      - @savings[bs.currency_id] ||= 0
+      - @savings[bs.currency_id] += bs.amount
       tr
         td
           - if bs.date != d
@@ -137,7 +137,7 @@ div.main_column
           = bs.description && !bs.description.empty? ? bs.description : "<no desc>"
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
-        td.money = money_format(bs.amount, bs.currency_title)
+        td.money = money_format(bs.amount, $currencies[bs.currency_id].title)
 
   - total_savings = total_in_rub(@savings, date_end)
   - diff_total_savings = total_savings - prev_total_savings

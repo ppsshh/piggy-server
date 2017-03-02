@@ -32,6 +32,9 @@ configure do
   $config = YAML.load(File.open('config/app.yml'))
 
   $purse = {0 => "Normal", 1 => "Savings"}
+  $main_currency = Currency.where(title: "RUB").take
+  $currencies = {}
+  Currency.all.each { |c| $currencies[c.id] = c }
 
   use Rack::Session::Cookie,
         key: 'piggy.fc',
@@ -57,7 +60,7 @@ get :budget_year_month do
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
-  @savings = BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:currency).sum(:amount)
+  @savings = BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:currency_id).sum(:amount)
   slim :budget
 end
 

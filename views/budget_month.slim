@@ -1,7 +1,12 @@
 // template locals: incomes, expenses, date_start, date_end
 
 ruby:
-  total_income = 0
+  incomes_hash = {}
+  incomes.each do |i|
+    incomes_hash[i.currency_id] ||= 0
+    incomes_hash[i.currency_id] += i.amount
+  end
+  income_total = total_in_main_currency(incomes_hash)
   days_in_month = date_end - date_start
 
 div.main_column
@@ -11,7 +16,6 @@ div.main_column
   table.table-cell-right-align
     - d = Date.new
     - incomes.each do |i|
-      - total_income += i.amount
       tr
         td
           - if d != i.date
@@ -27,20 +31,20 @@ div.main_column
       td style="font-weight: bold;"
         ' Total:
       td.money
-        = money_format(total_income, $main_currency.id)
+        = money_format(income_total, $main_currency.id)
     tr
       td
       td style="font-weight: bold;"
         ' Daily quota:
       td.money
-        - daily_quota = total_income / days_in_month.to_f
+        - daily_quota = income_total / days_in_month.to_f
         = money_format(daily_quota, $main_currency.id)
 
   h3 Expenses
 
   - d = date_start
   - balance = 0
-  - total_expenses = 0
+  - expenses_hash = {}
   - types_sum = {}
   table.table-cell-right-align#expenses-table
     tr
@@ -50,15 +54,15 @@ div.main_column
       th Expenses
       th Balance
     - while d < date_end
-      - balance += daily_quota
       - date_printed = false
       - if expenses.has_key?(d)
         - expenses[d].each do |e|
-          - balance += e.amount
-          - total_expenses += e.amount
+          - expenses_hash[e.currency_id] ||= 0
+          - expenses_hash[e.currency_id] += e.amount
           - item_category = $tags[e.tag_id][:parent] ? $tags[e.tag_id][:parent] : e.tag_id
-          - types_sum[item_category] ||= 0
-          - types_sum[item_category] += e.amount
+          - types_sum[item_category] ||= {}
+          - types_sum[item_category][e.currency_id] ||= 0
+          - types_sum[item_category][e.currency_id] += e.amount
           tr class="expense-row expense-#{item_category}" data-id=item_category
             td = date_printed ? "" : d.strftime("%b %-e")
             td class="expense-icon expense-#{item_category}" data-id=item_category
@@ -82,11 +86,12 @@ div.main_column
             td -
             td.money = money_format(balance, e.currency_id)
       - d += 1
+    - expense_total = total_in_main_currency(expenses_hash)
     tr
       td
       td
       td style="font-weight: bold;" Total expenses
-      td.money = money_format(total_expenses, $main_currency.id)
+      td.money = money_format(expense_total, $main_currency.id)
       td
     tr
       td
@@ -97,8 +102,10 @@ div.main_column
 
   h3 Расходы по категориям
 
+  - types_sum_main_currency = {}
+  - types_sum.each { |k,v| types_sum_main_currency[k] = total_in_main_currency(v) }
   table
-    - types_sum.sort_by {|k,v| v}.each do |tkey, tval|
+    - types_sum_main_currency.sort_by {|k,v| v}.each do |tkey, tval|
       tr
         td
           a data-id=tkey class="expense-button" = $tags[tkey][:title]
@@ -115,7 +122,7 @@ ruby:
 div.main_column
   h3 Savings
 
-  - prev_total_savings = total_in_rub(@savings, date_start)
+  - prev_total_savings = total_in_main_currency(@savings, date_start)
   div.money == print_savings(@savings, money_format(prev_total_savings, $main_currency.id))
 
   table.table-cell-right-align
@@ -138,7 +145,7 @@ div.main_column
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency_id)
 
-  - total_savings = total_in_rub(@savings, date_end)
+  - total_savings = total_in_main_currency(@savings, date_end)
   - diff_total_savings = total_savings - prev_total_savings
   div.money == print_savings(@savings, "#{money_format(total_savings, $main_currency.id)} (#{diff_total_savings >= 0 ? '+' : ''}#{money_format(diff_total_savings, $main_currency.id)})")
 

@@ -1,9 +1,4 @@
 ---
 secret: 1234567890abcdef
-base_currency: rub
-currencies:
-  - rub
-  - eur
-  - jpy
 start_date: 2010-01-01
 savings_start_date: 2012-01-01

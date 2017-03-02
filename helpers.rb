@@ -35,16 +35,15 @@ module PiggyHelpers
     end
   end
 
-  def total_in_rub(savings, date = Date.today)
+  def total_in_main_currency(savings, date = Date.today)
     rates = {}
     total = 0
-    currencies = Currency.all
 
-    currencies.each do |c|
+    $currencies.each do |i,c|
       rates[c.id] ||= Price.closest(c, date).rate if c.title != "USD"
     end
 
-    currencies.each do |c|
+    $currencies.each do |i,c|
       amount = savings[c.id] || 0
       total += convert_currency(rates, amount, c, $main_currency)
     end

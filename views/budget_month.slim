@@ -3,7 +3,6 @@
 ruby:
   total_income = 0
   days_in_month = date_end - date_start
-  currency = :rub
 
 div.main_column
 
@@ -19,7 +18,7 @@ div.main_column
             = i.date.strftime("%b %-e")
             - d = i.date
         td.td-left-align.title-table-cell = i.description
-        td.money = money_format(i.amount, currency)
+        td.money = money_format(i.amount, i.currency_id)
         td
           a href=path_to(:budget_record).with(i.id) Edit
           a< href=path_to(:budget_record).with(i.id) data-method="delete" data-confirm="Delete?" Delete
@@ -28,14 +27,14 @@ div.main_column
       td style="font-weight: bold;"
         ' Total:
       td.money
-        = money_format(total_income, currency)
+        = money_format(total_income, $main_currency.id)
     tr
       td
       td style="font-weight: bold;"
         ' Daily quota:
       td.money
         - daily_quota = total_income / days_in_month.to_f
-        = money_format(daily_quota, currency)
+        = money_format(daily_quota, $main_currency.id)
 
   h3 Expenses
 
@@ -71,8 +70,8 @@ div.main_column
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
               div.expense-description == e.description.gsub(/\n/, "<br/>")
-            td = money_format(e.amount, currency)
-            td.money = money_format(balance, currency)
+            td = money_format(e.amount, e.currency_id)
+            td.money = money_format(balance, e.currency_id)
           - date_printed = true
       - else
         - if d == Date.today
@@ -81,20 +80,20 @@ div.main_column
             td
             td.td-left-align Today
             td -
-            td.money = money_format(balance, currency)
+            td.money = money_format(balance, e.currency_id)
       - d += 1
     tr
       td
       td
       td style="font-weight: bold;" Total expenses
-      td.money = money_format(total_expenses, currency)
+      td.money = money_format(total_expenses, $main_currency.id)
       td
     tr
       td
       td
       td style="font-weight: bold;" Final balance:
       td
-      td.money = money_format(balance, currency)
+      td.money = money_format(balance, $main_currency.id)
 
   h3 Расходы по категориям
 
@@ -103,7 +102,7 @@ div.main_column
       tr
         td
           a data-id=tkey class="expense-button" = $tags[tkey][:title]
-        td.money = money_format(tval * -1, currency)
+        td.money = money_format(tval * -1, $main_currency.id)
 
 
 ruby:
@@ -117,7 +116,7 @@ div.main_column
   h3 Savings
 
   - prev_total_savings = total_in_rub(@savings, date_start)
-  div.money == print_savings(@savings, money_format(prev_total_savings, "rub"))
+  div.money == print_savings(@savings, money_format(prev_total_savings, $main_currency.id))
 
   table.table-cell-right-align
     tr
@@ -137,9 +136,9 @@ div.main_column
           = bs.description && !bs.description.empty? ? bs.description : "<no desc>"
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
-        td.money = money_format(bs.amount, $currencies[bs.currency_id].title)
+        td.money = money_format(bs.amount, bs.currency_id)
 
   - total_savings = total_in_rub(@savings, date_end)
   - diff_total_savings = total_savings - prev_total_savings
-  div.money == print_savings(@savings, "#{money_format(total_savings, 'rub')} (#{diff_total_savings >= 0 ? '+' : ''}#{money_format(diff_total_savings, 'rub')})")
+  div.money == print_savings(@savings, "#{money_format(total_savings, $main_currency.id)} (#{diff_total_savings >= 0 ? '+' : ''}#{money_format(diff_total_savings, $main_currency.id)})")
 

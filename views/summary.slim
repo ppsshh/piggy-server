@@ -21,14 +21,14 @@ table
             td
             td
             td style="background: #444; color: white;" = @tags[k][:title]
-            td = money_format(v, :rub)
+            td = money_format(v, $main_currency.id)
             td = "#{ (v/total*100).round(1) }%"
           - @expenses_sub[k].each do |k2,v2|
             tr class="expense-row expense-#{k2}"
               td
               td
               td = @tags[k2][:title]
-              td = money_format(v2, :rub)
+              td = money_format(v2, $main_currency.id)
               td = "#{ (v2/total*100).round(1) }%"
 
 javascript:

@@ -12,8 +12,8 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td
         input type="text" name="amount" value=(item ? item.amount : 0) tabindex="2"
         select name="currency"
-          - ["rub", "usd", "eur", "jpy"].each do |k|
-            option value=k selected=("selected" if item && (item.currency == k)) = k
+          - $currencies.each do |k,v|
+            option value=k selected=("selected" if item && (item.currency_id == k)) = v.title
     tr
       td Tag:
       td

@@ -1,22 +1,22 @@
 module PiggyHelpers
-  def currency_symbol(currency)
-    currency = currency.to_s.downcase.to_sym
+  def currency_symbol(currency_id)
+    currency = $currencies[currency_id]
     currency_symbols = {
-      usd: '$',
-      eur: '€',
-      jpy: '¥',
-      rub: '₽'
+      "USD" => '$',
+      "EUR" => '€',
+      "JPY" => '¥',
+      "RUB" => '₽'
     }
 
-    return currency_symbols[currency.downcase] || currency.upcase
+    return currency_symbols[currency.title] || currency.title
   end
 
-  def money_format(amount, currency)
+  def money_format(amount, currency_id)
     parts = amount.round(2).to_s.split('.')
     parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1 ")
     parts.delete_at(1) if parts[1] == "0"
 
-    return "#{parts.join('.')} #{currency_symbol(currency)}"
+    return "#{parts.join('.')} #{currency_symbol(currency_id)}"
   end
 
   def cursym(cur)
@@ -41,14 +41,12 @@ module PiggyHelpers
     currencies = Currency.all
 
     currencies.each do |c|
-      rates[c.id] ||= Price.closest(c, date).rate if c.update_regularly == true
+      rates[c.id] ||= Price.closest(c, date).rate if c.title != "USD"
     end
 
     currencies.each do |c|
-      if c.is_stock == false
-        amount = savings[c.id] || 0
-        total += convert_currency(rates, amount, c, $main_currency)
-      end
+      amount = savings[c.id] || 0
+      total += convert_currency(rates, amount, c, $main_currency)
     end
 
     return total

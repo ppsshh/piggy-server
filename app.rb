@@ -76,7 +76,7 @@ post :budget do
     op = BudgetRecord.new
     op.date = date
     op.amount = params[:amount].to_f
-    op.currency = params[:currency].downcase
+    op.currency_id = params[:currency].to_i
     op.description = params[:description]
     op.shop = params[:shop]
     op.tag_id = params[:tag_id].to_i
@@ -107,7 +107,7 @@ post :budget_record do
 
   item.date = params[:date]
   item.amount = params[:amount].to_f
-  item.currency = params[:currency].downcase
+  item.currency_id = params[:currency].to_i
   item.description = params[:description]
   item.shop = params[:shop]
   item.tag_id = params[:tag_id].to_i

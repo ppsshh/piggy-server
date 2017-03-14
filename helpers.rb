@@ -24,29 +24,17 @@ module PiggyHelpers
     return cur.downcase.to_sym
   end
 
-  def convert_currency(rates, amount, cur1, cur2)
-    if cur1.title == 'USD'
-      return amount if cur2.title == 'USD'
-      return amount / rates[cur2.id]
-    elsif cur2.title == 'USD'
-      return rates[cur1.id] * amount
-    else
-      return rates[cur1.id] * amount / rates[cur2.id]
-    end
-  end
-
-  def total_in_main_currency(savings, date = Date.today)
-    rates = {}
+  def total_conversion(savings, curr, date)
     total = 0
 
+    #puts "## #{date} #{savings}"
     $currencies.each do |i,c|
-      rates[c.id] ||= Price.closest(c, date).rate if c.title != "USD"
+      amount = savings[c.id]
+      if amount
+        total += $price_converter.convert_currency(c, curr, amount, date)
+      end
     end
-
-    $currencies.each do |i,c|
-      amount = savings[c.id] || 0
-      total += convert_currency(rates, amount, c, $main_currency)
-    end
+    #puts "## TOTAL: #{total} #{curr.title}"
 
     return total
   end
@@ -64,9 +52,9 @@ module PiggyHelpers
     a = Anchor.find_or_initialize_by(date: d1)
 
     sum_old = BudgetRecord.where("purse = ? AND date < ?", 1, d1).group(:currency_id).sum(:amount)
-    a.sum_old = total_in_rub(sum_old, d1)
+    a.sum_old = total_conversion(sum_old, $main_currency, d1)
     sum_new = BudgetRecord.where("purse = ? AND date >= ? AND date <= ?", 1, d1, d2).group(:currency_id).sum(:amount)
-    a.sum_new = total_in_rub(sum_new, d2)
+    a.sum_new = total_conversion(sum_new, $main_currency, d2)
 
     a.save
   end

@@ -11,10 +11,12 @@ require 'date'
 require_relative './helpers.rb'
 require_relative './models.rb'
 require_relative './budget.rb'
+require_relative './price.rb'
 
 also_reload './helpers.rb'
 also_reload './budget.rb'
 also_reload './models.rb'
+also_reload './price.rb'
 
 paths index: '/',
     budget: '/budget',
@@ -35,6 +37,7 @@ configure do
   $main_currency = Currency.where(title: "RUB").take
   $currencies = {}
   Currency.all.each { |c| $currencies[c.id] = c }
+  $price_converter = PriceConverter.new
 
   use Rack::Session::Cookie,
         key: 'piggy.fc',

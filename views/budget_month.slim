@@ -6,7 +6,7 @@ ruby:
     incomes_hash[i.currency_id] ||= 0
     incomes_hash[i.currency_id] += i.amount
   end
-  income_total = total_in_main_currency(incomes_hash)
+  income_total = total_conversion(incomes_hash, $main_currency, Date.today)
   days_in_month = date_end - date_start
 
 div.main_column
@@ -84,9 +84,9 @@ div.main_column
             td
             td.td-left-align Today
             td -
-            td.money = money_format(balance, e.currency_id)
+            td.money = money_format(balance, $main_currency.id)
       - d += 1
-    - expense_total = total_in_main_currency(expenses_hash)
+    - expense_total = total_conversion(expenses_hash, $main_currency, Date.today)
     tr
       td
       td
@@ -98,12 +98,12 @@ div.main_column
       td
       td style="font-weight: bold;" Final balance:
       td
-      td.money = money_format(balance, $main_currency.id)
+      td.money = money_format(income_total + expense_total, $main_currency.id)
 
   h3 Расходы по категориям
 
   - types_sum_main_currency = {}
-  - types_sum.each { |k,v| types_sum_main_currency[k] = total_in_main_currency(v) }
+  - types_sum.each { |k,v| types_sum_main_currency[k] = total_conversion(v, $main_currency, Date.today) }
   table
     - types_sum_main_currency.sort_by {|k,v| v}.each do |tkey, tval|
       tr
@@ -122,7 +122,7 @@ ruby:
 div.main_column
   h3 Savings
 
-  - prev_total_savings = total_in_main_currency(@savings, date_start)
+  - prev_total_savings = total_conversion(@savings, $main_currency, date_start)
   div.money == print_savings(@savings, money_format(prev_total_savings, $main_currency.id))
 
   table.table-cell-right-align
@@ -145,7 +145,7 @@ div.main_column
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
         td.money = money_format(bs.amount, bs.currency_id)
 
-  - total_savings = total_in_main_currency(@savings, date_end)
+  - total_savings = total_conversion(@savings, $main_currency, date_end)
   - diff_total_savings = total_savings - prev_total_savings
   div.money == print_savings(@savings, "#{money_format(total_savings, $main_currency.id)} (#{diff_total_savings >= 0 ? '+' : ''}#{money_format(diff_total_savings, $main_currency.id)})")
 

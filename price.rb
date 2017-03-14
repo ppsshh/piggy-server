@@ -24,10 +24,13 @@ class PriceConverter
 
   def update
     p = Price.where(record_type: [1,2]).order(updated_at: :desc).take
+    return if p == nil
+
     if @updated_at < p.updated_at
       @updated_at = p.updated_at
       self.reload
     end
+
     @latest_reload = Time.now
   end
 
@@ -58,8 +61,8 @@ class PriceConverter
 
     self.update if Time.now - @latest_reload > 60
 
-    rate1 = get_rate(cur1, date)
-    rate2 = get_rate(cur2, date)
+    rate1 = cur1.title == 'USD' ? 0 : get_rate(cur1, date)
+    rate2 = cur2.title == 'USD' ? 0 : get_rate(cur2, date)
     #puts "#### #{cur1.title} #{rate1}; #{cur2.title} #{rate2}"
 
     if cur1.title == 'USD'

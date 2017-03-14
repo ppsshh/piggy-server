@@ -2,15 +2,28 @@ ruby:
   graph_width = 1000
   graph_height = 300
   expense_padding = 6
-  bar_width = (graph_width/@anchors.length).round
+  bar_width = (graph_width/(@anchors.length-2)).round
   bar_padding = 3
-  max_savings_value = 0
-  @anchors.each do |a|
-    v = a.sum_old + a.sum_new
-    max_savings_value = v if max_savings_value < v
-  end
 
-- iter = 0
+  anchors_table = []
+  max_savings_value = 0
+  prev = Anchor.new(sum_old: 0, sum_new: 0)
+  @anchors.each do |a|
+    i = {
+      date: a.date.prev_month,
+      sum_old: a.sum_old,
+      sum_new: prev.sum_new,
+      diff1: (a.sum_old - prev.sum_old - prev.sum_new).round(2),
+      diff2: (a.sum_old - prev.sum_old).round(2)
+    }
+    anchors_table << i
+    v = prev[:sum_old] + (i[:diff1] > 0 ? i[:diff1] : 0) + (i[:sum_new] > 0 ? i[:sum_new] : 0)
+    max_savings_value = v if max_savings_value < v
+    prev = a
+  end
+  max_savings_value *= 1.05
+  anchors_table.delete_at(0)
+
 svg height=graph_height width=graph_width
   - grid_y_val = 0
   - while grid_y_val < max_savings_value
@@ -18,40 +31,38 @@ svg height=graph_height width=graph_width
     - grid_y = (graph_height - grid_y_val / max_savings_value * graph_height).round
     - grid_class = grid_y_val % 500000 == 0 ? "bold_grid" : "normal_grid"
     line class=grid_class x1=0 x2=graph_width y1=grid_y y2=grid_y stroke-width=1
-  - prev_h = 0
-  - @anchors.each do |a|
-    - if a.date.month == 1
-      line class="bold_grid" x1=bar_width*iter-bar_padding/2-1 x2=bar_width*iter-bar_padding/2-1 y1=0 y2=graph_height
-    - h      = (graph_height * a.sum_old / max_savings_value).round
-    - h_incoming  = (graph_height * a.sum_new / max_savings_value).round
-    - h_loss = h_incoming > 0 ? prev_h + h_incoming : prev_h
-    - h_profit = h - prev_h
-    rect class="loss"     x=(bar_width*iter) y=graph_height-h_loss width=(bar_width - bar_padding) height=h_loss
-    rect class="normal"   x=(bar_width*iter) y=graph_height-h      width=(bar_width - bar_padding) height=h
 
-    - if h_profit > 0
-      rect class="profit" x=(bar_width*iter) y=graph_height-h width=(bar_width - bar_padding) height=h_profit
+  - h_prev = 0
+  - iter = 0
+  - anchors_table.each do |a|
+    g transform="translate(#{bar_width*iter},0)"
+      - if a[:date].month == 1
+        line class="bold_grid" x1=bar_padding/-2 x2=bar_padding/-2 y1=0 y2=graph_height
 
-    - if h_incoming > 0
-      rect class="incoming" x=(bar_width*iter) y=graph_height-h-h_incoming  width=(bar_width - bar_padding) height=h_incoming
-    - else                                                    
-      rect class="expense" x=(bar_width*iter)+expense_padding y=graph_height-h  width=(bar_width - bar_padding)-expense_padding*2 height=-1*h_incoming
+      - h_old  = (graph_height * a[:sum_old] / max_savings_value).round
+      - h_new  = (graph_height * a[:sum_new] / max_savings_value).round
+      - h_diff = (graph_height * a[:diff1]   / max_savings_value).round
 
-    - prev_h = h + h_incoming
-    - iter += 1
+      rect class="normal" x=0 y=(graph_height-h_prev) width=(bar_width-bar_padding) height=(h_prev)
 
-ruby:
-  prev = Anchor.new(sum_old: 0, sum_new: 0)
-  anchors_table = []
-  @anchors.each do |a|
-    anchors_table << {date: a.date,
-           sum_old: a.sum_old,
-           sum_new: prev.sum_new,
-           diff1: (a.sum_old - prev.sum_old - prev.sum_new).round(2),
-           diff2: (a.sum_old - prev.sum_old).round(2)
-       }
-    prev = a
-  end
+      - if h_diff > 0
+        - shift = graph_height - h_prev - h_diff
+        rect class="profit" x=0 width=(bar_width-bar_padding) y=shift height=h_diff
+        - if h_new > 0
+          rect class="incoming" x=0 width=(bar_width-bar_padding) y=(shift-h_new) height=h_new
+        - else
+          rect class="expense" x=expense_padding width=(bar_width-bar_padding)-expense_padding*2 y=shift height=h_new.abs
+      - else
+        - if h_new > 0
+          - shift = graph_height - h_prev - h_new
+          rect class="incoming" x=0 width=(bar_width-bar_padding) y=shift height=h_new
+        - else
+          - shift = graph_height - h_prev
+          rect class="expense" x=expense_padding width=(bar_width-bar_padding)-expense_padding*2 y=shift height=h_new.abs
+          - shift += h_new.abs
+        rect class="loss" x=expense_padding width=(bar_width-bar_padding)-expense_padding*2 y=shift height=h_diff.abs
+      - h_prev = h_old
+      - iter += 1
 
 table
   tr
@@ -64,7 +75,7 @@ table
   - prev = Anchor.new(sum_old: 0, sum_new: 0)
   - anchors_table.reverse.each do |a|
     tr
-      td = a[:date].prev_month.strftime("%Y %b")
+      td = a[:date].strftime("%Y %b")
 
       - if a[:diff1] > 0
         td.money style="color: #00bb00" = "+#{money_format(a[:diff1], $main_currency.id)}"

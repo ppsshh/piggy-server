@@ -43,7 +43,6 @@ div.main_column
   h3 Expenses
 
   - d = date_start
-  - balance = 0
   - expenses_hash = {}
   - types_sum = {}
   table.table-cell-right-align#expenses-table
@@ -52,7 +51,6 @@ div.main_column
       th Type
       th Description
       th Expenses
-      th Balance
     - while d < date_end
       - date_printed = false
       - if expenses.has_key?(d)
@@ -73,9 +71,11 @@ div.main_column
               = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
-              div.expense-description == e.description.gsub(/\n/, "<br/>")
             td = money_format(e.amount, e.currency_id)
-            td.money = money_format(balance, e.currency_id)
+          - e.description.split("\n").each do |desc_line|
+            tr
+              td colspan=2
+              td.td-left-align.title-table-cell.expense-description = desc_line
           - date_printed = true
       - else
         - if d == Date.today
@@ -84,7 +84,6 @@ div.main_column
             td
             td.td-left-align Today
             td -
-            td.money = money_format(balance, $main_currency.id)
       - d += 1
     - expense_total = total_conversion(expenses_hash, $main_currency, Date.today)
     tr
@@ -92,12 +91,10 @@ div.main_column
       td
       td style="font-weight: bold;" Total expenses
       td.money = money_format(expense_total, $main_currency.id)
-      td
     tr
       td
       td
       td style="font-weight: bold;" Final balance:
-      td
       td.money = money_format(income_total + expense_total, $main_currency.id)
 
   h3 Расходы по категориям
@@ -128,8 +125,7 @@ div.main_column
   table.table-cell-right-align
     tr
       th Date
-      th Description
-      th Amount
+      th Details
     - d = Date.new
     - @budget_savings.each do |bs|
       - @savings[bs.currency_id] ||= 0
@@ -139,11 +135,15 @@ div.main_column
           - if bs.date != d
             = bs.date.strftime("%b %-e")
             - d = bs.date
-        td.td-left-align.title-table-cell
-          = bs.description && !bs.description.empty? ? bs.description : "<no desc>"
+        td.td-left-align.money
+          = money_format(bs.amount, bs.currency_id)
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
-        td.money = money_format(bs.amount, bs.currency_id)
+      - if bs.description && !bs.description.empty?
+        - bs.description.split("\n").each do |desc_line|
+          tr
+            td
+            td.td-left-align.title-table-cell.expense-description = desc_line
 
   - total_savings = total_conversion(@savings, $main_currency, date_end)
   - diff_total_savings = total_savings - prev_total_savings

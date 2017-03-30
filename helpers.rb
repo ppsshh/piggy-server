@@ -11,12 +11,16 @@ module PiggyHelpers
     return currency_symbols[currency.title] || currency.title
   end
 
-  def money_format(amount, currency_id)
+  def money_round(amount)
     parts = amount.round(2).to_s.split('.')
     parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1 ")
     parts.delete_at(1) if parts[1] == "0"
 
-    return "#{parts.join('.')} #{currency_symbol(currency_id)}"
+    return parts.join(".")
+  end
+
+  def money_format(amount, currency_id)
+    return "#{money_round(amount)} #{currency_symbol(currency_id)}"
   end
 
   def cursym(cur)
@@ -24,19 +28,23 @@ module PiggyHelpers
     return cur.downcase.to_sym
   end
 
-  def total_conversion(savings, curr, date)
-    total = 0
+  def total_conversion(savings, curr, date, detailed = false)
+    result = {
+        src: savings,
+        dst: {},
+        total: 0}
 
     #puts "## #{date} #{savings}"
     $currencies.each do |i,c|
       amount = savings[c.id]
       if amount
-        total += $price_converter.convert_currency(c, curr, amount, date)
+        result[:dst][c.id] = $price_converter.convert_currency(c, curr, amount, date)
+        result[:total] += result[:dst][c.id]
       end
     end
     #puts "## TOTAL: #{total} #{curr.title}"
 
-    return total
+    return detailed ? result : result[:total]
   end
 
   def tags

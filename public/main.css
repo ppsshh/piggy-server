@@ -64,6 +64,20 @@ div.main_column {
   font-size: 8pt;
   opacity: 0.5;
 }
+.total-block {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+}
+.total-block-dst {
+  font-size: 0.6em;
+}
+.positive {
+  color: #00bb00;
+}
+.negative {
+  color: #990000;
+}
 svg line,
 svg rect {
   shape-rendering: crispEdges;

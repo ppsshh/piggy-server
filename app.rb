@@ -24,6 +24,7 @@ paths index: '/',
     budget_year_month: '/budget/month/:year/:month',
     savings: '/savings',
     summary: '/summary/:year',
+    tag_summary: '/summary/:year/:tag_id',
     graph: '/graph',
     hide_money: '/hide-money',
     autocomplete_shop: '/autocomplete/shop'
@@ -147,8 +148,8 @@ get :savings do
 end
 
 get :summary do
-  year = params[:year].to_i || 2016
-  expenses_by_tag = BudgetRecord.where(date: (Date.new(year, 1, 1)..Date.new(year, 12, 31)), purse: 0).where('amount < 0').group(:tag_id).sum(:amount)
+  @year = params[:year].to_i || Date.today.year
+  expenses_by_tag = BudgetRecord.where(date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)), purse: 0).where('amount < 0').group(:tag_id).sum(:amount)
 
   expenses = {}
   expenses_sub = {}
@@ -171,6 +172,17 @@ get :summary do
   @expenses = expenses.sort_by { |k,v| v }.to_h
 
   slim :summary
+end
+
+get :tag_summary do
+  @year = params[:year].to_i || Date.today.year
+  @tag = params[:tag_id].to_i
+  tags = [@tag]
+  Tag.where(parent_id: @tag).map {|t| tags << t.id}
+
+  @expenses = BudgetRecord.where(date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)), purse: 0, tag_id: tags).where('amount < 0').order(amount: :asc)
+
+  slim :tag_summary
 end
 
 get :autocomplete_shop do

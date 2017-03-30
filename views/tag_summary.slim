@@ -1,0 +1,24 @@
+h2
+  a href=path_to(:summary).with(@year) = "#{@year}'s summary"
+  = " for #{tags[@tag][:title]}"
+
+table
+  tr
+    th Amount
+    th Description
+    th Date
+  - @expenses.each do |e|
+    - lines = []
+    - lines << e.shop if e.shop && !e.shop.empty?
+    - lines << e.description.split("\n")
+    - lines = lines.flatten
+    tr
+      td = money_format(e.amount, e.currency_id)
+      td = lines[0]
+      td = e.date
+    - lines.delete_at(0)
+    - if lines.count > 0
+      - lines.each do |line|
+        tr
+          td
+          td = line

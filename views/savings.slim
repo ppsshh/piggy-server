@@ -64,13 +64,13 @@ svg height=graph_height width=graph_width
       - h_prev = h_old
       - iter += 1
 
-table
+table.savings-table
   tr
     th date
     th rate diff
     th new incomings
     th total diff
-    th balance @ end of month
+    th @ end of month
 
   - prev = Anchor.new(sum_old: 0, sum_new: 0)
   - anchors_table.reverse.each do |a|
@@ -78,25 +78,25 @@ table
       td = a[:date].strftime("%Y %b")
 
       - if a[:diff1] > 0
-        td.money.positive = "+#{money_format(a[:diff1], $main_currency.id)}"
+        td.money.positive == "+#{money_format(a[:diff1], $main_currency.id)}"
       - elsif a[:diff1] < 0
-        td.money.negative = money_format(a[:diff1], $main_currency.id)
+        td.money.negative == money_format(a[:diff1], $main_currency.id)
       - else
         td ~
 
       - if a[:sum_new] > 0
-        td.money.positive = "+#{money_format(a[:sum_new], $main_currency.id)}"
+        td.money.positive == "+#{money_format(a[:sum_new], $main_currency.id)}"
       - elsif a[:sum_new] < 0
-        td.money.negative = money_format(a[:sum_new], $main_currency.id)
+        td.money.negative == money_format(a[:sum_new], $main_currency.id)
       - else
         td ~
 
       - if a[:diff2] > 0
-        td.money.positive = "+#{money_format(a[:diff2], $main_currency.id)}"
+        td.money.positive == "+#{money_format(a[:diff2], $main_currency.id)}"
       - elsif a[:diff2] < 0
-        td.money.negative = money_format(a[:diff2], $main_currency.id)
+        td.money.negative == money_format(a[:diff2], $main_currency.id)
       - else
         td ~
 
-      td.money = money_format(a[:sum_old], $main_currency.id)
+      td.money == money_format(a[:sum_old], $main_currency.id)
 

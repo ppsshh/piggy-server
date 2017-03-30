@@ -6,7 +6,7 @@ ruby:
     total += v
   end
 
-table
+table.summary-table
   tr
     td style="vertical-align: top"
       div#svg-graph
@@ -22,7 +22,7 @@ table
             td
             td style="background: #444; color: white;"
               a href=path_to(:tag_summary).with(@year, k) = @tags[k][:title]
-            td = money_format(v, $main_currency.id)
+            td.money == money_format(v, $main_currency.id)
             td = "#{ (v/total*100).round(1) }%"
           - @expenses_sub[k].each do |k2,v2|
             tr class="expense-row expense-#{k2}"
@@ -30,7 +30,7 @@ table
               td
               td
                 a href=path_to(:tag_summary).with(@year, k2) = @tags[k2][:title]
-              td = money_format(v2, $main_currency.id)
+              td.money == money_format(v2, $main_currency.id)
               td = "#{ (v2/total*100).round(1) }%"
 
 javascript:

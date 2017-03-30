@@ -22,7 +22,7 @@ div.main_column
             = i.date.strftime("%b %-e")
             - d = i.date
         td.td-left-align.title-table-cell = i.description
-        td.money = money_format(i.amount, i.currency_id)
+        td.money == money_format(i.amount, i.currency_id)
         td
           a href=path_to(:budget_record).with(i.id) Edit
           a< href=path_to(:budget_record).with(i.id) data-method="delete" data-confirm="Delete?" Delete
@@ -31,14 +31,14 @@ div.main_column
       td style="font-weight: bold;"
         ' Total:
       td.money
-        = money_format(income_total, $main_currency.id)
+        == money_format(income_total, $main_currency.id)
     tr
       td
       td style="font-weight: bold;"
         ' Daily quota:
       td.money
         - daily_quota = income_total / days_in_month.to_f
-        = money_format(daily_quota, $main_currency.id)
+        == money_format(daily_quota, $main_currency.id)
 
   h3 Expenses
 
@@ -71,7 +71,7 @@ div.main_column
               = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
-            td = money_format(e.amount, e.currency_id)
+            td == money_format(e.amount, e.currency_id)
           - e.description.split("\n").each do |desc_line|
             tr
               td colspan=2
@@ -90,23 +90,23 @@ div.main_column
       td
       td
       td style="font-weight: bold;" Total expenses
-      td.money = money_format(expense_total, $main_currency.id)
+      td.money == money_format(expense_total, $main_currency.id)
     tr
       td
       td
       td style="font-weight: bold;" Final balance:
-      td.money = money_format(income_total + expense_total, $main_currency.id)
+      td.money == money_format(income_total + expense_total, $main_currency.id)
 
   h3 Расходы по категориям
 
   - types_sum_main_currency = {}
   - types_sum.each { |k,v| types_sum_main_currency[k] = total_conversion(v, $main_currency, Date.today) }
-  table
+  table.tags-summary-table
     - types_sum_main_currency.sort_by {|k,v| v}.each do |tkey, tval|
       tr
         td
           a data-id=tkey class="expense-button" = $tags[tkey][:title]
-        td.money = money_format(tval * -1, $main_currency.id)
+        td.money == money_format(tval * -1, $main_currency.id)
 
 
 ruby:
@@ -130,9 +130,9 @@ ruby:
     result += money_round(sav[:total])
     if sav[:diff]
       diff_class = sav[:diff] >= 0 ? "positive" : "negative"
-      result += "<br><span class=\"total-block-dst #{diff_class}\">#{money_format(sav[:diff], $main_currency.id)}</span>"
+      result += "<br><span class=\"total-block-dst #{diff_class}\">#{money_format(sav[:diff], $main_currency.id)}</span></div>"
     else
-      result += "<br><span class=\"total-block-dst\">~</span>"
+      result += "<br><span class=\"total-block-dst\">~</span></div>"
     end
 
     return result
@@ -158,7 +158,7 @@ div.main_column
             = bs.date.strftime("%b %-e")
             - d = bs.date
         td.td-left-align.money
-          = money_format(bs.amount, bs.currency_id)
+          == money_format(bs.amount, bs.currency_id)
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
       - if bs.description && !bs.description.empty?

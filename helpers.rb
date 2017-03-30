@@ -14,9 +14,10 @@ module PiggyHelpers
   def money_round(amount)
     parts = amount.round(2).to_s.split('.')
     parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1 ")
-    parts.delete_at(1) if parts[1] == "0"
+    #parts.delete_at(1) if parts[1] == "0"
+    parts[1] += "0" if parts[1].length == 1
 
-    return parts.join(".")
+    return "#{parts[0]}<span class=\"cents\">.#{parts[1]}</span>"
   end
 
   def money_format(amount, currency_id)

@@ -69,6 +69,7 @@ div.main_column {
   text-align: center;
   vertical-align: middle;
 }
+.cents,
 .total-block-dst {
   font-size: 0.6em;
 }
@@ -77,6 +78,15 @@ div.main_column {
 }
 .negative {
   color: #990000;
+}
+.savings-table td {
+  padding: 0 8px 0 8px;
+}
+.tags-summary-table .money,
+.summary-table .money,
+.savings-table .money {
+  font-family: monospace, Helvetica Neue;
+  text-align: right;
 }
 svg line,
 svg rect {

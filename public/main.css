@@ -85,7 +85,7 @@ div.main_column {
 .tags-summary-table .money,
 .summary-table .money,
 .savings-table .money {
-  font-family: monospace, Helvetica Neue;
+  font-family: Iosevka, monospace, Helvetica Neue;
   text-align: right;
 }
 svg line,

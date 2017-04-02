@@ -56,14 +56,14 @@ module PiggyHelpers
 
   def calculate_anchor(date)
     d1 = date.beginning_of_month
-    d2 = d1.next_month
+    d2 = d1.prev_month
 
     a = Anchor.find_or_initialize_by(date: d1)
 
-    sum_old = BudgetRecord.where("purse = ? AND date < ?", 1, d1).group(:currency_id).sum(:amount)
-    a.sum_old = total_conversion(sum_old, $main_currency, d1)
-    sum_new = BudgetRecord.where("purse = ? AND date >= ? AND date <= ?", 1, d1, d2).group(:currency_id).sum(:amount)
-    a.sum_new = total_conversion(sum_new, $main_currency, d2)
+    total = BudgetRecord.where("purse = ? AND date < ?", 1, d1).group(:currency_id).sum(:amount)
+    a.total = total_conversion(total, $main_currency, d1)
+    income = BudgetRecord.where("purse = ? AND date >= ? AND date < ?", 1, d2, d1).group(:currency_id).sum(:amount)
+    a.income = total_conversion(income, $main_currency, d2)
 
     a.save
   end

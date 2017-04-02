@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170314065021) do
+ActiveRecord::Schema.define(version: 20170402164242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "anchors", force: :cascade do |t|
     t.date     "date",                     null: false
-    t.float    "sum_old",                  null: false
-    t.float    "sum_new",    default: 0.0
+    t.float    "total",                    null: false
+    t.float    "income",     default: 0.0
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end

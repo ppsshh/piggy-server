@@ -13,7 +13,7 @@ table
     - lines << e.description.split("\n")
     - lines = lines.flatten
     tr
-      td = money_format(e.amount, e.currency_id)
+      td == money_format(e.amount, e.currency_id)
       td = lines[0]
       td = e.date
     - lines.delete_at(0)

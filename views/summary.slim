@@ -6,6 +6,13 @@ ruby:
     total += v
   end
 
+- d = Date.new($config['start_date'].year, 1, 1)
+' Choose year:
+- while d < Date.today
+  a href=path_to(:summary).with(d.year) = d.year
+  ' 
+  - d = d.next_year
+
 table.summary-table
   tr
     td style="vertical-align: top"

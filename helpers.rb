@@ -85,7 +85,8 @@ module PiggyHelpers
 
     d = a.date.prev_month.prev_month
 # TODO: update only those months, where currency ratios have been changed/updated
-    while d <= Date.today
+    end_loop_date = Date.today.next_month
+    while d <= end_loop_date
       calculate_anchor(d)
       d = d.next_month
     end

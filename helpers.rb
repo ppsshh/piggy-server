@@ -13,7 +13,7 @@ module PiggyHelpers
 
   def money_round(amount)
     parts = amount.round(2).to_s.split('.')
-    parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1 ")
+    parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1&nbsp;")
     #parts.delete_at(1) if parts[1] == "0"
     parts[1] += "0" if parts[1].length == 1
 
@@ -21,7 +21,7 @@ module PiggyHelpers
   end
 
   def money_format(amount, currency_id)
-    return "#{money_round(amount)} #{currency_symbol(currency_id)}"
+    return "#{money_round(amount)}&nbsp;#{currency_symbol(currency_id)}"
   end
 
   def cursym(cur)
@@ -62,8 +62,8 @@ module PiggyHelpers
 
     total = BudgetRecord.where("purse = ? AND date < ?", 1, d1).group(:currency_id).sum(:amount)
     a.total = total_conversion(total, $main_currency, d1)
-    income = BudgetRecord.where("purse = ? AND date >= ? AND date < ?", 1, d2, d1).group(:currency_id).sum(:amount)
-    a.income = total_conversion(income, $main_currency, d2)
+    income = BudgetRecord.where("purse = ? AND date >= ? AND date < ? AND is_conversion = ?", 1, d2, d1, false).group(:currency_id).sum(:amount)
+    a.income = total_conversion(income, $main_currency, d1)
 
     a.save
   end

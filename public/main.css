@@ -50,6 +50,7 @@ div.main_column {
   display: inline-block;
   vertical-align: top;
   padding: 0 25px 0 15px;
+  max-width: 46%;
 }
 .title-table-cell {
   max-width: 450px;
@@ -68,6 +69,9 @@ div.main_column {
   display: inline-block;
   text-align: center;
   vertical-align: middle;
+  background: #eee;
+  margin: 2px;
+  padding: 2px;
 }
 .cents,
 .total-block-dst {

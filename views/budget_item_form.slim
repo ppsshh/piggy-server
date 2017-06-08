@@ -14,6 +14,9 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
         select name="currency"
           - $currencies.each do |k,v|
             option value=k selected=("selected" if item && (item.currency_id == k)) = v.title
+      td
+        input type="checkbox" checked=(item.is_conversion == true ? 'checked' : nil) name="is_conversion"
+      td is conversion
     tr
       td Tag:
       td

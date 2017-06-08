@@ -13,15 +13,15 @@ div.main_column
 
   h3 Incomings
 
-  table.table-cell-right-align
+  table.table-cell-right-align#incomings-table
     - d = Date.new
     - incomes.each do |i|
       tr
         td
           - if d != i.date
-            = i.date.strftime("%b %-e")
+            == i.date.strftime("%b&nbsp;%-e")
             - d = i.date
-        td.td-left-align.title-table-cell = i.description
+        td class="td-left-align title-table-cell" = i.description
         td.money == money_format(i.amount, i.currency_id)
         td
           a href=path_to(:budget_record).with(i.id) Edit
@@ -62,7 +62,7 @@ div.main_column
           - types_sum[item_category][e.currency_id] ||= 0
           - types_sum[item_category][e.currency_id] += e.amount
           tr class="expense-row expense-#{item_category}" data-id=item_category
-            td = date_printed ? "" : d.strftime("%b %-e")
+            td == date_printed ? "" : d.strftime("%b&nbsp;%-e")
             td class="expense-icon expense-#{item_category}" data-id=item_category
               = $tags[item_category][:title]
             td class="td-left-align title-table-cell"
@@ -75,7 +75,7 @@ div.main_column
           - e.description.split("\n").each do |desc_line|
             tr
               td colspan=2
-              td.td-left-align.title-table-cell.expense-description = desc_line
+              td class="td-left-align title-table-cell expense-description" = desc_line
           - date_printed = true
       - else
         - if d == Date.today
@@ -124,9 +124,9 @@ ruby:
       end
     end
 
-    result  = "<b>TOTAL:</b> "
-    result += total_blocks.join(" + ")
-    result += " = <div class=\"total-block\">#{currency_symbol($main_currency.id)}<br>"
+    result  = "<table><tr><td><b>TOTAL:</b></td><td>"
+    result += total_blocks.join('')
+    result += "</td><td>=</td><td><div class=\"total-block\">#{currency_symbol($main_currency.id)}<br>"
     result += money_round(sav[:total])
     if sav[:diff]
       diff_class = sav[:diff] >= 0 ? "positive" : "negative"
@@ -134,6 +134,7 @@ ruby:
     else
       result += "<br><span class=\"total-block-dst\">~</span></div>"
     end
+    result += "</td></tr></table>"
 
     return result
   end
@@ -144,7 +145,7 @@ div.main_column
   - prev_total_savings = total_conversion(@savings, $main_currency, date_start, true)
   div.money == print_savings(prev_total_savings)
 
-  table.table-cell-right-align
+  table.table-cell-right-align#savings-table
     tr
       th Date
       th Details
@@ -155,9 +156,10 @@ div.main_column
       tr
         td
           - if bs.date != d
-            = bs.date.strftime("%b %-e")
+            == bs.date.strftime("%b&nbsp;%-e")
             - d = bs.date
         td.td-left-align.money
+          = bs.is_conversion ? "🔄" : ''
           == money_format(bs.amount, bs.currency_id)
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
@@ -165,7 +167,7 @@ div.main_column
         - bs.description.split("\n").each do |desc_line|
           tr
             td
-            td.td-left-align.title-table-cell.expense-description = desc_line
+            td class="td-left-align title-table-cell expense-description" = desc_line
 
   - total_savings = total_conversion(@savings, $main_currency, date_end, true)
   - total_savings[:diff] = total_savings[:total] - prev_total_savings[:total]

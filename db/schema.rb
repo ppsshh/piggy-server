@@ -10,52 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170402164242) do
+ActiveRecord::Schema.define(version: 20170608160410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "anchors", force: :cascade do |t|
-    t.date     "date",                     null: false
-    t.float    "total",                    null: false
-    t.float    "income",     default: 0.0
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+  create_table "anchors", id: :serial, force: :cascade do |t|
+    t.date "date", null: false
+    t.float "total", null: false
+    t.float "income", default: 0.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "budget_records", force: :cascade do |t|
-    t.date     "date",                      null: false
-    t.float    "amount",      default: 0.0, null: false
-    t.string   "description"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.string   "shop"
-    t.integer  "purse",       default: 0
-    t.integer  "tag_id",      default: 0
-    t.integer  "currency_id"
+  create_table "budget_records", id: :serial, force: :cascade do |t|
+    t.date "date", null: false
+    t.float "amount", default: 0.0, null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "shop"
+    t.integer "purse", default: 0
+    t.integer "tag_id", default: 0
+    t.integer "currency_id"
+    t.boolean "is_conversion", default: false
   end
 
-  create_table "currencies", force: :cascade do |t|
-    t.string   "title"
-    t.string   "description"
-    t.boolean  "is_stock",         default: false
-    t.boolean  "update_regularly", default: false
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+  create_table "currencies", id: :serial, force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.boolean "is_stock", default: false
+    t.boolean "update_regularly", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "prices", force: :cascade do |t|
-    t.date     "actual_date"
-    t.float    "rate"
+  create_table "prices", id: :serial, force: :cascade do |t|
+    t.date "actual_date"
+    t.float "rate"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "currency_id"
-    t.date     "date"
-    t.integer  "record_type", default: 0
+    t.integer "currency_id"
+    t.date "date"
+    t.integer "record_type", default: 0
   end
 
-  create_table "tags", force: :cascade do |t|
-    t.text    "title"
+  create_table "tags", id: :serial, force: :cascade do |t|
+    t.text "title"
     t.integer "parent_id"
   end
 

@@ -81,6 +81,7 @@ post :budget do
     op.date = date
     op.amount = params[:amount].to_f
     op.currency_id = params[:currency].to_i
+    op.is_conversion = params[:is_conversion] ? true : false
     op.description = params[:description]
     op.shop = params[:shop]
     op.tag_id = params[:tag_id].to_i
@@ -112,6 +113,7 @@ post :budget_record do
   item.date = params[:date]
   item.amount = params[:amount].to_f
   item.currency_id = params[:currency].to_i
+  item.is_conversion = params[:is_conversion] ? true : false
   item.description = params[:description]
   item.shop = params[:shop]
   item.tag_id = params[:tag_id].to_i

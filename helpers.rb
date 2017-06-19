@@ -90,6 +90,17 @@ module PiggyHelpers
       calculate_anchor(d)
       d = d.next_month
     end
+
+    # apply balance for current month (which is not in 'savings' yet)
+    d1 = Date.today.beginning_of_month
+    d2 = d1.next_month
+    if a = Anchor.where(date: d2).take
+      income = BudgetRecord.where("purse = ? AND date >= ? AND date < ?", 0, d1, d2).group(:currency_id).sum(:amount)
+      income_main_currency = total_conversion(income, $main_currency, d2)
+      a.income += income_main_currency
+      a.total += income_main_currency
+      a.save
+    end
   end
 
 end

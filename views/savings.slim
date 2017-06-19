@@ -24,14 +24,16 @@ ruby:
     prev = a
   end
   max_savings_value *= 1.05
+  max_rank = max_savings_value.to_i.abs.to_s.length
+  grid_step = (max_savings_value / (10 ** (max_rank-1))).round * (10**(max_rank-2))
   anchors_table.delete_at(0)
 
 svg height=graph_height width=graph_width
   - grid_y_val = 0
   - while grid_y_val < max_savings_value
-    - grid_y_val += 100000
+    - grid_y_val += grid_step
     - grid_y = (graph_height - grid_y_val / max_savings_value * graph_height).round
-    - grid_class = grid_y_val % 500000 == 0 ? "bold_grid" : "normal_grid"
+    - grid_class = grid_y_val % (grid_step * 5) == 0 ? "bold_grid" : "normal_grid"
     line class=grid_class x1=0 x2=graph_width y1=grid_y y2=grid_y stroke-width=1
 
   - h_prev = 0

@@ -7,34 +7,40 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
       td Date:
       td
         input type="text" name="date" value=(item.date ? item.date : new_date) tabindex="1"
-    tr
-      td Amount:
-      td
-        input type="text" name="amount" value=(item ? item.amount : 0) tabindex="2"
-        select name="currency"
-          - $currencies.each do |k,v|
-            option value=k selected=("selected" if item && (item.currency_id == k)) = v.title
       td
         input type="checkbox" checked=(item.is_conversion == true ? 'checked' : nil) name="is_conversion"
       td is conversion
     tr
+      td Income:
+      td
+        input type="text" name="income_amount" value=(item ? item.income_amount : 0) tabindex="2"
+        select name="income_currency_id"
+          - $currencies.each do |k,v|
+            option value=k selected=("selected" if item && (item.income_currency_id == k)) = v.title
+      td Expense:
+      td
+        input type="text" name="expense_amount" value=(item ? item.expense_amount : 0) tabindex="3"
+        select name="expense_currency_id"
+          - $currencies.each do |k,v|
+            option value=k selected=("selected" if item && (item.expense_currency_id == k)) = v.title
+    tr
       td Tag:
       td
-        input#tag-autocomplete type="text" value=(item ? $tags[item.tag_id][:title] : "") tabindex="3"
+        input#tag-autocomplete type="text" value=(item ? $tags[item.tag_id][:title] : "") tabindex="4"
         span#tag-id-label style="opacity: 0.5; padding-left: 8px;" = "id: #{item ? item.tag_id : 0}"
         input#tag-id-field style="width: 20px; text-align: center;" name="tag_id" value=(item ? item.tag_id : 0) tabindex="-1" type="hidden"
       td @
       td
-        input#shop-autocomplete type="text" name="shop" value=(item ? item.shop : "") tabindex="4"
+        input#shop-autocomplete type="text" name="shop" value=(item ? item.shop : "") tabindex="5"
     tr
       td Desc:
       td colspan="3"
-        textarea name="description" style="width: 100%; height: 80px;" tabindex="5"
+        textarea name="description" style="width: 100%; height: 80px;" tabindex="6"
           = item ? item.description : ""
     tr
       td Purse:
       td
-        select name="purse" tabindex="6"
+        select name="purse" tabindex="7"
           - $purse.each do |k,v|
             option value=k selected=("selected" if item && item.purse == k) = v
     tr
@@ -42,7 +48,7 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
     tr
       td
       td
-        input type="submit" value="Submit" tabindex="7"
+        input type="submit" value="Submit" tabindex="8"
 
 ruby:
   tags_array = []

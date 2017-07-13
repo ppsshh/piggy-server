@@ -1,10 +1,13 @@
-// template locals: incomes, expenses, date_start, date_end
+// template locals: operations, date_start, date_end
 
 ruby:
   incomes_hash = {}
-  incomes.each do |i|
-    incomes_hash[i.currency_id] ||= 0
-    incomes_hash[i.currency_id] += i.amount
+  operations.each do |date,ops|
+    ops.each do |op|
+      if op.income_amount > 0
+        incomes_hash[op.income_currency_id] = (incomes_hash[op.income_currency_id] || 0) + op.income_amount
+      end
+    end
   end
   income_total = total_conversion(incomes_hash, $main_currency, Date.today)
   days_in_month = date_end - date_start
@@ -15,17 +18,19 @@ div.main_column
 
   table.table-cell-right-align#incomings-table
     - d = Date.new
-    - incomes.each do |i|
+    - operations.each do |date,ops|
+     - ops.each do |op|
+      - next unless op.income_amount > 0
       tr
         td
-          - if d != i.date
-            == i.date.strftime("%b&nbsp;%-e")
-            - d = i.date
-        td class="td-left-align title-table-cell" = i.description
-        td.money == money_format(i.amount, i.currency_id)
+          - if d != op.date
+            == op.date.strftime("%b&nbsp;%-e")
+            - d = op.date
+        td class="td-left-align title-table-cell" = op.description
+        td.money == money_format(op.income_amount, op.income_currency_id)
         td
-          a href=path_to(:budget_record).with(i.id) Edit
-          a< href=path_to(:budget_record).with(i.id) data-method="delete" data-confirm="Delete?" Delete
+          a href=path_to(:budget_record).with(op.id) Edit
+          a< href=path_to(:budget_record).with(op.id) data-method="delete" data-confirm="Delete?" Delete
     tr
       td
       td style="font-weight: bold;"
@@ -53,14 +58,14 @@ div.main_column
       th Expenses
     - while d < date_end
       - date_printed = false
-      - if expenses.has_key?(d)
-        - expenses[d].each do |e|
-          - expenses_hash[e.currency_id] ||= 0
-          - expenses_hash[e.currency_id] += e.amount
+      - if operations.has_key?(d)
+        - operations[d].each do |e|
+          - next unless e.expense_amount > 0
+          - expenses_hash[e.expense_currency_id] = (expenses_hash[e.expense_currency_id] || 0) + e.expense_amount
           - item_category = $tags[e.tag_id][:parent] ? $tags[e.tag_id][:parent] : e.tag_id
           - types_sum[item_category] ||= {}
-          - types_sum[item_category][e.currency_id] ||= 0
-          - types_sum[item_category][e.currency_id] += e.amount
+          - types_sum[item_category][e.expense_currency_id] ||= 0
+          - types_sum[item_category][e.expense_currency_id] += e.expense_amount
           tr class="expense-row expense-#{item_category}" data-id=item_category
             td == date_printed ? "" : d.strftime("%b&nbsp;%-e")
             td class="expense-icon expense-#{item_category}" data-id=item_category
@@ -71,7 +76,7 @@ div.main_column
               = $tags[e.tag_id][:title] + ((e.shop && !e.shop.empty?) ? " @ #{e.shop}" : "")
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
-            td == money_format(e.amount, e.currency_id)
+            td == money_format(e.expense_amount, e.expense_currency_id)
           - e.description.split("\n").each do |desc_line|
             tr
               td colspan=2
@@ -95,7 +100,7 @@ div.main_column
       td
       td
       td style="font-weight: bold;" Final balance:
-      td.money == money_format(income_total + expense_total, $main_currency.id)
+      td.money == money_format(income_total - expense_total, $main_currency.id)
 
   h3 Расходы по категориям
 
@@ -151,8 +156,8 @@ div.main_column
       th Details
     - d = Date.new
     - @budget_savings.each do |bs|
-      - @savings[bs.currency_id] ||= 0
-      - @savings[bs.currency_id] += bs.amount
+      - @savings[bs.income_currency_id] = (@savings[bs.income_currency_id] || 0) + bs.income_amount
+      - @savings[bs.expense_currency_id] = (@savings[bs.expense_currency_id] || 0) - bs.expense_amount
       tr
         td
           - if bs.date != d
@@ -160,7 +165,12 @@ div.main_column
             - d = bs.date
         td.td-left-align.money
           = bs.is_conversion ? "🔄" : ''
-          == money_format(bs.amount, bs.currency_id)
+          - if bs.expense_amount > 0
+            span style="color: red" ↥
+            == money_format(bs.expense_amount, bs.expense_currency_id)
+          - if bs.income_amount > 0
+            span style="color: green" ↧
+            == money_format(bs.income_amount, bs.income_currency_id)
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete
       - if bs.description && !bs.description.empty?

@@ -64,7 +64,10 @@ get :budget_year_month do
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
-  @savings = BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:currency_id).sum(:amount)
+  @savings = BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:income_currency_id).sum(:income_amount)
+  BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:expense_currency_id).sum(:expense_amount).each do |c,a|
+    @savings[c] = (@savings[c] || 0) - a
+  end
   slim :budget
 end
 
@@ -79,8 +82,14 @@ post :budget do
 
     op = BudgetRecord.new
     op.date = date
-    op.amount = params[:amount].to_f
-    op.currency_id = params[:currency].to_i
+
+    op.amount = params[:amount]
+    op.currency_id = params[:currency]
+    op.income_amount = params[:income_amount]
+    op.income_currency_id = params[:income_currency_id]
+    op.expense_amount = params[:expense_amount]
+    op.expense_currency_id = params[:expense_currency_id]
+
     op.is_conversion = params[:is_conversion] ? true : false
     op.description = params[:description]
     op.shop = params[:shop]
@@ -111,8 +120,14 @@ post :budget_record do
   item = BudgetRecord.find(params[:id])
 
   item.date = params[:date]
-  item.amount = params[:amount].to_f
-  item.currency_id = params[:currency].to_i
+
+  item.amount = params[:amount]
+  item.currency_id = params[:currency]
+  item.income_amount = params[:income_amount]
+  item.income_currency_id = params[:income_currency_id]
+  item.expense_amount = params[:expense_amount]
+  item.expense_currency_id = params[:expense_currency_id]
+
   item.is_conversion = params[:is_conversion] ? true : false
   item.description = params[:description]
   item.shop = params[:shop]

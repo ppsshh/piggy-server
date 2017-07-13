@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170608160410) do
+ActiveRecord::Schema.define(version: 20170713045435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,10 @@ ActiveRecord::Schema.define(version: 20170608160410) do
     t.integer "tag_id", default: 0
     t.integer "currency_id"
     t.boolean "is_conversion", default: false
+    t.float "income_amount", default: 0.0, null: false
+    t.float "expense_amount", default: 0.0, null: false
+    t.integer "income_currency_id"
+    t.integer "expense_currency_id"
   end
 
   create_table "currencies", id: :serial, force: :cascade do |t|

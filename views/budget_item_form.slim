@@ -26,7 +26,7 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
     tr
       td Tag:
       td
-        input#tag-autocomplete type="text" value=(item ? $tags[item.tag_id][:title] : "") tabindex="4"
+        input#tag-autocomplete type="text" value=(item && $tags[item.tag_id] ? $tags[item.tag_id][:title] : "") tabindex="4"
         span#tag-id-label style="opacity: 0.5; padding-left: 8px;" = "id: #{item ? item.tag_id : 0}"
         input#tag-id-field style="width: 20px; text-align: center;" name="tag_id" value=(item ? item.tag_id : 0) tabindex="-1" type="hidden"
       td @

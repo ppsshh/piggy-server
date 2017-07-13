@@ -83,8 +83,6 @@ post :budget do
     op = BudgetRecord.new
     op.date = date
 
-    op.amount = params[:amount]
-    op.currency_id = params[:currency]
     op.income_amount = params[:income_amount]
     op.income_currency_id = params[:income_currency_id]
     op.expense_amount = params[:expense_amount]
@@ -99,7 +97,7 @@ post :budget do
 
     flash[:notice] = "Record successfully created"
   rescue StandardError
-    flash[:error] ||= "Unable to create new record: #{params[:date]}, #{params[:amount]}, #{params[:description]} @ #{params[:shop]}, #{params[:operation_type]}"
+    flash[:error] ||= "Unable to create new record: #{params[:date]}, #{params[:income_amount]}, #{params[:expense_amount]} #{params[:description]} @ #{params[:shop]}, #{params[:operation_type]}"
   end
 
   redirect path_to(:budget_year_month).with(op.date.year, op.date.month)
@@ -121,8 +119,6 @@ post :budget_record do
 
   item.date = params[:date]
 
-  item.amount = params[:amount]
-  item.currency_id = params[:currency]
   item.income_amount = params[:income_amount]
   item.income_currency_id = params[:income_currency_id]
   item.expense_amount = params[:expense_amount]

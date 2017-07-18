@@ -162,7 +162,9 @@ end
 
 get :summary do
   @year = params[:year].to_i || Date.today.year
-  expenses_by_tag = BudgetRecord.where(date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)), purse: 0).where('amount < 0').group(:tag_id).sum(:amount)
+  expenses_by_tag = BudgetRecord.where(
+        date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)),
+        purse: 0).where('expense_amount > 0').group(:tag_id).sum(:expense_amount)
 
   expenses = {}
   expenses_sub = {}
@@ -170,8 +172,7 @@ get :summary do
   expenses_by_tag.each do |k,v|
     tag_parent = @tags[k][:parent] || k
 
-    expenses[tag_parent] ||= 0
-    expenses[tag_parent] += v
+    expenses[tag_parent] = (expenses[tag_parent] || 0) + v
 
     expenses_sub[tag_parent] ||= {}
     expenses_sub[tag_parent][k] = v
@@ -182,7 +183,7 @@ get :summary do
     @expenses_sub[k] = expenses_sub[k].sort_by { |k,v| v }.to_h
   end
 
-  @expenses = expenses.sort_by { |k,v| v }.to_h
+  @expenses = expenses.sort_by { |k,v| v }.reverse.to_h
 
   slim :summary
 end
@@ -193,7 +194,12 @@ get :tag_summary do
   tags = [@tag]
   Tag.where(parent_id: @tag).map {|t| tags << t.id}
 
-  @expenses = BudgetRecord.where(date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)), purse: 0, tag_id: tags).where('amount < 0').order(amount: :asc)
+  @expenses = BudgetRecord.where(
+        date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)),
+        purse: 0,
+        tag_id: tags).where(
+        'expense_amount > 0').order(
+        expense_amount: :desc)
 
   slim :tag_summary
 end

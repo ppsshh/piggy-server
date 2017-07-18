@@ -54,15 +54,27 @@ module PiggyHelpers
     return _tags
   end
 
+  def income_expense_total(records)
+    incomes = records.where("income_amount > 0").group(:income_currency_id).sum(:income_amount)
+    expenses = records.where("expense_amount > 0").group(:expense_currency_id).sum(:expense_amount)
+    expenses.each { |k,v| incomes[k] = (incomes[k] || 0) - v }
+    return incomes  
+  end
+
   def calculate_anchor(date)
     d1 = date.beginning_of_month
     d2 = d1.prev_month
 
     a = Anchor.find_or_initialize_by(date: d1)
 
-    total = BudgetRecord.where("purse = ? AND date < ?", 1, d1).group(:currency_id).sum(:amount)
+    total = income_expense_total(
+                BudgetRecord.where("purse = ? AND date < ?", 1, d1)
+            )
     a.total = total_conversion(total, $main_currency, d1)
-    income = BudgetRecord.where("purse = ? AND date >= ? AND date < ? AND is_conversion = ?", 1, d2, d1, false).group(:currency_id).sum(:amount)
+
+    income = income_expense_total(
+                BudgetRecord.where("purse = ? AND date >= ? AND date < ? AND is_conversion = ?", 1, d2, d1, false)
+            )
     a.income = total_conversion(income, $main_currency, d1)
 
     a.save
@@ -95,7 +107,9 @@ module PiggyHelpers
     d1 = Date.today.beginning_of_month
     d2 = d1.next_month
     if a = Anchor.where(date: d2).take
-      income = BudgetRecord.where("purse = ? AND date >= ? AND date < ?", 0, d1, d2).group(:currency_id).sum(:amount)
+      income = income_expense_total(
+                BudgetRecord.where("purse = ? AND date >= ? AND date < ?", 0, d1, d2)
+            )
       income_main_currency = total_conversion(income, $main_currency, d2)
       a.income += income_main_currency
       a.total += income_main_currency

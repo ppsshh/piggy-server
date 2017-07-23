@@ -144,6 +144,11 @@ ruby:
     return result
   end
 
+ruby:
+  remainder_hash = {}
+  incomes_hash.each   {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) + v}
+  expenses_hash.each  {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) - v}
+
 div.main_column
   h3 Savings
 
@@ -178,6 +183,18 @@ div.main_column
           tr
             td
             td class="td-left-align title-table-cell expense-description" = desc_line
+
+    - remainder_hash.each do |curr_id, v|
+      tr
+        td ##
+        td.td-left-align.money
+          - if v > 0
+            span style="color: green" ↧
+          - else
+            span style="color: red" ↥
+          == money_format(v, curr_id)
+      - @savings[curr_id] = (@savings[curr_id] || 0) + v
+
 
   - total_savings = total_conversion(@savings, $main_currency, date_end, true)
   - total_savings[:diff] = total_savings[:total] - prev_total_savings[:total]

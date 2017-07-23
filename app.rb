@@ -64,10 +64,7 @@ get :budget_year_month do
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
-  @savings = BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:income_currency_id).sum(:income_amount)
-  BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)).group(:expense_currency_id).sum(:expense_amount).each do |c,a|
-    @savings[c] = (@savings[c] || 0) - a
-  end
+  @savings = income_expense_total( BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)) )
   slim :budget
 end
 

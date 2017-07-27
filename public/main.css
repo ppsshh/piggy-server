@@ -32,6 +32,10 @@ a.expense-button {
 .expense-icon {
   cursor: pointer;
 }
+.category-icon {
+  height: 1em;
+  width: 1em;
+}
 .expense-hl-permanent {
   background: #33d3ff;
 }

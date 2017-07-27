@@ -50,7 +50,7 @@ module PiggyHelpers
 
   def tags
     _tags = {0 => {title: "NONAME"} }
-    Tag.all.order(parent_id: :desc).each { |t| _tags[t.id] = {title: t.title, parent: t.parent_id} }
+    Tag.all.order(parent_id: :desc).each { |t| _tags[t.id] = {title: t.title, parent: t.parent_id, image: t.image} }
     return _tags
   end
 

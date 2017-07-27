@@ -26,7 +26,7 @@ div.main_column
           - if d != op.date
             == op.date.strftime("%b&nbsp;%-e")
             - d = op.date
-        td class="td-left-align title-table-cell" = op.description
+        td.money class="td-left-align title-table-cell" = op.description
         td.money == money_format(op.income_amount, op.income_currency_id)
         td
           a href=path_to(:budget_record).with(op.id) Edit
@@ -53,7 +53,7 @@ div.main_column
   table.table-cell-right-align#expenses-table
     tr
       th Date
-      th Type
+      th T
       th Description
       th Expenses
     - while d < date_end
@@ -69,7 +69,7 @@ div.main_column
           tr class="expense-row expense-#{item_category}" data-id=item_category
             td == date_printed ? "" : d.strftime("%b&nbsp;%-e")
             td class="expense-icon expense-#{item_category}" data-id=item_category
-              = $tags[item_category][:title]
+              img.category-icon src="/ico/#{$tags[item_category][:image]}"
             td class="td-left-align title-table-cell"
               - if e.tag_id == 0
                 ' 📌
@@ -146,8 +146,10 @@ ruby:
 
 ruby:
   remainder_hash = {}
-  incomes_hash.each   {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) + v}
-  expenses_hash.each  {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) - v}
+  if date_start.year == Date.today.year && date_start.month == Date.today.month
+    incomes_hash.each   {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) + v}
+    expenses_hash.each  {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) - v}
+  end
 
 div.main_column
   h3 Savings

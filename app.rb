@@ -27,7 +27,8 @@ paths index: '/',
     tag_summary: '/summary/:year/:tag_id',
     graph: '/graph',
     hide_money: '/hide-money',
-    autocomplete_shop: '/autocomplete/shop'
+    autocomplete_shop: '/autocomplete/shop',
+    mortgage: '/mortgage'
 
 configure do
   puts '---> init <---'
@@ -209,4 +210,8 @@ get :autocomplete_shop do
 
   content_type :json
   items_array.to_json
+end
+
+get :mortgage do
+  slim :mortgage
 end

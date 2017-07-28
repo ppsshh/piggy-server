@@ -117,5 +117,13 @@ module PiggyHelpers
     end
   end
 
+  def get_monthly_credit_payment(credit_amount, percents_per_year, credit_duration_years)
+    # formula available at http://yurface.ru/kredit/annuitetnyj-platezh/
+    percents_per_month = percents_per_year/12.0
+    bp = 1/(1+percents_per_month)**(credit_duration_years*12) # bb is a 'bottom parenthesis'; part of expression for easier calculations
+    monthly_payment = credit_amount * (percents_per_month / (1 - bp))
+    return monthly_payment
+  end
+
 end
 

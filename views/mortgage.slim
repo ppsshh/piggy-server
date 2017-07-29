@@ -10,7 +10,7 @@ form method="GET" action=path_to(:mortgage)
       td
         input type="input" name="loan_amount" value=(loan_amount || 1000000)
     tr
-      td Length of loan (years):
+      td Length of loan:
       td
         input type="input" name="loan_length" value=(loan_length || 5)
         |  years
@@ -48,12 +48,23 @@ form method="GET" action=path_to(:mortgage)
       th Проценты
       th Погашение долга
       th Ежемесячный платеж
+    - iter = 0
+    - year_percents = 0
     - (loan_length * 12).times do |i|
       tr
         td = Date.today + (i+1).month
         td == money_format(loan_amount - monthly, $main_currency.id)
         - percents = loan_amount * (interest_rate / 100.0 / 12)
+        - year_percents += percents
         td == money_format(percents, $main_currency.id)
         td == money_format(monthly - percents, $main_currency.id)
         td == money_format(monthly, $main_currency.id)
+      - iter += 1
+      - if iter > 11
+        tr
+          td Итог за год
+          td
+          td == money_format(year_percents, $main_currency.id)
+        - year_percents = 0
+        - iter = 0
       - loan_amount = loan_amount - monthly + percents

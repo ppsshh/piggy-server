@@ -11,17 +11,22 @@ module PiggyHelpers
     return currency_symbols[currency.title] || currency.title
   end
 
-  def money_round(amount)
-    parts = amount.round(2).to_s.split('.')
+  def money_round(amount, currency_id)
+    round_value = $currencies[currency_id] ? $currencies[currency_id].round : 2
+
+    parts = amount.round(round_value).to_s.split('.')
     parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1&nbsp;")
     #parts.delete_at(1) if parts[1] == "0"
-    parts[1] += "0" if parts[1].length == 1
-
-    return "#{parts[0]}<span class=\"cents\">.#{parts[1]}</span>"
+    if round_value > 0
+      parts[1] += "0" * (round_value - parts[1].length) if round_value > 0
+      return "#{parts[0]}<span class=\"cents\">.#{parts[1]}</span>"
+    else
+      return parts[0]
+    end
   end
 
   def money_format(amount, currency_id)
-    return "#{money_round(amount)}&nbsp;#{currency_symbol(currency_id)}"
+    return "#{money_round(amount, currency_id)}&nbsp;#{currency_symbol(currency_id)}"
   end
 
   def cursym(cur)

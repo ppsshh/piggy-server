@@ -117,11 +117,10 @@ div.main_column
 ruby:
   def print_savings(sav)
     total_blocks = []
-    puts "==== #{sav}"
     sav[:src].each do |k,v|
       if v > 0
         txt = "<div class=\"total-block\">"
-        txt += "#{currency_symbol(k)}<br>#{money_round(v)}<br>"
+        txt += "#{currency_symbol(k)}<br>#{money_round(v, k)}<br>"
         txt += "<span class=\"total-block-dst\">"
         txt += k != $main_currency.id ? "#{money_format(sav[:dst][k], $main_currency.id)}" : "~"
         txt += "</span></div>"
@@ -132,7 +131,7 @@ ruby:
     result  = "<table><tr><td><b>TOTAL:</b></td><td>"
     result += total_blocks.join('')
     result += "</td><td>=</td><td><div class=\"total-block\">#{currency_symbol($main_currency.id)}<br>"
-    result += money_round(sav[:total])
+    result += money_round(sav[:total], $main_currency.id)
     if sav[:diff]
       diff_class = sav[:diff] >= 0 ? "positive" : "negative"
       result += "<br><span class=\"total-block-dst #{diff_class}\">#{money_format(sav[:diff], $main_currency.id)}</span></div>"

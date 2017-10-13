@@ -18,6 +18,7 @@ namespace :piggy do
 
     $currencies.each do |curr_id, curr|
       next if curr.title == "USD"
+      next unless curr.update_regularly
 
       pair_name = curr.is_stock ? "#{curr.title}:US" : "#{curr.title}:CUR"
       cmdout = `curl "https://www.bloomberg.com/markets/api/bulk-time-series/price/#{pair_name}?timeFrame=1_YEAR" -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:31.0) Gecko/20100101 Firefox/31.0' -H 'X-Requested-With: XMLHttpRequest' -H "Referer: https://www.bloomberg.com/quote/#{pair_name}"`

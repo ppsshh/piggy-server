@@ -81,6 +81,9 @@ div.main_column {
 .total-block-dst {
   font-size: 0.6em;
 }
+.cents .microcents {
+  opacity: 0.4;
+}
 .positive {
   color: #00bb00;
 }

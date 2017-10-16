@@ -14,14 +14,15 @@ module PiggyHelpers
   def money_round(amount, currency_id)
     round_value = $currencies[currency_id] ? $currencies[currency_id].round : 2
 
-    parts = amount.round(round_value).to_s.split('.')
-    parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1&nbsp;")
+    whole, fraction = amount.round(round_value).to_s.split('.')
+    whole.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1&nbsp;")
     #parts.delete_at(1) if parts[1] == "0"
     if round_value > 0
-      parts[1] += "0" * (round_value - parts[1].length) if round_value > 0
-      return "#{parts[0]}<span class=\"cents\">.#{parts[1]}</span>"
+      fraction += "0" * (round_value - fraction.length) if round_value > 0
+      fraction = "#{fraction[0..2]}<span class=\"microcents\">#{fraction[3..-1]}</span>"
+      return "#{whole}<span class=\"cents\">.#{fraction}</span>"
     else
-      return parts[0]
+      return whole
     end
   end
 

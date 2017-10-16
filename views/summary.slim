@@ -28,7 +28,7 @@ table.summary-table
             td
             td
             td style="background: #444; color: white;"
-              a href=path_to(:tag_summary).with(@year, k) = @tags[k][:title]
+              a href=path_to(:global_tag_summary).with(@year, k) = @tags[k][:title]
             td.money == money_format(v, $main_currency.id)
             td = "#{ (v/total*100).round(1) }%"
           - @expenses_sub[k].each do |k2,v2|

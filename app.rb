@@ -25,6 +25,7 @@ paths index: '/',
     savings: '/savings',
     summary: '/summary/:year',
     tag_summary: '/summary/:year/:tag_id',
+    global_tag_summary: '/summary2/:year/:tag_id',
     graph: '/graph',
     hide_money: '/hide-money',
     autocomplete_shop: '/autocomplete/shop',
@@ -187,6 +188,20 @@ get :summary do
 end
 
 get :tag_summary do
+  @year = params[:year].to_i || Date.today.year
+  @tag = params[:tag_id].to_i
+
+  @expenses = BudgetRecord.where(
+        date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)),
+        purse: 0,
+        tag_id: @tag).where(
+        'expense_amount > 0').order(
+        expense_amount: :desc)
+
+  slim :tag_summary
+end
+
+get :global_tag_summary do
   @year = params[:year].to_i || Date.today.year
   @tag = params[:tag_id].to_i
   tags = [@tag]

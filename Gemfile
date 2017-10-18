@@ -12,3 +12,4 @@ gem 'pg' # postgresql
 
 gem 'rack-flash3'
 gem 'puma'
+gem 'httparty'

@@ -16,7 +16,7 @@ ruby:
 
 table
   td
-    == slim :budget_item_form, locals: {item: BudgetRecord.new, new_date: new_item_date}
+    == slim :budget_item_form, locals: {item: BudgetRecord.new(income_currency_id: $main_currency.id, expense_currency_id: $main_currency.id), new_date: new_item_date}
   td
     == slim :budget_calendar, locals: {start_date: $config['start_date'], selected_date: @budget_date}
 

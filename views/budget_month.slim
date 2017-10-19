@@ -113,36 +113,6 @@ div.main_column
           a data-id=tkey class="expense-button" = $tags[tkey][:title]
         td.money == money_format(tval * -1, $main_currency.id)
 
-
-ruby:
-  def print_savings(sav)
-    total_blocks = []
-    sav[:src].each do |k,v|
-      if v > 0
-        txt = "<div class=\"total-block\">"
-        txt += "#{currency_symbol(k)}<br>#{money_round(v, k)}<br>"
-        txt += "<span class=\"total-block-dst\">"
-        txt += k != $main_currency.id ? "#{money_format(sav[:dst][k], $main_currency.id)}" : "~"
-        txt += "</span></div>"
-        total_blocks << txt
-      end
-    end
-
-    result  = "<table><tr><td><b>TOTAL:</b></td><td>"
-    result += total_blocks.join('')
-    result += "</td><td>=</td><td><div class=\"total-block\">#{currency_symbol($main_currency.id)}<br>"
-    result += money_round(sav[:total], $main_currency.id)
-    if sav[:diff]
-      diff_class = sav[:diff] >= 0 ? "positive" : "negative"
-      result += "<br><span class=\"total-block-dst #{diff_class}\">#{money_format(sav[:diff], $main_currency.id)}</span></div>"
-    else
-      result += "<br><span class=\"total-block-dst\">~</span></div>"
-    end
-    result += "</td></tr></table>"
-
-    return result
-  end
-
 ruby:
   remainder_hash = {}
   if date_start.year == Date.today.year && date_start.month == Date.today.month
@@ -152,9 +122,7 @@ ruby:
 
 div.main_column
   h3 Savings
-
-  - prev_total_savings = total_conversion(@savings, $main_currency, date_start, true)
-  div.money == print_savings(prev_total_savings)
+  - @start_savings = @savings.clone
 
   table.table-cell-right-align#savings-table
     tr
@@ -196,8 +164,25 @@ div.main_column
           == money_format(v, curr_id)
       - @savings[curr_id] = (@savings[curr_id] || 0) + v
 
-
-  - total_savings = total_conversion(@savings, $main_currency, date_end, true)
-  - total_savings[:diff] = total_savings[:total] - prev_total_savings[:total]
-  div.money == print_savings(total_savings)
-
+  table.money
+    tr
+      td: b TOTAL:
+      td
+        - @start_savings.keys.concat(@savings.keys).uniq.each do |curr_id|
+          - next if @start_savings[curr_id] == 0 && @savings[curr_id] == 0
+          - value_diff = (@savings[curr_id] || 0) - (@start_savings[curr_id] || 0)
+          - rate_diff = curr_id == $main_currency.id ? 0 : $price_converter.convert_currency($currencies[curr_id], $main_currency, @start_savings[curr_id] || 0, date_end) - $price_converter.convert_currency($currencies[curr_id], $main_currency, @start_savings[curr_id] || 0, date_start)
+          div.total-block
+            = currency_symbol(curr_id)
+            div class="total-block-dst #{rate_diff >= 0 ? 'positive' : 'negative'}" == rate_diff == 0 ? '~' : money_format(rate_diff, $main_currency.id)
+            == money_round(@savings[curr_id], curr_id)
+            div class="total-block-dst #{value_diff >= 0 ? 'positive' : 'negative'}" == value_diff == 0 ? '~' : money_format(value_diff, curr_id)
+            div.total-block-dst == curr_id == $main_currency.id ? '~' : money_format($price_converter.convert_currency($currencies[curr_id], $main_currency, @savings[curr_id] || 0, date_end), $main_currency.id)
+      td = '='
+      td: div.total-block
+        - total1 = total_conversion(@start_savings, $main_currency, date_start)
+        - total2 = total_conversion(@savings, $main_currency, date_end)
+        = currency_symbol($main_currency.id)
+        br
+        == money_round(total2, $main_currency.id)
+        div.total-block-dst == money_format(total2 - total1, $main_currency.id)

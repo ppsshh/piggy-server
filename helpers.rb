@@ -14,7 +14,7 @@ module PiggyHelpers
   def money_round(amount, currency_id)
     round_value = $currencies[currency_id] ? $currencies[currency_id].round : 2
 
-    whole, fraction = amount.round(round_value).to_s.split('.')
+    whole, fraction = sprintf("%.#{round_value}f", amount.round(round_value)).split('.')
     whole.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1&nbsp;")
     #parts.delete_at(1) if parts[1] == "0"
     if round_value > 0

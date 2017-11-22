@@ -130,8 +130,8 @@ div.main_column
       th Details
     - d = Date.new
     - @budget_savings.each do |bs|
-      - @savings[bs.income_currency_id] = (@savings[bs.income_currency_id] || 0) + bs.income_amount
-      - @savings[bs.expense_currency_id] = (@savings[bs.expense_currency_id] || 0) - bs.expense_amount
+      - @savings[bs.income_currency_id] = (@savings[bs.income_currency_id] || 0) + bs.income_amount if bs.income_currency_id
+      - @savings[bs.expense_currency_id] = (@savings[bs.expense_currency_id] || 0) - bs.expense_amount if bs.expense_currency_id
       tr
         td
           - if bs.date != d
@@ -166,7 +166,6 @@ div.main_column
 
   table.money
     tr
-      td: b TOTAL:
       td
         - @start_savings.keys.concat(@savings.keys).uniq.each do |curr_id|
           - next if @start_savings[curr_id] == 0 && @savings[curr_id] == 0
@@ -181,8 +180,9 @@ div.main_column
       td = '='
       td: div.total-block
         - total1 = total_conversion(@start_savings, $main_currency, date_start)
+        - total1_end = total_conversion(@start_savings, $main_currency, date_end)
         - total2 = total_conversion(@savings, $main_currency, date_end)
         = currency_symbol($main_currency.id)
-        br
+        div.total-block-dst == money_format(total1_end - total1, $main_currency.id)
         == money_round(total2, $main_currency.id)
         div.total-block-dst == money_format(total2 - total1, $main_currency.id)

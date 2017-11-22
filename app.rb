@@ -26,6 +26,8 @@ paths index: '/',
     summary: '/summary/:year',
     tag_summary: '/summary/:year/:tag_id',
     global_tag_summary: '/summary2/:year/:tag_id',
+    exrates: '/exrates',
+    exrate: '/exrate/:id',
     graph: '/graph',
     hide_money: '/hide-money',
     autocomplete_shop: '/autocomplete/shop',
@@ -229,4 +231,14 @@ end
 
 get :mortgage do
   slim :mortgage
+end
+
+get :exrates do
+  redirect path_to(:exrate).with($main_currency.id)
+end
+
+get :exrate do
+  @currency = Currency.find(params[:id])
+  @prices = @currency.prices.order(actual_date: :desc)
+  slim :exrate
 end

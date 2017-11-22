@@ -1,0 +1,21 @@
+h2
+  = @currency.title
+  - Currency.all.each do |c|
+    - next if c.id == @currency.id
+    a<> href=path_to(:exrate).with(c.id) = c.title
+    
+
+table.savings-table
+  tr
+    th id
+    th actual_date
+    th date
+    th rate
+    th record_type
+  - @prices.each do |p|
+    tr
+      td = p.id
+      td = p.actual_date
+      td = p.date
+      td = p.rate
+      td = p.record_type

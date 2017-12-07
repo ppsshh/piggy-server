@@ -31,7 +31,8 @@ paths index: '/',
     graph: '/graph',
     hide_money: '/hide-money',
     autocomplete_shop: '/autocomplete/shop',
-    mortgage: '/mortgage'
+    mortgage: '/mortgage',
+    prices_reload: '/prices_reload'
 
 configure do
   puts '---> init <---'
@@ -241,4 +242,9 @@ get :exrate do
   @currency = Currency.find(params[:id])
   @prices = @currency.prices.order(actual_date: :desc)
   slim :exrate
+end
+
+get :prices_reload do
+  $price_converter.reload
+  redirect path_to(:index)
 end

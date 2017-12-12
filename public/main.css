@@ -1,12 +1,30 @@
 body {
-  font-family: Lucida Grande, Segoe UI, Helvetica Neue;
+  background-color: black;
+  color: #999;
+  font-family: Segoe UI, Helvetica Neue;
   font-size: 12pt;
+}
+input,
+textarea {
+  background-color: #111;
+  font-size: 0.8em;
+  color: #999;
+  border: none;
+  padding: 0.4em 0.6em;
+  border-radius: 5px;
+}
+h3, h2 {
+  color: #ccc;
 }
 a {
   color: #1c79cb;
+  color: #ccc;
+  text-decoration: none;
 }
 a:hover {
   color: #529fe2;
+  color: white;
+  text-decoration: underline;
 }
 .wide-cell {
   text-align: right;
@@ -37,17 +55,22 @@ a.expense-button {
   width: 1em;
 }
 .expense-hl-permanent {
-  background: #33d3ff;
+  background: #386d9f;
 }
-.expense-hl td:nth-child(3) {
-  background: #ffab33;
+.expense-hl td:nth-child(3),
+.expense-hl td:nth-child(3) a {
+  background: #e5c55e;
+  color: #202225;
 }
-body.hide-money .money {
-  color: #eee !important;
-  background: #eee !important;
+body.hide-money .money,
+body.hide-money .money,
+body.hide-money .money .positive,
+body.hide-money .money .negative {
+  color: #090909;
+  background-color: #090909;
 }
 body.hide-money .money:hover {
-  color: black !important;
+  color: inherit !important;
   background: none !important;
 }
 div.main_column {
@@ -59,8 +82,9 @@ div.main_column {
 .title-table-cell {
   max-width: 450px;
 }
-.highlight {
-  background: #ffc90e;
+.highlight, .highlight a {
+  background-color: #e5c55e;
+  color: #202225 !important;
 }
 .calendar-table td {
   padding: 1px 4px 1px 3px;
@@ -73,7 +97,7 @@ div.main_column {
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  background: #eee;
+  background: #090909;
   margin: 2px;
   padding: 2px;
 }
@@ -87,11 +111,13 @@ div.total-block-dst {
 .cents .microcents {
   opacity: 0.4;
 }
-.positive {
-  color: #00bb00;
+.positive,
+body.hide-money .money:hover .positive {
+  color: #12bc00;
 }
-.negative {
-  color: #990000;
+.negative,
+body.hide-money .money:hover .negative {
+  color: #a92a2d;
 }
 .savings-table td {
   padding: 0 8px 0 8px;
@@ -106,10 +132,10 @@ svg line,
 svg rect {
   shape-rendering: crispEdges;
 }
-svg line.bold_grid   { stroke: #000000; }
-svg line.normal_grid { stroke: #cccccc; }
-svg rect.incoming  { fill: #e9c500; }
-svg rect.normal    { fill: #558abb; }
-svg rect.profit    { fill: #00d23b; }
-svg rect.loss      { fill: #d24000; }
-svg rect.expense   { fill: #ffffff; }
+svg line.bold_grid   { stroke: #333; }
+svg line.normal_grid { stroke: #111; }
+svg rect.incoming  { fill: #e5c55e; }
+svg rect.normal    { fill: #386d9f; }
+svg rect.profit    { fill: #12bc00; }
+svg rect.loss      { fill: #a92a2d; }
+svg rect.expense   { fill: #2f3136; }

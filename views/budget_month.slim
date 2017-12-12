@@ -140,10 +140,10 @@ div.main_column
         td.td-left-align.money
           = bs.is_conversion ? "🔄" : ''
           - if bs.expense_amount > 0
-            span style="color: red" ↥
+            span.negative ↥
             == money_format(bs.expense_amount, bs.expense_currency_id)
           - if bs.income_amount > 0
-            span style="color: green" ↧
+            span.positive ↧
             == money_format(bs.income_amount, bs.income_currency_id)
           a< href=path_to(:budget_record).with(bs.id) Edit
           a< href=path_to(:budget_record).with(bs.id) data-method="delete" data-confirm="Delete?" Delete

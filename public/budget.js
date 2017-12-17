@@ -36,5 +36,18 @@ $(document).ready(function(){
       $('body').removeClass("hide-money");
     };
   });
+
+  $('.select-theme-dropdown').on('change', function(e){
+    $.ajax({
+      method: "POST",
+      url: "/set-theme",
+      data: {"theme": this.value}
+    });
+
+    $('.select-theme-dropdown option').each(function(i){
+      $('body').removeClass(this.value);
+    });
+    $('body').addClass(this.value);
+  });
 });
 

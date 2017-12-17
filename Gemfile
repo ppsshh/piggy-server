@@ -3,7 +3,9 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-snap'
 gem 'sinatra-reloader'
+
 gem 'slim'
+gem 'sass'
 
 gem 'sinatra-activerecord'
 gem 'pg' # postgresql

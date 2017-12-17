@@ -10,7 +10,7 @@ html
     script src="/budget.js"
     link rel="stylesheet" type="text/css" href="/main.css"
     link rel="stylesheet" type="text/css" href="/jquery-ui.css"
-  body class=("hide-money" if request.session["hide-money"] && request.session["hide-money"] == true)
+  body class="#{request.session['theme'] || 'white'} #{request.session["hide-money"] && request.session["hide-money"] == true ? 'hide-money' : nil}"
     div
       a href=path_to(:budget) Budget spreadsheet
       |  | 
@@ -25,6 +25,9 @@ html
       |  | 
       a href=path_to(:prices_reload) Reload Prices
       |  |
+      select.select-theme-dropdown
+        - %w(white black).each do |th|
+          option value=th selected=(request.session['theme'] == th ? 'selected' : nil) = th
       input.hide-money-checkbox type="checkbox" checked=("checked" if request.session["hide-money"] && request.session["hide-money"] == true) Hide money
     div#container
       == yield

@@ -2,7 +2,9 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
 require 'sinatra-snap'
+
 require 'slim'
+require 'sass'
 
 require 'rack-flash'
 require 'yaml'
@@ -30,15 +32,16 @@ paths index: '/',
     exrate: '/exrate/:id',
     graph: '/graph',
     hide_money: '/hide-money',
+    set_theme: '/set-theme',
     autocomplete_shop: '/autocomplete/shop',
     mortgage: '/mortgage',
-    prices_reload: '/prices_reload'
+    prices_reload: '/prices_reload',
+    css: '/main.css'
 
 configure do
   puts '---> init <---'
 
   $config = YAML.load(File.open('config/app.yml'))
-
   $purse = {0 => "Normal", 1 => "Savings"}
   $main_currency = Currency.where(title: "RUB").take
   $currencies = {}
@@ -155,6 +158,11 @@ post :hide_money do
   end
 end
 
+post :set_theme do
+  request.session["theme"] = params["theme"]
+  return 200, {theme: params["theme"]}.to_json
+end
+
 get :savings do
   update_anchors
   @anchors = Anchor.all.order(date: :asc)
@@ -247,4 +255,8 @@ end
 get :prices_reload do
   $price_converter.reload
   redirect path_to(:index)
+end
+
+get :css do
+  scss :main
 end

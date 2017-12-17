@@ -1,0 +1,211 @@
+body {
+  font-family: Segoe UI, Helvetica Neue, sans-serif;
+  font-size: 12pt;
+
+  &.black {
+    background-color: black;
+    color: #999;
+
+    input,
+    textarea {
+      background-color: #111;
+      color: #999;
+    }
+    h3,
+    h2 {
+      color: #ccc;
+    }
+    a {
+      color: #ccc;
+      text-decoration: none;
+
+      &:hover {
+        color: white;
+      }
+    }
+    .expense-hl-permanent {
+      background: #386d9f;
+      color: black;
+    }
+    .expense-hl td:nth-child(3),
+    .expense-hl td:nth-child(3) a {
+      background: #e5c55e;
+      color: #202225;
+    }
+    &.hide-money .money,
+    &.hide-money .money .positive,
+    &.hide-money .money .negative {
+      color: #090909;
+      background-color: #090909;
+    }
+    .highlight,
+    .highlight a {
+      background-color: #e5c55e;
+      color: #202225 !important;
+    }
+    .total-block {
+      background: #090909;
+    }
+    .positive,
+    &.hide-money .money:hover .positive {
+      color: #12bc00;
+    }
+    .negative,
+    &.hide-money .money:hover .negative {
+      color: #c91a1d;
+    }
+    svg {
+      line.bold_grid { stroke: #333; }
+      line.normal_grid { stroke: #111; }
+      rect.incoming { fill: #e5c55e; opacity: 0.7; }
+      rect.normal   { fill: #386d9f; opacity: 0.7; }
+      rect.profit   { fill: #12bc00; opacity: 0.7; }
+      rect.loss     { fill: #a92a2d; opacity: 0.7; }
+      rect.expense  { fill: #000000; }
+    }
+  }
+
+  &.white {
+    input,
+    textarea {
+      background-color: #eee;
+      color: #444;
+    }
+    a {
+      color: #1c79cb;
+
+      &:hover {
+        color: #529fe2;
+      }
+    }
+    .expense-hl-permanent {
+      background: #33d3ff;
+    }
+    .expense-hl td:nth-child(3),
+    .expense-hl td:nth-child(3) a {
+      background: #ffab33;
+    } 
+    &.hide-money .money,
+    &.hide-money .money .positive,
+    &.hide-money .money .negative {
+      color: #eee;
+      background-color: #eee;
+    } 
+    .highlight,
+    .highlight a {
+      background-color: #ffc90e;
+    } 
+    .total-block {
+      background: #eee;
+    } 
+    .positive,
+    &.hide-money .money:hover .positive {
+      color: #00bb00;
+    } 
+    .negative,
+    &.hide-money .money:hover .negative {
+      color: #990000;
+    }
+    svg {
+      line.bold_grid { stroke: #000; }
+      line.normal_grid { stroke: #ccc; }
+      rect.incoming { fill: #e9c500; }
+      rect.normal   { fill: #558abb; }
+      rect.profit   { fill: #00d23b; }
+      rect.loss     { fill: #d24000; }
+      rect.expense  { fill: #ffffff; }
+    }
+  }
+
+  input,
+  textarea {
+    font-size: 0.8em;
+    border: none;
+    padding: 0.4em 0.6em;
+    border-radius: 5px;
+  }
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+    &.expense-button {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+      cursor: pointer;
+    }
+  }
+  .wide-cell {
+    text-align: right;
+    padding-left: 20px;
+  }
+  .operation-form {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 8px;
+  }
+  .table-cell-right-align td {
+    text-align: right;
+    padding: 1px 6px 2px 6px;
+  }
+  td.td-left-align {
+    text-align: left;
+  }
+  .expense-icon {
+    cursor: pointer;
+  }
+  .category-icon {
+    height: 1em;
+    width: 1em;
+  }
+  &.hide-money .money:hover {
+    color: inherit !important;
+    background: none !important;
+  }
+  div.main_column {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 25px 0 15px;
+    max-width: 46%;
+  }
+  .title-table-cell {
+    max-width: 450px;
+  }
+  .calendar-table td {
+    padding: 1px 4px 1px 3px;
+  }
+  .expense-description {
+    font-size: 8pt;
+    opacity: 0.5;
+  }
+  .total-block {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    margin: 2px;
+    padding: 2px;
+  }
+  div.total-block-dst {
+    display: block;
+  }
+  .cents,
+  .total-block-dst {
+    font-size: 0.6em;
+  }
+  .cents .microcents {
+    opacity: 0.4;
+  }
+  .savings-table td {
+    padding: 0 8px 0 8px;
+  }
+  .tags-summary-table .money,
+  .summary-table .money,
+  .savings-table .money {
+    font-family: Iosevka, monospace, Helvetica Neue;
+    text-align: right;
+  }
+  svg line,
+  svg rect {
+    shape-rendering: crispEdges;
+  }
+}

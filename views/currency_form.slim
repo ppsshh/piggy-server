@@ -18,9 +18,13 @@ form action=(c.id ? path_to(:exrate).with(c.id) : path_to(:exrates)) method="POS
       td: input name="round" value=c.round
       td Record Type
       td: input name="record_type" value=c.record_type
-      td colspan=2                                      
+      td colspan=2
         input type="checkbox" name="api_inverse" checked=(c.api['inverse'] ? 'checked' : nil)
         ' Price inverse
+        div.cents
+          = "Select this if API has format: XXX #{c.title || 'CUR'} = 1 USD"
+          br
+          = "Straight price is when: 1 #{c.title || 'CUR'} = XXX USD"
     tr
       td API URL
       td: input name="api_url" value=c.api['url']

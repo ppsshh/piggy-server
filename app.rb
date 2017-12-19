@@ -257,7 +257,6 @@ def update_exchange(ex, params)
   ex.update(
         title: params['title'],
         description: params['description'],
-        is_stock: (params['is_stock'] ? true : false),
         update_regularly: (params['update_regularly'] ? true : false),
         round: params['round'],
         record_type: params['record_type'],

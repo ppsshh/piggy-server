@@ -7,10 +7,7 @@ form action=(c.id ? path_to(:exrate).with(c.id) : path_to(:exrates)) method="POS
       td: input name='title' value=c.title
       td Description
       td: input name='description' value=c.description
-      td
-        input type="checkbox" name="is_stock" checked=(c.is_stock ? 'checked' : nil)
-        ' Is stock
-      td
+      td colspan=2
         input type="checkbox" name="update_regularly" checked=(c.update_regularly ? 'checked' : nil)
         ' Update Regularly
     tr
@@ -33,5 +30,5 @@ form action=(c.id ? path_to(:exrate).with(c.id) : path_to(:exrates)) method="POS
       td API Referer              
       td: input name="api_referer" value=c.api['referer']
     tr
-      td colspan='5'
+      td colspan=5
       td: input type="submit"

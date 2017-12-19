@@ -29,6 +29,7 @@ paths index: '/',
     tag_summary: '/summary/:year/:tag_id',
     global_tag_summary: '/summary2/:year/:tag_id',
     exrates: '/exrates',
+    exrate_new: '/exrates/new',
     exrate: '/exrate/:id',
     graph: '/graph',
     hide_money: '/hide-money',
@@ -246,10 +247,45 @@ get :exrates do
   redirect path_to(:exrate).with($main_currency.id)
 end
 
+get :exrate_new do
+  @currency = Currency.new
+  @currency.api = {}
+  slim :currency_new
+end
+
+def update_exchange(ex, params)
+  ex.update(
+        title: params['title'],
+        description: params['description'],
+        is_stock: (params['is_stock'] ? true : false),
+        update_regularly: (params['update_regularly'] ? true : false),
+        round: params['round'],
+        record_type: params['record_type'],
+        api: {
+            url: params['api_url'],
+            source: params['api_source'],
+            inverse: (params['api_inverse'] ? true : false),
+            referer: params['api_referer']
+        }
+    )
+end
+
+post :exrates do
+  ex = Currency.new
+  update_exchange(ex, params)
+  redirect path_to(:exrate).with(ex.id)
+end
+
 get :exrate do
   @currency = Currency.find(params[:id])
   @prices = @currency.prices.order(actual_date: :desc)
   slim :exrate
+end
+
+post :exrate do
+  ex = Currency.find(params['id'])
+  update_exchange(ex, params)
+  redirect path_to(:exrate).with(ex.id)
 end
 
 get :prices_reload do

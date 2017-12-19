@@ -1,0 +1,33 @@
+// locals: c (currency)
+
+form action=(c.id ? path_to(:exrate).with(c.id) : path_to(:exrates)) method="POST"
+  table
+    tr
+      td Title
+      td: input name='title' value=c.title
+      td Description
+      td: input name='description' value=c.description
+      td
+        input type="checkbox" name="is_stock" checked=(c.is_stock ? 'checked' : nil)
+        ' Is stock
+      td
+        input type="checkbox" name="update_regularly" checked=(c.update_regularly ? 'checked' : nil)
+        ' Update Regularly
+    tr
+      td Round
+      td: input name="round" value=c.round
+      td Record Type
+      td: input name="record_type" value=c.record_type
+      td colspan=2                                      
+        input type="checkbox" name="api_inverse" checked=(c.api['inverse'] ? 'checked' : nil)
+        ' Price inverse
+    tr
+      td API URL
+      td: input name="api_url" value=c.api['url']
+      td API Source
+      td: input name="api_source" value=c.api['source']
+      td API Referer              
+      td: input name="api_referer" value=c.api['referer']
+    tr
+      td colspan='5'
+      td: input type="submit"

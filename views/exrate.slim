@@ -3,7 +3,9 @@ h2
   - Currency.all.each do |c|
     - next if c.id == @currency.id
     a<> href=path_to(:exrate).with(c.id) = c.title
-    
+  a href=path_to(:exrate_new) Create new
+
+== slim :currency_form, locals: {c: @currency}
 
 table.savings-table
   tr

@@ -12,7 +12,9 @@ html
     link rel="stylesheet" type="text/css" href="/jquery-ui.css"
   body class="#{request.session['theme'] || 'white'} #{request.session["hide-money"] && request.session["hide-money"] == true ? 'hide-money' : nil}"
     div
-      a href=path_to(:budget) Budget spreadsheet
+      - if admin?
+        a href=path_to(:logout) data-method="delete" data-confirm="Logout?" style="text-decoration: none; color: red" ●
+      a< href=path_to(:budget) Budget spreadsheet
       |  | 
       a href=path_to(:savings) Savings
       |  | 

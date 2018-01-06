@@ -53,7 +53,14 @@ namespace :piggy do
       latest_price_date = latest_price ? latest_price.actual_date : Date.new(2010,1,1)
 # это значение actual_date у самого свежего PRICE
 
-      prices = get_json_prices(curr)
+      begin
+        prices = get_json_prices(curr)
+      rescue Exception => e
+        puts "Error occurred: #{e}"
+        puts "Skipping #{curr.title}"
+        next
+      end
+
       prices.each do |date,price|
         # обрабатываем только те записи, которые >= latest_price_date
         next unless date >= latest_price_date

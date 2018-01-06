@@ -37,7 +37,9 @@ paths index: '/',
     autocomplete_shop: '/autocomplete/shop',
     mortgage: '/mortgage',
     prices_reload: '/prices_reload',
-    css: '/main.css'
+    css: '/main.css',
+    login: '/login',
+    logout: '/logout'
 
 configure do
   puts '---> init <---'
@@ -61,14 +63,18 @@ end
 helpers PiggyHelpers
 
 get :index do
+  protect!
   redirect path_to(:budget_year_month).with(Date.today.year, Date.today.month)
 end
 
 get :budget do
+  protect!
   redirect path_to(:budget_year_month).with(Date.today.year, Date.today.month)
 end
 
 get :budget_year_month do
+  protect!
+
   $tags = tags
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
@@ -78,6 +84,8 @@ get :budget_year_month do
 end
 
 post :budget do
+  protect!
+
   begin
     begin
       date = Date.parse(params[:date])
@@ -110,17 +118,20 @@ post :budget do
 end
 
 get :graph do
+
   @operations = SavingsExchange.all
 
   slim :graph
 end
 
 get :budget_record do
+  protect!
   @item = BudgetRecord.find(params[:id])
   slim :budget_item
 end
 
 post :budget_record do
+  protect!
   item = BudgetRecord.find(params[:id])
 
   item.date = params[:date]
@@ -141,6 +152,7 @@ post :budget_record do
 end
 
 delete :budget_record do
+  protect!
   item = BudgetRecord.find(params[:id])
   y, m = item.date.year, item.date.month
 
@@ -165,6 +177,7 @@ post :set_theme do
 end
 
 get :savings do
+  protect!
   update_anchors
   @anchors = Anchor.all.order(date: :asc)
 
@@ -172,6 +185,7 @@ get :savings do
 end
 
 get :summary do
+  protect!
   @year = params[:year].to_i || Date.today.year
   expenses_by_tag = BudgetRecord.where(
         date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)),
@@ -200,6 +214,7 @@ get :summary do
 end
 
 get :tag_summary do
+  protect!
   @year = params[:year].to_i || Date.today.year
   @tag = params[:tag_id].to_i
 
@@ -214,6 +229,7 @@ get :tag_summary do
 end
 
 get :global_tag_summary do
+  protect!
   @year = params[:year].to_i || Date.today.year
   @tag = params[:tag_id].to_i
   tags = [@tag]
@@ -230,6 +246,7 @@ get :global_tag_summary do
 end
 
 get :autocomplete_shop do
+  protect!
   term2 = params[:term].downcase.tr("qwertyuiop[]asdfghjkl;'zxcvbnm,.`", "йцукенгшщзхъфывапролджэячсмитьбюё")
   items = BudgetRecord.select(:shop).where('"shop" ILIKE ? OR "shop" ILIKE ?', "%#{params[:term]}%", "%#{term2}%").group(:shop).limit(10)
   items_array = []
@@ -244,10 +261,12 @@ get :mortgage do
 end
 
 get :exrates do
+  protect!
   redirect path_to(:exrate).with($main_currency.id)
 end
 
 get :exrate_new do
+  protect!
   @currency = Currency.new
   @currency.api = {}
   slim :currency_new
@@ -270,28 +289,63 @@ def update_exchange(ex, params)
 end
 
 post :exrates do
+  protect!
   ex = Currency.new
   update_exchange(ex, params)
   redirect path_to(:exrate).with(ex.id)
 end
 
 get :exrate do
+  protect!
   @currency = Currency.find(params[:id])
   @prices = @currency.prices.order(actual_date: :desc)
   slim :exrate
 end
 
 post :exrate do
+  protect!
   ex = Currency.find(params['id'])
   update_exchange(ex, params)
   redirect path_to(:exrate).with(ex.id)
 end
 
 get :prices_reload do
+  protect!
   $price_converter.reload
   redirect path_to(:index)
 end
 
 get :css do
+  protect!
   scss :main
 end
+
+get :login do
+  if admin?
+    flash[:notice] = "Already logged in"
+    redirect path_to(:index)
+  else
+    slim :login
+  end
+end
+
+post :login do
+  if params['username'].blank? || params['password'].blank?
+    flash[:error] = "Incorrect username or password :("
+    redirect path_to(:login)
+  elsif $config['admins'] && $config['admins'][params['username']] == params['password']
+    flash[:notice] = "Successfully logged in as admin!"
+    session['role'] = 'admin'
+    redirect path_to(:index)
+  else
+    flash[:error] = "Incorrect username or password :("
+    redirect path_to(:login)
+  end
+end
+
+delete :logout do
+  session.delete('role')
+  flash[:notice] = "Successfully logged out"
+  redirect path_to(:index)
+end
+

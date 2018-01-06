@@ -1,4 +1,13 @@
 module PiggyHelpers
+  def admin?
+    session['role'] == 'admin'
+  end
+
+  def protect!
+    return if admin?
+    halt 401, "Unauthorized"
+  end
+
   def currency_symbol(currency_id)
     currency = $currencies[currency_id]
     currency_symbols = {

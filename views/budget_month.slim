@@ -12,7 +12,7 @@ ruby:
   income_total = total_conversion(incomes_hash, $main_currency, Date.today)
   days_in_month = date_end - date_start
 
-div.main_column
+div.budget-expenses-cell
 
   h3 Incomings
 
@@ -60,7 +60,7 @@ div.main_column
       - date_printed = false
       - if operations.has_key?(d)
         - operations[d].each do |e|
-          - next unless e.expense_amount > 0
+          - next if e.income_amount > 0
           - expenses_hash[e.expense_currency_id] = (expenses_hash[e.expense_currency_id] || 0) + e.expense_amount
           - item_category = $tags[e.tag_id][:parent] ? $tags[e.tag_id][:parent] : e.tag_id
           - types_sum[item_category] ||= {}
@@ -107,7 +107,7 @@ div.main_column
   - types_sum_main_currency = {}
   - types_sum.each { |k,v| types_sum_main_currency[k] = total_conversion(v, $main_currency, Date.today) }
   table.tags-summary-table
-    - types_sum_main_currency.sort_by {|k,v| v}.each do |tkey, tval|
+    - types_sum_main_currency.sort_by {|k,v| v}.reverse.each do |tkey, tval|
       tr
         td
           a data-id=tkey class="expense-button" = $tags[tkey][:title]
@@ -120,7 +120,7 @@ ruby:
     expenses_hash.each  {|k,v| remainder_hash[k] = (remainder_hash[k] || 0) - v}
   end
 
-div.main_column
+div.budget-savings-cell
   h3 Savings
   - @start_savings = @savings.clone
 

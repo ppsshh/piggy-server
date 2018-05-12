@@ -205,7 +205,7 @@ get :summary do
 
   @expenses_sub = {}
   expenses_sub.each do |k,v|
-    @expenses_sub[k] = expenses_sub[k].sort_by { |k,v| v }.to_h
+    @expenses_sub[k] = expenses_sub[k].sort_by { |k,v| v }.reverse.to_h
   end
 
   @expenses = expenses.sort_by { |k,v| v }.reverse.to_h

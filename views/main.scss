@@ -162,12 +162,22 @@ body {
     color: inherit !important;
     background: none !important;
   }
-  div.main_column {
-    display: inline-block;
-    vertical-align: top;
-    padding: 0 25px 0 15px;
-    max-width: 46%;
+
+  .budget-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+        "form calendar"
+        "header header"
+        "expenses savings";
   }
+  .budget-form-cell     { grid-area: form;     }
+  .budget-calendar-cell { grid-area: calendar; }
+  .budget-header-cell   { grid-area: header;   }
+  .budget-expenses-cell { grid-area: expenses; }
+  .budget-savings-cell  { grid-area: savings;  }
+
   .title-table-cell {
     max-width: 450px;
   }

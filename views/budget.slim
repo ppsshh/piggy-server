@@ -14,14 +14,13 @@ ruby:
     new_item_date = Date.new(@budget_date.year, @budget_date.month, 1)
   end
 
-table
-  td
+div.budget-grid
+  div.budget-form-cell
     == slim :budget_item_form, locals: {item: BudgetRecord.new(income_currency_id: $main_currency.id, expense_currency_id: $main_currency.id), new_date: new_item_date}
-  td
+  div.budget-calendar-cell
     == slim :budget_calendar, locals: {start_date: $config['start_date'], selected_date: @budget_date}
 
-br
+  div.budget-header-cell
+    h2 = header
 
-h2 = header
-
-== slim :budget_month, locals: current_month
+  == slim :budget_month, locals: current_month

@@ -1,11 +1,12 @@
 h2
   - Currency.all.order(:title).each do |c|
     - next if c.title == 'USD'
-    - if c.id == @currency.id
-      = @currency.title
-    - else
-      a<> href=path_to(:exrate).with(c.id) = c.title
-  a href=path_to(:exrate_new) Create new
+    span class=(c.update_regularly ? '' : 'currency-disabled')
+      - if c.id == @currency.id
+        = @currency.title
+      - else
+        a<> href=path_to(:exrate).with(c.id) = c.title
+  a< href=path_to(:exrate_new) Create new
 
 == slim :currency_form, locals: {c: @currency}
 

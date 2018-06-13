@@ -41,7 +41,7 @@ namespace :piggy do
 
     $currencies.each do |curr_id, curr|
       next if curr.title == "USD"
-#      next unless curr.update_regularly
+      next unless curr.update_regularly
       next unless curr.api # temporarily
 
       Price.where(currency: curr, record_type: 2).each do |p|

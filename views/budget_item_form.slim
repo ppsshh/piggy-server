@@ -16,14 +16,14 @@ form method="POST" action=(item.id ? path_to(:budget_record).with(item.id) : pat
         input type="text" name="income_amount" value=(item ? item.income_amount : 0) tabindex="2"
         select name="income_currency_id"
           - $currencies.each do |k,v|
-            - next unless v.update_regularly
+            - next unless v.update_regularly || v.title == 'USD'
             option value=k selected=("selected" if item && (item.income_currency_id == k)) = v.title
       td Expense:
       td
         input type="text" name="expense_amount" value=(item ? item.expense_amount : 0) tabindex="3"
         select name="expense_currency_id"
           - $currencies.each do |k,v|
-            - next unless v.update_regularly
+            - next unless v.update_regularly || v.title == 'USD'
             option value=k selected=("selected" if item && (item.expense_currency_id == k)) = v.title
     tr
       td Tag:

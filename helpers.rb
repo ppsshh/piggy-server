@@ -35,8 +35,9 @@ module PiggyHelpers
     end
   end
 
-  def money_format(amount, currency_id)
-    return "#{money_round(amount, currency_id)}&nbsp;#{currency_symbol(currency_id)}"
+  def money_format(amount, currency_id, html = true)
+    result = "#{money_round(amount, currency_id)}&nbsp;#{currency_symbol(currency_id)}"
+    return html ? result : result.gsub(/<.*?>/, '').gsub(/&nbsp;/, ' ')
   end
 
   def cursym(cur)
@@ -73,7 +74,7 @@ module PiggyHelpers
     incomes = records.where("income_amount > 0").group(:income_currency_id).sum(:income_amount)
     expenses = records.where("expense_amount > 0").group(:expense_currency_id).sum(:expense_amount)
     expenses.each { |k,v| incomes[k] = (incomes[k] || 0) - v }
-    return incomes  
+    return incomes
   end
 
   def calculate_anchor(date)

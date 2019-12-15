@@ -21,7 +21,7 @@ table.summary-table
           circle cx="0" cy="0" r="150" fill="#eee" transform="translate(150 150)"
           g#arcs transform="translate(150 150)"
             /path d="M0 0L0 150A150 150 0 0 1 -150 0Z" fill="#f0f"
-    td
+    td style="vertical-align: top;"
       table
         - @expenses.each do |k,v|
           tr
@@ -39,6 +39,16 @@ table.summary-table
                 a href=path_to(:tag_summary).with(@year, k2) = @tags[k2][:title]
               td.money == money_format(v2, $main_currency.id)
               td = "#{ (v2/total*100).round(1) }%"
+    td style="width: 2em;"
+    td
+      table
+        tr
+          th Name
+          th Amount
+        - @expenses_by_shop.each do |k,v|
+          tr
+            td style="max-width: 20em" = k
+            td == money_format(v, $main_currency.id)
 
 javascript:
   $(function(){

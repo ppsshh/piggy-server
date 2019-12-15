@@ -214,6 +214,21 @@ get :summary do
 
   @expenses = expenses.sort_by { |k,v| v }.reverse.to_h
 
+# Get 'expenses by shop' data
+  expenses_by_shop = BudgetRecord.where(
+        date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)),
+        purse: 0).where('expense_amount > 0').group(:shop, :expense_currency_id).sum(:expense_amount)
+
+  expenses = {}
+  expenses_by_shop.each do |k,v|
+    shop_name, currency_id = k
+    v = $price_converter.convert_currency($currencies[currency_id], $main_currency, v) if currency_id != $main_currency.id
+    expenses[shop_name] ||= 0
+    expenses[shop_name] += v
+  end
+
+  @expenses_by_shop = expenses.sort_by { |k,v| v }.reverse.to_h
+
   slim :summary
 end
 

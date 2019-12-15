@@ -46,7 +46,7 @@ configure do
 
   $config = YAML.load(File.open('config/app.yml'))
   $purse = {0 => "Normal", 1 => "Savings"}
-  $main_currency = Currency.where(title: "RUB").take
+  $main_currency = Currency.where(title: "JPY").take
   $currencies = {}
   Currency.all.each { |c| $currencies[c.id] = c }
   $price_converter = PriceConverter.new
@@ -189,18 +189,22 @@ get :summary do
   @year = params[:year].to_i || Date.today.year
   expenses_by_tag = BudgetRecord.where(
         date: (Date.new(@year, 1, 1)..Date.new(@year, 12, 31)),
-        purse: 0).where('expense_amount > 0').group(:tag_id).sum(:expense_amount)
+        purse: 0).where('expense_amount > 0').group(:tag_id, :expense_currency_id).sum(:expense_amount)
 
   expenses = {}
   expenses_sub = {}
   @tags = tags
   expenses_by_tag.each do |k,v|
-    tag_parent = @tags[k][:parent] || k
+    tag_id, currency_id = k
+    tag_parent = @tags[tag_id][:parent] || tag_id
+
+    v = $price_converter.convert_currency($currencies[currency_id], $main_currency, v) if currency_id != $main_currency.id
 
     expenses[tag_parent] = (expenses[tag_parent] || 0) + v
 
     expenses_sub[tag_parent] ||= {}
-    expenses_sub[tag_parent][k] = v
+    expenses_sub[tag_parent][tag_id] ||= 0
+    expenses_sub[tag_parent][tag_id]  += v
   end
 
   @expenses_sub = {}

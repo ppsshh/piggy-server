@@ -28,7 +28,7 @@ ruby:
   grid_step = (max_savings_value / (10 ** (max_rank-1))).round * (10**(max_rank-2))
   anchors_table.delete_at(0)
 
-svg height=graph_height width=graph_width
+div style="width: 100%; overflow-x: scroll;": svg height=graph_height width=graph_width
   - grid_y_val = 0
   - while grid_y_val < max_savings_value
     - grid_y_val += grid_step

@@ -1,17 +1,13 @@
 source 'https://rubygems.org'
 
+gem 'httparty'
+gem 'rack-contrib'
+gem 'rack-flash3'
+gem 'pg'
+gem 'puma'
+gem 'sass'
 gem 'sinatra'
+gem 'sinatra-activerecord'
 gem 'sinatra-snap'
 gem 'sinatra-reloader'
-
 gem 'slim'
-gem 'sass'
-
-gem 'sinatra-activerecord'
-gem 'pg' # postgresql
-#gem 'mysql2'
-#gem 'sqlite3'
-
-gem 'rack-flash3'
-gem 'puma'
-gem 'httparty'

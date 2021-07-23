@@ -1,4 +1,8 @@
 module PiggyHelpers
+  def current_user
+    session['username']
+  end
+
   def admin?
     session['role'] == 'admin'
   end
@@ -142,4 +146,3 @@ module PiggyHelpers
   end
 
 end
-

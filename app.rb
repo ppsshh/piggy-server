@@ -1,5 +1,6 @@
 require 'date'
 require 'rack-flash'
+require 'rack/contrib'
 require 'sass'
 require 'sinatra'
 require 'sinatra-snap'
@@ -32,4 +33,5 @@ configure do
         expire_after: 2592000,
         secret: $config['secret']
   use Rack::Flash
+  use Rack::JSONBodyParser
 end

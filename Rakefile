@@ -1,19 +1,20 @@
 require './app.rb'
-require 'sinatra/activerecord/rake'
 require 'open-uri'
+require 'sinatra/activerecord/rake'
 
 namespace :piggy do
   task :configuration do
     puts $config
   end
 
-  UAG = "Mozilla/5.0 (X11; Linux x86_64; rv:64.0) Gecko/20100101 Firefox/64.0"
+  UAG = "Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0"
 
   def get_json_prices(curr)
     puts "#{curr.title}: downloading #{curr.api['url']}"
     response = HTTParty.get(curr.api["url"], headers: {
         "User-Agent" => UAG,
-"Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+#"Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+"Accept" => "application/json, text/javascript, */*; q=0.01",
 "Accept-Language" => "en-US,en;q=0.5",
 #"Accept-Encoding" => "gzip, deflate, br",
 "Connection" => "keep-alive",

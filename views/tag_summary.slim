@@ -4,6 +4,7 @@ h2
 
 table
   tr
+    th ID
     th Amount
     th Description
     th Date
@@ -13,6 +14,9 @@ table
     - lines << e.description.split("\n")
     - lines = lines.flatten
     tr
+      td style="opacity: .5"
+        = e.id
+        a< href=path_to(:budget_record).with(e.id) Edit
       td == money_format(e.expense_amount, e.expense_currency_id)
       td = lines[0]
       td = e.date

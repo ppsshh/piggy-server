@@ -141,6 +141,7 @@ div.budget-savings-cell
             - d = bs.date
         td.td-left-align.money
           = bs.is_conversion ? "🔄" : ''
+          = bs.purse == 2 ? '🔥' : ''
           - if bs.expense_amount > 0
             span.negative
               ' ↥
@@ -191,3 +192,32 @@ div.budget-savings-cell
         div.total-block-dst == money_format(total1_end - total1, $main_currency.id)
         == money_round(total2, $main_currency.id)
         div.total-block-dst == money_format(total2 - total1, $main_currency.id)
+
+  h3 Temporary for diffs:
+  ul
+    - BudgetRecord.where(purse: 3, date: date_start...date_end).each do |br|
+      li
+        - if br.income_amount != 0
+          span> style="color: green" = "+#{br.income_amount} #{$currencies[br.income_currency_id].title}"
+        - if br.expense_amount != 0
+          span> style="color: red" = "-#{br.expense_amount} #{$currencies[br.expense_currency_id].title}"
+        = br.description
+        a< href=path_to(:budget_record).with(br.id) Edit
+        a< href=path_to(:budget_record).with(br.id) data-method="delete" data-confirm="Delete?" Delete
+
+
+  h3 Monthly diffs:
+  ul
+    - MonthlyDiff.where(date: date_start.end_of_month).each do |md|
+      li = "#{md.amount} #{md.currency.title}"
+
+  h3 Total at the end of the month:
+  ul
+    - MonthlyDiff.where(date: ..date_start.end_of_month).group(:currency).sum(:amount).each do |currency, amount|
+      - next if amount < 0.00001 && amount > -0.00001
+      li
+        div = "#{currency.title}: #{amount}"
+        - sdiff = ((@savings[currency.id] || 0)  - amount).round(2)
+        - if sdiff != 0
+          div = "---> " + sdiff.to_s
+          div = "Баланс на конец месяца: " + (@savings[currency.id] || 0).round(2).to_s + ' ' + currency.title

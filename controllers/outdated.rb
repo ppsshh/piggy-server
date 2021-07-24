@@ -152,7 +152,7 @@ end
 
 get :savings do
   protect!
-  update_anchors
+  # update_anchors
   @anchors = Anchor.all.order(date: :asc)
 
   slim :savings

@@ -20,7 +20,7 @@ helpers PiggyHelpers
 
 configure do
   $config = YAML.load(File.open('config/app.yml'))
-  $purse = {0 => "Normal", 1 => "Savings"}
+  $purse = {0 => "Normal", 1 => "Savings", 2 => "Monthly Totals"}
   $main_currency = Currency.where(title: "JPY").take
   $currencies = {}
   Currency.all.each { |c| $currencies[c.id] = c }

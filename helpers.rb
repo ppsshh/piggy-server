@@ -88,12 +88,12 @@ module PiggyHelpers
     a = Anchor.find_or_initialize_by(date: d1)
 
     total = income_expense_total(
-                BudgetRecord.where("purse = ? AND date < ?", 1, d1)
+                BudgetRecord.where(purse: [1, 2], date: ...d1)
             )
     a.total = total_conversion(total, $main_currency, d1)
 
     income = income_expense_total(
-                BudgetRecord.where("purse = ? AND date >= ? AND date < ? AND is_conversion = ?", 1, d2, d1, false)
+                BudgetRecord.where(purse: [1, 2], date: d2...d1, is_conversion: false)
             )
     a.income = total_conversion(income, $main_currency, d1)
 
@@ -128,7 +128,7 @@ module PiggyHelpers
     d2 = d1.next_month
     if a = Anchor.where(date: d2).take
       income = income_expense_total(
-                BudgetRecord.where("purse = ? AND date >= ? AND date < ?", 0, d1, d2)
+                BudgetRecord.where(purse: 0, date: d1...d2)
             )
       income_main_currency = total_conversion(income, $main_currency, d2)
       a.income += income_main_currency

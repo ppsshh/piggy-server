@@ -43,7 +43,7 @@ def get_budget_data(year = Date.today.year, month = Date.today.month)
   @date_end = Date.new(year, month).next_month
 
   @operations = get_date_hash(BudgetRecord.where(date: @date_start...@date_end, purse: 0), :date)
-  @budget_savings = BudgetRecord.where(date: @date_start...@date_end, purse: 1).order(date: :asc)
+  @budget_savings = BudgetRecord.where(date: @date_start...@date_end, purse: [1, 2]).order(date: :asc)
 end
 
 get :budget_year_month do
@@ -53,7 +53,7 @@ get :budget_year_month do
   y, m = params[:year].to_i, params[:month].to_i
   get_budget_data(y, m)
   @budget_date = Date.new(y, m)
-  @savings = income_expense_total( BudgetRecord.where("purse = ? AND date < ?", 1, Date.new(y, m, 1)) )
+  @savings = income_expense_total( BudgetRecord.where(purse: [1, 2], date: ...Date.new(y, m, 1)) )
   slim :budget
 end
 

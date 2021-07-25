@@ -9,7 +9,6 @@ paths index: '/',
     exrates: '/exrates',
     exrate_new: '/exrates/new',
     exrate: '/exrate/:id',
-    graph: '/graph',
     hide_money: '/hide-money',
     set_theme: '/set-theme',
     autocomplete_shop: '/autocomplete/shop',
@@ -91,13 +90,6 @@ post :budget do
   end
 
   redirect path_to(:budget_year_month).with(op.date.year, op.date.month)
-end
-
-get :graph do
-
-  @operations = SavingsExchange.all
-
-  slim :graph
 end
 
 get :budget_record do

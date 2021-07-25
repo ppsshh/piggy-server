@@ -1,6 +1,6 @@
 paths \
     api_month: '/api/month/:year/:month',
-    globals: '/api/globals'
+    api_globals: '/api/globals'
 
 get :api_month do
   protect!
@@ -16,11 +16,11 @@ get :api_month do
       .where(date: ..date_end)
       .group(:currency_id)
       .sum(:amount)
-      .filter {|k,v| v.abs > 0.0001},
+      .filter {|k,v| v != 0},
   }.to_json
 end
 
-get :globals do
+get :api_globals do
   protect!
 
   tags = Tag.all.index_by(&:id)

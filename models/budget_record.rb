@@ -13,17 +13,15 @@ class BudgetRecord < ActiveRecord::Base
   def rollback_monthly_diff!
     return if previous_value(:purse) == 2
 
-    income_diff = MonthlyDiff.find_by(
+    MonthlyDiff.find_by(
       date: previous_value(:date).end_of_month,
       currency_id: previous_value(:income_currency_id),
-    )
-    income_diff.deduct!(previous_value(:income_amount)) if income_diff.present?
+    )&.deduct!(previous_value(:income_amount))
 
-    expense_diff = MonthlyDiff.find_by(
+    MonthlyDiff.find_by(
       date: previous_value(:date).end_of_month,
       currency_id: previous_value(:expense_currency_id),
-    )
-    expense_diff.augment!(previous_value(:expense_amount)) if expense_diff.present?
+    )&.augment!(previous_value(:expense_amount))
   end
 
   def add_to_monthly_diff!
@@ -32,12 +30,12 @@ class BudgetRecord < ActiveRecord::Base
     MonthlyDiff.find_or_create_by(
       date: date.end_of_month,
       currency_id: income_currency_id,
-    ).augment!(income_amount) if income_currency_id
+    ).augment!(income_amount) if income_currency_id && income_amount != 0
 
     MonthlyDiff.find_or_create_by(
       date: date.end_of_month,
       currency_id: expense_currency_id,
-    ).deduct!(expense_amount) if expense_currency_id
+    ).deduct!(expense_amount) if expense_currency_id && expense_amount != 0
   end
 
   def previous_value(key)

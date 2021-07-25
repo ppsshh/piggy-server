@@ -15,16 +15,4 @@ class Currency < ActiveRecord::Base
       br.update(expense_amount: (br.expense_amount * multiplier).round)
     end
   end
-
-  def is_currency?
-    return record_type == "currency" ? true : false
-  end
-
-  def is_stock?
-    return record_type == "stock" ? true : false
-  end
-
-  def is_crypto?
-    return record_type == "crypto" ? true : false
-  end
 end

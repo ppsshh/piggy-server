@@ -27,15 +27,23 @@ module PiggyHelpers
   def money_round(amount, currency_id)
     round_value = $currencies[currency_id] ? $currencies[currency_id].round : 2
 
-    whole, fraction = sprintf("%.#{round_value}f", amount.round(round_value)).split('.')
+    # If calculated in integers:
+    # OK: 1/10 = 0
+    # NG: -1/10 = -1
+    # OK: 1 % 10 = 1
+    # NG: -1 % 10 = 9
+    # 
+    # That's why we need conversion to floats here
+    whole = (amount.abs / 10**round_value).to_i.to_s
+    fraction = (amount.abs % 10**round_value).to_i.to_s
     whole.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1&nbsp;")
     #parts.delete_at(1) if parts[1] == "0"
     if round_value > 0
-      fraction += "0" * (round_value - fraction.length) if round_value > 0
+      fraction = "0" * (round_value - fraction.length) + fraction
       fraction = "#{fraction[0..2]}<span class=\"microcents\">#{fraction[3..-1]}</span>"
-      return "#{whole}<span class=\"cents\">.#{fraction}</span>"
+      return "#{'-' if amount < 0}#{whole}<span class=\"cents\">.#{fraction}</span>"
     else
-      return whole
+      return "#{'-' if amount < 0}#{whole}"
     end
   end
 

@@ -6,13 +6,17 @@ get :api_month do
   protect!
 
   date_start = Date.new(params[:year].to_i, params[:month].to_i)
-  date_end = date_start.next_month
+  date_end = date_start.end_of_month
 
   {
-    operations: BudgetRecord.where(date: date_start...date_end, purse: 0).each_with_object({}) do |br, acc|
-      (acc[br.date] ||= []) << br
-    end,
-    savings: BudgetRecord.where(date: date_start...date_end, purse: [1, 2]),
+    operations: BudgetRecord
+      .where(date: date_start..date_end, purse: [0, 1, 3])
+      .each_with_object({}) {|br, acc| (acc[br.date] ||= []) << br},
+    total: MonthlyDiff
+      .where(date: ..date_end)
+      .group(:currency_id)
+      .sum(:amount)
+      .filter {|k,v| v.abs > 0.0001},
   }.to_json
 end
 

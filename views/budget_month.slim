@@ -209,15 +209,16 @@ div.budget-savings-cell
   h3 Monthly diffs:
   ul
     - MonthlyDiff.where(date: date_start.end_of_month).each do |md|
-      li = "#{md.amount} #{md.currency.title}"
+      li
+        == money_format(md.amount, md.currency_id)
 
   h3 Total at the end of the month:
   ul
     - MonthlyDiff.where(date: ..date_start.end_of_month).group(:currency).sum(:amount).each do |currency, amount|
       - next if amount < 0.00001 && amount > -0.00001
       li
-        div = "#{currency.title}: #{amount}"
+        div == money_format(amount, currency.id)
         - sdiff = ((@savings[currency.id] || 0)  - amount).round(2)
         - if sdiff != 0
-          div = "---> " + sdiff.to_s
-          div = "Баланс на конец месяца: " + (@savings[currency.id] || 0).round(2).to_s + ' ' + currency.title
+          div == "---> " + money_format(sdiff, currency.id)
+          div == "Баланс на конец месяца: " + money_format(@savings[currency.id] || 0, currency.id)

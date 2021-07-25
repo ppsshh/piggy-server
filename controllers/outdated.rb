@@ -71,10 +71,13 @@ post :budget do
     op = BudgetRecord.new
     op.date = date
 
-    op.income_amount = params[:income_amount]
-    op.income_currency_id = params[:income_currency_id]
-    op.expense_amount = params[:expense_amount]
-    op.expense_currency_id = params[:expense_currency_id]
+    income_currency = Currency.find(params[:income_currency_id])
+    op.income_amount = params[:income_amount].to_i * 10**income_currency.round
+    op.income_currency_id = income_currency.id
+
+    expense_currency = Currency.find(params[:expense_currency_id])
+    op.expense_amount = params[:expense_amount].to_i * 10**expense_currency.round
+    op.expense_currency_id = expense_currency.id
 
     op.is_conversion = params[:is_conversion] ? true : false
     op.description = params[:description]
@@ -84,8 +87,8 @@ post :budget do
     op.save
 
     flash[:notice] = "Record successfully created"
-  rescue StandardError
-    flash[:error] ||= "Unable to create new record: #{params[:date]}, #{params[:income_amount]}, #{params[:expense_amount]} #{params[:description]} @ #{params[:shop]}, #{params[:operation_type]}"
+  rescue StandardError => e
+    flash[:error] ||= "#{e} Unable to create new record: #{params[:date]}, #{params[:income_amount]}, #{params[:expense_amount]} #{params[:description]} @ #{params[:shop]}, #{params[:operation_type]}"
   end
 
   redirect path_to(:budget_year_month).with(op.date.year, op.date.month)

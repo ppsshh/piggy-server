@@ -57,6 +57,11 @@ class PriceConverter
   end
 
   def convert_currency(cur1, cur2, amount, date = nil)
+    amount = amount * 10**(-1 * cur1.round)
+    convert_raw(cur1, cur2, amount, date) * 10**cur2.round
+  end
+
+  def convert_raw(cur1, cur2, amount, date = nil)
     return amount if cur1.id == cur2.id
 
     self.update if Time.now - @latest_reload > 60

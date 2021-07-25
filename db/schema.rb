@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_24_024913) do
+ActiveRecord::Schema.define(version: 2021_07_25_032241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "anchors", id: :serial, force: :cascade do |t|
     t.date "date", null: false
-    t.float "total", null: false
-    t.float "income", default: 0.0
+    t.bigint "total", null: false
+    t.bigint "income", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -32,8 +32,8 @@ ActiveRecord::Schema.define(version: 2021_07_24_024913) do
     t.integer "purse", default: 0
     t.integer "tag_id", default: 0
     t.boolean "is_conversion", default: false
-    t.float "income_amount", default: 0.0, null: false
-    t.float "expense_amount", default: 0.0, null: false
+    t.bigint "income_amount", default: 0, null: false
+    t.bigint "expense_amount", default: 0, null: false
     t.integer "income_currency_id"
     t.integer "expense_currency_id"
   end
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2021_07_24_024913) do
 
   create_table "monthly_diffs", force: :cascade do |t|
     t.date "date"
-    t.float "amount", default: 0.0
+    t.bigint "amount", default: 0
     t.bigint "currency_id"
     t.datetime "updated_at"
     t.index ["currency_id"], name: "index_monthly_diffs_on_currency_id"

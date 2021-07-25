@@ -13,7 +13,6 @@ paths index: '/',
     hide_money: '/hide-money',
     set_theme: '/set-theme',
     autocomplete_shop: '/autocomplete/shop',
-    mortgage: '/mortgage',
     prices_reload: '/prices_reload',
     css: '/main.css',
     login: '/login',
@@ -250,10 +249,6 @@ get :autocomplete_shop do
 
   content_type :json
   items_array.to_json
-end
-
-get :mortgage do
-  slim :mortgage
 end
 
 get :exrates do

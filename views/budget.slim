@@ -1,4 +1,9 @@
-== slim :flashes
+- if flash[:error]
+  div.flash-error
+    = flash[:error]
+- if flash[:notice]
+  div.flash-notice
+    = flash[:notice]
 
 ruby:
   current_month = {

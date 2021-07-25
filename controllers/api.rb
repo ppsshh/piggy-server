@@ -23,8 +23,17 @@ end
 get :globals do
   protect!
 
+  tags = Tag.all.index_by(&:id)
+  tags_array = tags.transform_values do |v|
+    {
+      id: v.id,
+      title: v.parent_id.present? ? "#{tags[v.parent_id].title}/#{v.title}" : v.title,
+      image: v.image,
+    }
+  end
+
   {
-    tags: Tag.all.index_by(&:id),
+    tags: tags_array,
     currencies: Currency.all.index_by(&:id),
   }.to_json
 end

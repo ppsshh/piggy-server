@@ -307,7 +307,7 @@ get :css do
 end
 
 get :login do
-  if admin?
+  if session['username'].present?
     flash[:notice] = "Already logged in"
     redirect path_to(:index)
   else

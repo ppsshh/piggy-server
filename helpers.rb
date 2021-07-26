@@ -1,14 +1,7 @@
 module PiggyHelpers
-  def current_user
-    session['username']
-  end
-
-  def admin?
-    session['role'] == 'admin'
-  end
-
   def protect!
-    return if admin?
+    return if session['username'].present?
+
     halt 401, "Unauthorized"
   end
 

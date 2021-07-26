@@ -33,7 +33,9 @@ get :api_globals do
   end
 
   {
+    user: session['username'],
     tags: tags_array,
+    default_currency_id: 3,
     currencies: Currency.all.index_by(&:id),
   }.to_json
 end

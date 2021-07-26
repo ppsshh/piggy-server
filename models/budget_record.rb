@@ -5,6 +5,20 @@ class BudgetRecord < ActiveRecord::Base
   before_update :fix_monthly_diff!
   before_destroy :rollback_monthly_diff!
 
+  attr_writer :income, :expense, :tag
+
+  def income=(str)
+    self.income_amount, self.income_currency_id = parse_amount(str)
+  end
+
+  def expense=(str)
+    self.expense_amount, self.expense_currency_id = parse_amount(str)
+  end
+
+  def tag=(tag_object)
+    self.tag_id = tag_object&.dig(:id)
+  end
+
   def fix_monthly_diff!
     rollback_monthly_diff!
     add_to_monthly_diff!
@@ -40,5 +54,22 @@ class BudgetRecord < ActiveRecord::Base
 
   def previous_value(key)
     changes.dig(key, 0) || send(key)
+  end
+
+  private
+
+  def parse_amount(str)
+    # TODO: remove hardcoded default currency
+    default_currency_id = 3
+    default_currency_title = 'JPY'
+  
+    return [0, default_currency_id] unless str&.strip&.present?
+  
+    match = str.match(/(?<digits>\d+(\.\d+)?)(?<text>.*)/)
+    
+    curr = Currency.where('title ILIKE ?', match[:text].strip.presence || default_currency_title).take!
+    val = (match[:digits].to_f * 10**curr.round).to_i
+  
+    [val, curr.id]
   end
 end

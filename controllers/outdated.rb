@@ -70,11 +70,11 @@ post :budget do
     op.date = date
 
     income_currency = Currency.find(params[:income_currency_id])
-    op.income_amount = params[:income_amount].to_i * 10**income_currency.round
+    op.income_amount = (params[:income_amount].to_f * 10**income_currency.round).to_i
     op.income_currency_id = income_currency.id
 
     expense_currency = Currency.find(params[:expense_currency_id])
-    op.expense_amount = params[:expense_amount].to_i * 10**expense_currency.round
+    op.expense_amount = (params[:expense_amount].to_f * 10**expense_currency.round).to_i
     op.expense_currency_id = expense_currency.id
 
     op.is_conversion = params[:is_conversion] ? true : false
@@ -104,10 +104,13 @@ post :budget_record do
 
   item.date = params[:date]
 
-  item.income_amount = params[:income_amount]
-  item.income_currency_id = params[:income_currency_id]
-  item.expense_amount = params[:expense_amount]
-  item.expense_currency_id = params[:expense_currency_id]
+  income_currency = Currency.find(params[:income_currency_id])
+  item.income_amount = (params[:income_amount].to_f * 10**income_currency.round).to_i
+  item.income_currency_id = income_currency.id
+
+  expense_currency = Currency.find(params[:expense_currency_id])
+  item.expense_amount = (params[:expense_amount].to_f * 10**expense_currency.round).to_i
+  item.expense_currency_id = expense_currency.id
 
   item.is_conversion = params[:is_conversion] ? true : false
   item.description = params[:description]

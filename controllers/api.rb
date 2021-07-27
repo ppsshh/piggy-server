@@ -10,8 +10,7 @@ get :api_month do
 
   {
     operations: BudgetRecord
-      .where(date: date_start..date_end, purse: [0, 1, 3])
-      .each_with_object({}) {|br, acc| (acc[br.date] ||= []) << br},
+      .where(date: date_start..date_end, purse: [0, 1, 3]),
     total: MonthlyDiff
       .where(date: ..date_end)
       .group(:currency_id)

@@ -1,5 +1,6 @@
 class BudgetRecord < ActiveRecord::Base
   belongs_to :currency
+  belongs_to :tag
 
   validate :amounts_validator
 

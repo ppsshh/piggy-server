@@ -77,7 +77,7 @@ div.budget-expenses-cell
               a< href=path_to(:budget_record).with(e.id) Edit
               a< href=path_to(:budget_record).with(e.id) data-method="delete" data-confirm="Delete?" Delete
             td == money_format(e.expense_amount, e.expense_currency_id)
-          - e.description.split("\n").each do |desc_line|
+          - (e.description || '').split("\n").each do |desc_line|
             tr
               td colspan=2
               td class="td-left-align title-table-cell expense-description" = desc_line

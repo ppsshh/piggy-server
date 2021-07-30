@@ -1,5 +1,6 @@
 paths \
-    records: '/api/records'
+    records: '/api/records',
+    record: '/api/record/:id'
 
 post :records do
   protect!
@@ -8,5 +9,14 @@ post :records do
   br.update!(params)
   br.to_json
 rescue StandardError => e
-  halt(400, "Unable to create record: #{e}")
+  halt(400, "Unable to create/update record: #{e}")
+end
+
+delete :record do
+  protect!
+
+  br = BudgetRecord.find(params[:id])
+  br.destroy!
+rescue StandardError => e
+  halt(400, "Unable to delete record: #{e}")
 end

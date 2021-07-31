@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_25_032241) do
+ActiveRecord::Schema.define(version: 2021_07_31_112925) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "btree_gist"
   enable_extension "plpgsql"
 
   create_table "anchors", id: :serial, force: :cascade do |t|
@@ -65,6 +66,7 @@ ActiveRecord::Schema.define(version: 2021_07_25_032241) do
     t.integer "currency_id"
     t.date "date"
     t.integer "record_type", default: 0
+    t.index ["actual_date"], name: "index_prices_on_actual_date", using: :gist
   end
 
   create_table "tags", id: :serial, force: :cascade do |t|

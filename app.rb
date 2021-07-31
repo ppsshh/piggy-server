@@ -9,10 +9,10 @@ require 'sinatra/reloader'
 require 'slim'
 require 'yaml'
 
-Dir.glob('./models/*.rb').each {|f| require_relative f}
-Dir.glob('./controllers/*.rb').each {|f| require_relative f}
-also_reload './models/*.rb'
-also_reload './controllers/*.rb'
+%w[extensions models controllers].each do |subfolder|
+  Dir.glob("./#{subfolder}/*.rb").each {|f| require_relative f}
+  also_reload "./#{subfolder}/*.rb"
+end
 
 require_relative './helpers.rb'
 also_reload './helpers.rb'

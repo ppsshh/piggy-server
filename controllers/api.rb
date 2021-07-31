@@ -15,6 +15,9 @@ get :api_month do
       .group(:currency_id)
       .sum(:amount)
       .filter {|k,v| v != 0},
+    exrates: Currency.all
+      .each_with_object({}) {|c,obj| obj[c.id] = c.prices.knn(date_end) }
+      .transform_values {|v| v.present? ? v.rate : nil }
   }.to_json
 end
 

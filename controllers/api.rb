@@ -8,14 +8,28 @@ get :api_month do
   date_start = Date.new(params[:year].to_i, params[:month].to_i)
   date_end = date_start.end_of_month
 
+  total = MonthlyDiff
+    .where(date: ..date_end)
+    .group(:currency_id)
+    .sum(:amount)
+    .filter {|k,v| v != 0}
+    .transform_values {|v| {total: v} }
+
+  BudgetRecord
+    .where(date: date_start..date_end)
+    .group(:income_currency_id)
+    .sum(:income_amount)
+    .each {|k,v| (total[k] ||= {})[:income] = v if k}
+
+  BudgetRecord
+    .where(date: date_start..date_end)
+    .group(:expense_currency_id)
+    .sum(:expense_amount)
+    .each {|k,v| (total[k] ||= {})[:expense] = v if k}
+
   {
-    operations: BudgetRecord
-      .where(date: date_start..date_end, purse: [0, 1, 3]),
-    total: MonthlyDiff
-      .where(date: ..date_end)
-      .group(:currency_id)
-      .sum(:amount)
-      .filter {|k,v| v != 0},
+    operations: BudgetRecord.where(date: date_start..date_end, purse: [0, 1, 3]),
+    total: total,
   }.to_json
 end
 

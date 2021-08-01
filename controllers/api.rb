@@ -1,5 +1,6 @@
 paths \
     api_month: '/api/month/:year/:month',
+    api_year: '/api/year/:year',
     api_globals: '/api/globals'
 
 get :api_month do
@@ -15,9 +16,35 @@ get :api_month do
       .group(:currency_id)
       .sum(:amount)
       .filter {|k,v| v != 0},
-    exrates: Currency.all
-      .each_with_object({}) {|c,obj| obj[c.id] = c.prices.knn(date_end) }
-      .transform_values {|v| v.present? ? v.rate : nil }
+    exrates: exrates(date_end),
+  }.to_json
+end
+
+def exrates(date)
+  Currency.all
+    .each_with_object({}) {|c,obj| obj[c.id] = c.prices.knn(date) }
+    .transform_values {|v| v.present? ? v.rate : nil }
+end
+
+get :api_year do
+  protect!
+
+  date_start = Date.new(params[:year].to_i)
+  date_end = date_start.end_of_year
+
+  {
+    expensesRaw: BudgetRecord
+      .where(date: date_start..date_end)
+      .where(expense_amount: 1.., is_conversion: false)
+      .where.not(purse: 2)
+      .group(:expense_currency_id, :tag_id)
+      .sum(:expense_amount)
+      .each_with_object({}) do |kv,obj|
+        k, amount = kv
+        curr, tag = k
+        (obj[tag] ||= {})[curr] = amount
+      end,
+    exrates: exrates(Date.new(params[:year].to_i, 7)),
   }.to_json
 end
 

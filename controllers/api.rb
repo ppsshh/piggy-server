@@ -30,6 +30,8 @@ get :api_globals do
       id: v.id,
       title: v.parent_id.present? ? "#{tags[v.parent_id].title}/#{v.title}" : v.title,
       image: v.image,
+      parentId: v.parent_id,
+      color: v.color,
     }
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_31_112925) do
+ActiveRecord::Schema.define(version: 2021_08_01_100024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gist"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 2021_07_31_112925) do
     t.text "title"
     t.integer "parent_id"
     t.string "image"
+    t.string "color"
   end
 
 end

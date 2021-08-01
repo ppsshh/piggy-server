@@ -6,6 +6,7 @@ class BudgetRecord < ActiveRecord::Base
 
   after_create :add_to_monthly_diff!
   before_update :fix_monthly_diff!
+  before_update :set_conversion_flag
   before_destroy :rollback_monthly_diff!
 
   attr_writer :income, :expense, :tag
@@ -27,6 +28,10 @@ class BudgetRecord < ActiveRecord::Base
 
     errors.add(:base, 'Either expense or income amount must be greater than zero')
     false
+  end
+
+  def set_conversion_flag
+    self.is_conversion = (income_amount && income_amount > 0 && expense_amount && expense_amount > 0)
   end
 
   def fix_monthly_diff!

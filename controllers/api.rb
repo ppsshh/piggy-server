@@ -33,12 +33,23 @@ get :api_year do
   date_end = date_start.end_of_year
 
   {
-    expensesRaw: BudgetRecord
+    expenses: BudgetRecord
       .where(date: date_start..date_end)
       .where(expense_amount: 1.., is_conversion: false)
       .where.not(purse: 2)
       .group(:expense_currency_id, :tag_id)
       .sum(:expense_amount)
+      .each_with_object({}) do |kv,obj|
+        k, amount = kv
+        curr, tag = k
+        (obj[tag] ||= {})[curr] = amount
+      end,
+    incomes: BudgetRecord
+      .where(date: date_start..date_end)
+      .where(income_amount: 1.., is_conversion: false)
+      .where.not(purse: 2)
+      .group(:income_currency_id, :tag_id)
+      .sum(:income_amount)
       .each_with_object({}) do |kv,obj|
         k, amount = kv
         curr, tag = k

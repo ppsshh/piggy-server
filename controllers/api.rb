@@ -2,6 +2,7 @@ paths \
     api_month: '/api/month/:year/:month',
     api_year: '/api/year/:year',
     api_year_shop: '/api/year/:year/shop',
+    api_year_tag: '/api/year/:year/tag/:id',
     api_globals: '/api/globals'
 
 get :api_month do
@@ -96,5 +97,17 @@ get :api_year_shop do
   BudgetRecord.expenses
     .where(date: date_start..date_end)
     .where(shop: params[:shop].presence || ['', nil])
+    .to_json
+end
+
+get :api_year_tag do
+  protect!
+
+  date_start = Date.new(params[:year].to_i)
+  date_end = date_start.end_of_year
+
+  BudgetRecord.expenses
+    .where(date: date_start..date_end)
+    .where(tag_id: params[:id])
     .to_json
 end

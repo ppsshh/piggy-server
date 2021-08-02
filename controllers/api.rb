@@ -33,10 +33,8 @@ get :api_year do
   date_end = date_start.end_of_year
 
   {
-    expenses: BudgetRecord
+    expenses: BudgetRecord.expenses
       .where(date: date_start..date_end)
-      .where(expense_amount: 1.., is_conversion: false)
-      .where.not(purse: 2)
       .group(:expense_currency_id, :tag_id)
       .sum(:expense_amount)
       .each_with_object({}) do |kv,obj|
@@ -44,16 +42,23 @@ get :api_year do
         curr, tag = k
         (obj[tag] ||= {})[curr] = amount
       end,
-    incomes: BudgetRecord
+    incomes: BudgetRecord.incomes
       .where(date: date_start..date_end)
-      .where(income_amount: 1.., is_conversion: false)
-      .where.not(purse: 2)
       .group(:income_currency_id, :tag_id)
       .sum(:income_amount)
       .each_with_object({}) do |kv,obj|
         k, amount = kv
         curr, tag = k
         (obj[tag] ||= {})[curr] = amount
+      end,
+    shops: BudgetRecord.expenses
+      .where(date: date_start..date_end)
+      .group(:shop, :expense_currency_id)
+      .sum(:expense_amount)
+      .each_with_object({}) do |kv,obj|
+        k, amount = kv
+        shop, curr = k
+        (obj[shop] ||= {})[curr] = amount
       end,
     exrates: exrates(Date.new(params[:year].to_i, 7)),
   }.to_json

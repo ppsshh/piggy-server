@@ -11,6 +11,9 @@ class BudgetRecord < ActiveRecord::Base
 
   attr_writer :income, :expense, :tag
 
+  scope :incomes, -> { where(income_amount: 1.., is_conversion: false).where.not(purse: 2) }
+  scope :expenses, -> { where(expense_amount: 1.., is_conversion: false).where.not(purse: 2) }
+
   def income=(str)
     self.income_amount, self.income_currency_id = parse_amount(str)
   end

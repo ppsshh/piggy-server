@@ -1,5 +1,6 @@
 class BudgetRecord < ActiveRecord::Base
-  belongs_to :currency
+  belongs_to :income_currency, class_name: 'Currency', foreign_key: :income_currency_id
+  belongs_to :expense_currency, class_name: 'Currency', foreign_key: :expense_currency_id
   belongs_to :tag
 
   validate :amounts_validator
@@ -11,8 +12,8 @@ class BudgetRecord < ActiveRecord::Base
 
   attr_writer :income, :expense, :tag
 
-  scope :incomes, -> { where(income_amount: 1.., is_conversion: false).where.not(purse: 2) }
-  scope :expenses, -> { where(expense_amount: 1.., is_conversion: false).where.not(purse: 2) }
+  scope :incomes, -> { where(income_amount: 1.., is_conversion: false) }
+  scope :expenses, -> { where(expense_amount: 1.., is_conversion: false) }
 
   def income=(str)
     self.income_amount, self.income_currency_id = parse_amount(str)
@@ -43,8 +44,6 @@ class BudgetRecord < ActiveRecord::Base
   end
 
   def rollback_monthly_diff!
-    return if previous_value(:purse) == 2
-
     MonthlyDiff.find_by(
       date: previous_value(:date).end_of_month,
       currency_id: previous_value(:income_currency_id),
@@ -57,8 +56,6 @@ class BudgetRecord < ActiveRecord::Base
   end
 
   def add_to_monthly_diff!
-    return if purse == 2
-
     MonthlyDiff.find_or_create_by(
       date: date.end_of_month,
       currency_id: income_currency_id,

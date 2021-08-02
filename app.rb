@@ -20,18 +20,12 @@ helpers PiggyHelpers
 
 configure do
   $config = YAML.load(File.open('config/app.yml'))
-  $purse = {0 => 'Normal', 1 => 'Savings', 2 => 'Anchors (not included in monthly diffs)', 3 => 'Monthly diffs (not included in anchors)'}
-  $main_currency = Currency.where(title: "JPY").take
-  $currencies = {}
-  Currency.all.each { |c| $currencies[c.id] = c }
-  $price_converter = PriceConverter.new
 
+  use Rack::JSONBodyParser
   use Rack::Session::Cookie,
         key: 'piggy.fc',
 #        domain: '172.16.0.11',
 #        path: '/',
         expire_after: 2592000,
         secret: $config['secret']
-  use Rack::Flash
-  use Rack::JSONBodyParser
 end

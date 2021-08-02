@@ -10,19 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_01_100024) do
+ActiveRecord::Schema.define(version: 2021_08_02_151911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gist"
   enable_extension "plpgsql"
-
-  create_table "anchors", id: :serial, force: :cascade do |t|
-    t.date "date", null: false
-    t.bigint "total", null: false
-    t.bigint "income", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "budget_records", id: :serial, force: :cascade do |t|
     t.date "date", null: false
@@ -30,7 +22,6 @@ ActiveRecord::Schema.define(version: 2021_08_01_100024) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "shop"
-    t.integer "purse", default: 0
     t.integer "tag_id", default: 0
     t.boolean "is_conversion", default: false
     t.bigint "income_amount", default: 0, null: false
@@ -62,10 +53,7 @@ ActiveRecord::Schema.define(version: 2021_08_01_100024) do
     t.date "actual_date"
     t.float "rate"
     t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer "currency_id"
-    t.date "date"
-    t.integer "record_type", default: 0
     t.index ["actual_date"], name: "index_prices_on_actual_date", using: :gist
   end
 

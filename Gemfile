@@ -1,13 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'httparty'
+gem 'httparty', require: false
 gem 'rack-contrib'
-gem 'rack-flash3'
 gem 'pg'
 gem 'puma'
-gem 'sass'
 gem 'sinatra'
 gem 'sinatra-activerecord'
 gem 'sinatra-snap'
 gem 'sinatra-reloader'
-gem 'slim'

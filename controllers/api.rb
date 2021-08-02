@@ -12,7 +12,7 @@ get :api_month do
   date_end = date_start.end_of_month
 
   {
-    operations: BudgetRecord.where(date: date_start..date_end, purse: [0, 1, 3]),
+    operations: BudgetRecord.where(date: date_start..date_end),
     totalsBefore: MonthlyDiff
       .where(date: ...date_start)
       .group(:currency_id)

@@ -1,7 +1,6 @@
-paths \
-    api_autocomplete_shop: '/api/autocomplete/shop'
+paths autocomplete_shop: '/api/autocomplete/shop'
 
-post :api_autocomplete_shop do
+post :autocomplete_shop do
   protect!
 
   tr_query = params[:query].downcase.tr(

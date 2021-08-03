@@ -1,22 +1,14 @@
-require 'date'
-require 'rack-flash'
 require 'rack/contrib'
-require 'sass'
 require 'sinatra'
 require 'sinatra-snap'
 require 'sinatra/activerecord'
-require 'sinatra/reloader'
-require 'slim'
 require 'yaml'
+require 'sinatra/reloader'
 
 %w[extensions models controllers].each do |subfolder|
   Dir.glob("./#{subfolder}/*.rb").each {|f| require_relative f}
   also_reload "./#{subfolder}/*.rb"
 end
-
-require_relative './helpers.rb'
-also_reload './helpers.rb'
-helpers PiggyHelpers
 
 configure do
   $config = YAML.load(File.open('config/app.yml'))
@@ -28,4 +20,10 @@ configure do
 #        path: '/',
         expire_after: 2592000,
         secret: $config['secret']
+end
+
+def protect!
+  return if session['username'].present?
+
+  halt 401, "Unauthorized"
 end

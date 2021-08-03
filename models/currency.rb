@@ -4,6 +4,14 @@ class Currency < ActiveRecord::Base
 
   before_update :convert_amounts!, if: :round_changed?
 
+  class << self
+    def exrates(date)
+      Currency.all
+        .each_with_object({}) {|c,obj| obj[c.id] = c.prices.knn(date) }
+        .transform_values {|v| v.present? ? v.rate : nil }
+    end
+  end
+
   def convert_amounts!
     multiplier = 10**(round_change.last - round_change.first)
 

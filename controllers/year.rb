@@ -6,37 +6,12 @@ paths \
 get :api_year do
   protect!
 
-  date_start = Date.new(params[:year].to_i)
-  date_end = date_start.end_of_year
+  scope = yearly_scope(params[:year].to_i)
 
   {
-    expenses: BudgetRecord.expenses
-      .where(date: date_start..date_end)
-      .group(:expense_currency_id, :tag_id)
-      .sum(:expense_amount)
-      .each_with_object({}) do |kv,obj|
-        k, amount = kv
-        curr, tag = k
-        (obj[tag] ||= {})[curr] = amount
-      end,
-    incomes: BudgetRecord.incomes
-      .where(date: date_start..date_end)
-      .group(:income_currency_id, :tag_id)
-      .sum(:income_amount)
-      .each_with_object({}) do |kv,obj|
-        k, amount = kv
-        curr, tag = k
-        (obj[tag] ||= {})[curr] = amount
-      end,
-    shops: BudgetRecord.expenses
-      .where(date: date_start..date_end)
-      .group(:shop, :expense_currency_id)
-      .sum(:expense_amount)
-      .each_with_object({}) do |kv,obj|
-        k, amount = kv
-        shop, curr = k
-        (obj[shop] ||= {})[curr] = amount
-      end,
+    expenses: scope.expenses.group_sum(:expense_amount, :tag_id, :expense_currency_id),
+    incomes: scope.incomes.group_sum(:income_amount, :tag_id, :income_currency_id),
+    shops: scope.expenses.group_sum(:expense_amount, :shop, :expense_currency_id),
     exrates: Currency.exrates(Date.new(params[:year].to_i, 7)),
   }.to_json
 end
@@ -44,23 +19,18 @@ end
 get :api_year_shop do
   protect!
 
-  date_start = Date.new(params[:year].to_i)
-  date_end = date_start.end_of_year
-
-  BudgetRecord.expenses
-    .where(date: date_start..date_end)
-    .where(shop: params[:shop].presence || ['', nil])
-    .to_json
+  scope = yearly_scope(params[:year].to_i)
+  scope.expenses.where(shop: params[:shop].presence || ['', nil]).to_json
 end
 
 get :api_year_tag do
   protect!
 
-  date_start = Date.new(params[:year].to_i)
-  date_end = date_start.end_of_year
+  scope = yearly_scope(params[:year].to_i)
+  scope.expenses.where(tag_id: params[:id]).to_json
+end
 
-  BudgetRecord.expenses
-    .where(date: date_start..date_end)
-    .where(tag_id: params[:id])
-    .to_json
+def yearly_scope(year)
+  d = Date.new(year)
+  BudgetRecord.where(date: d..d.end_of_year)
 end

@@ -8,11 +8,8 @@ get :api_month do
 
   {
     operations: BudgetRecord.where(date: date_start..date_end),
-    totalsBefore: MonthlyDiff
-      .where(date: ...date_start)
-      .group(:currency_id)
-      .sum(:amount)
-      .filter {|k,v| v != 0},
+    totalsBefore: MonthlyDiff.where(date: ...date_start)
+      .group(:currency_id).sum(:amount).filter {|k,v| v != 0},
     exrates: Currency.exrates(date_end),
   }.to_json
 end

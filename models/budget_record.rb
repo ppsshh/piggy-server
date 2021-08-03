@@ -15,6 +15,16 @@ class BudgetRecord < ActiveRecord::Base
   scope :incomes, -> { where(income_amount: 1.., is_conversion: false) }
   scope :expenses, -> { where(expense_amount: 1.., is_conversion: false) }
 
+  scope :group_sum, ->(sum_key, group_key1, group_key2) do
+    group(group_key1, group_key2)
+      .sum(sum_key)
+      .each_with_object({}) do |kv,obj|
+        k, amount = kv
+        group_key1, group_key2 = k
+        (obj[group_key1] ||= {})[group_key2] = amount
+      end
+  end
+
   def income=(str)
     self.income_amount, self.income_currency_id = parse_amount(str)
   end

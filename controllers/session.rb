@@ -16,6 +16,8 @@ post :session do
 end
 
 delete :session do
+  protect!
+
   session.delete('username')
   {status: :ok}.to_json
 end

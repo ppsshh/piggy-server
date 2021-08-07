@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_02_151911) do
+ActiveRecord::Schema.define(version: 2021_08_07_142906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gist"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2021_08_02_151911) do
     t.bigint "expense_amount", default: 0, null: false
     t.integer "income_currency_id"
     t.integer "expense_currency_id"
+    t.boolean "is_credit", default: false
   end
 
   create_table "currencies", id: :serial, force: :cascade do |t|

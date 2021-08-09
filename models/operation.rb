@@ -54,6 +54,8 @@ class Operation < ActiveRecord::Base
   end
 
   def rollback_monthly_diff!
+    return if previous_value(:is_credit) == true
+    
     MonthlyDiff.find_by(
       date: previous_value(:date).end_of_month,
       currency_id: previous_value(:income_currency_id),
@@ -66,6 +68,8 @@ class Operation < ActiveRecord::Base
   end
 
   def add_to_monthly_diff!
+    return if is_credit == true
+
     MonthlyDiff.find_or_create_by(
       date: date.end_of_month,
       currency_id: income_currency_id,

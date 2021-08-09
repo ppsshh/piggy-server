@@ -8,7 +8,7 @@ post :autocomplete_shop do
     "йцукенгшщзхъфывапролджэячсмитьбюё"
   )
 
-  items = BudgetRecord.where.not(shop: '')
+  items = Operation.where.not(shop: '')
     .where('shop ILIKE ? OR shop ILIKE ?', "%#{params[:query]}%", "%#{tr_query}%")
     .order(shop: :asc).select(:shop).distinct.limit(20).pluck(:shop)
 

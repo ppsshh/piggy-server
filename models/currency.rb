@@ -15,11 +15,11 @@ class Currency < ActiveRecord::Base
   def convert_amounts!
     multiplier = 10**(round_change.last - round_change.first)
 
-    BudgetRecord.where(income_currency_id: id).find_each do |br|
+    Operation.where(income_currency_id: id).find_each do |br|
       br.update(income_amount: (br.income_amount * multiplier).round)
     end
 
-    BudgetRecord.where(expense_currency_id: id).find_each do |br|
+    Operation.where(expense_currency_id: id).find_each do |br|
       br.update(expense_amount: (br.expense_amount * multiplier).round)
     end
   end

@@ -32,5 +32,5 @@ end
 
 def yearly_scope(year)
   d = Date.new(year)
-  BudgetRecord.where(date: d..d.end_of_year)
+  Operation.where(date: d..d.end_of_year)
 end

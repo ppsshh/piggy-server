@@ -10,26 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_07_142906) do
+ActiveRecord::Schema.define(version: 2021_08_09_022037) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gist"
   enable_extension "plpgsql"
-
-  create_table "budget_records", id: :serial, force: :cascade do |t|
-    t.date "date", null: false
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "shop"
-    t.integer "tag_id", default: 0
-    t.boolean "is_conversion", default: false
-    t.bigint "income_amount", default: 0, null: false
-    t.bigint "expense_amount", default: 0, null: false
-    t.integer "income_currency_id"
-    t.integer "expense_currency_id"
-    t.boolean "is_credit", default: false
-  end
 
   create_table "currencies", id: :serial, force: :cascade do |t|
     t.string "title"
@@ -48,6 +33,21 @@ ActiveRecord::Schema.define(version: 2021_08_07_142906) do
     t.bigint "currency_id"
     t.datetime "updated_at"
     t.index ["currency_id"], name: "index_monthly_diffs_on_currency_id"
+  end
+
+  create_table "operations", id: :serial, force: :cascade do |t|
+    t.date "date", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "shop"
+    t.integer "tag_id", default: 0
+    t.boolean "is_conversion", default: false
+    t.bigint "income_amount", default: 0, null: false
+    t.bigint "expense_amount", default: 0, null: false
+    t.integer "income_currency_id"
+    t.integer "expense_currency_id"
+    t.boolean "is_credit", default: false
   end
 
   create_table "prices", id: :serial, force: :cascade do |t|

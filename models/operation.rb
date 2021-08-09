@@ -1,4 +1,4 @@
-class BudgetRecord < ActiveRecord::Base
+class Operation < ActiveRecord::Base
   belongs_to :income_currency, class_name: 'Currency', foreign_key: :income_currency_id
   belongs_to :expense_currency, class_name: 'Currency', foreign_key: :expense_currency_id
   belongs_to :tag

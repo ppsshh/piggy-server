@@ -20,14 +20,20 @@ get :api_year_shop do
   protect!
 
   scope = yearly_scope(params[:year].to_i)
-  scope.expenses.where(shop: params[:shop].presence || ['', nil]).to_json
+
+  {
+    operations: scope.expenses.where(shop: params[:shop].presence || ['', nil]),
+  }.to_json
 end
 
 get :api_year_tag do
   protect!
 
   scope = yearly_scope(params[:year].to_i)
-  scope.expenses.where(tag_id: params[:id]).to_json
+
+  {
+    operations: scope.expenses.where(tag_id: params[:id]),
+  }.to_json
 end
 
 def yearly_scope(year)

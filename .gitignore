@@ -5,4 +5,3 @@ Gemfile.lock
 *.sqlite3
 *.sqlite3-journal
 
-.sass-cache

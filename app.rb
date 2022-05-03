@@ -23,7 +23,11 @@ configure do
 end
 
 def protect!
-  return if session['username'].present?
+  halt 401, "Unauthorized" unless current_user
+end
 
-  halt 401, "Unauthorized"
+def current_user
+  return unless session['username'].present?
+
+  $current_user ||= User.find_by(username: session['username'])
 end

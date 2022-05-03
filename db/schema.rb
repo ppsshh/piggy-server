@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_09_022037) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_05_03_025551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gist"
   enable_extension "plpgsql"
@@ -20,8 +19,8 @@ ActiveRecord::Schema.define(version: 2021_08_09_022037) do
     t.string "title"
     t.string "description"
     t.boolean "update_regularly", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "round", default: 2
     t.string "record_type"
     t.jsonb "api"
@@ -31,15 +30,15 @@ ActiveRecord::Schema.define(version: 2021_08_09_022037) do
     t.date "date"
     t.bigint "amount", default: 0
     t.bigint "currency_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.index ["currency_id"], name: "index_monthly_diffs_on_currency_id"
   end
 
   create_table "operations", id: :serial, force: :cascade do |t|
     t.date "date", null: false
     t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "shop"
     t.integer "tag_id", default: 0
     t.boolean "is_conversion", default: false
@@ -53,7 +52,7 @@ ActiveRecord::Schema.define(version: 2021_08_09_022037) do
   create_table "prices", id: :serial, force: :cascade do |t|
     t.date "actual_date"
     t.float "rate"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "currency_id"
     t.index ["actual_date"], name: "index_prices_on_actual_date", using: :gist
   end
@@ -63,6 +62,13 @@ ActiveRecord::Schema.define(version: 2021_08_09_022037) do
     t.integer "parent_id"
     t.string "image"
     t.string "color"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "pwd_hash"
+    t.string "pwd_salt"
+    t.text "memo"
   end
 
 end

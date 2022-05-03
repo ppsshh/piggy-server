@@ -1,6 +1,2 @@
 ---
 secret: 1234567890abcdef
-start_date: 2010-01-01
-savings_start_date: 2012-01-01
-admins:
-  user1: password1

@@ -4,22 +4,20 @@ paths \
 
 post :session do
   halt(400, 'Blank login or password') if params['username'].blank? || params['password'].blank?
-  halt(400, 'User not found') unless $config['admins'].present? && $config['admins'][params['username']].present?
 
-  if $config['admins'][params['username']] == params['password']
-    session['username'] = params['username']
-  else
-    halt(403, 'Access denied')
-  end
+  user = User.find_by(username: params['username'])
+  halt(403, 'Access denied') unless user.present? && user.password?(params['password'])
 
-  {username: params['username']}.to_json
+  session['username'] = params['username']
+
+  { username: user.username }.to_json
 end
 
 delete :session do
   protect!
 
   session.delete('username')
-  {status: :ok}.to_json
+  { status: :ok }.to_json
 end
 
 get :globals do
@@ -37,7 +35,8 @@ get :globals do
   end
 
   {
-    user: session['username'],
+    user: current_user.username,
+    memo: current_user.memo,
     tags: tags_array,
     default_currency_id: 3,
     currencies: Currency.all.index_by(&:id),

@@ -1,6 +1,7 @@
 paths \
     session:  '/api/session',
-    globals: '/api/globals'
+    globals: '/api/globals',
+    memo: '/api/memo'
 
 post :session do
   halt(400, 'Blank login or password') if params['username'].blank? || params['password'].blank?
@@ -41,4 +42,12 @@ get :globals do
     default_currency_id: 3,
     currencies: Currency.all.index_by(&:id),
   }.to_json
+end
+
+post :memo do
+  protect!
+
+  halt 400 unless params['content'].present?
+
+  current_user.update(memo: params['content'])
 end
